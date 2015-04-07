@@ -5,7 +5,19 @@
  */
 package nosqltools;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,6 +25,10 @@ import javax.swing.JFrame;
  */
 public class MainForm extends javax.swing.JFrame {
 
+    
+    public JSONUtilities json_util = new JSONUtilities();
+    
+    StringBuilder sb = new StringBuilder();
     /**
      * Creates new form MainForm
      */
@@ -35,13 +51,17 @@ public class MainForm extends javax.swing.JFrame {
 
         jSplitPane1 = new javax.swing.JSplitPane();
         Panel_Connections = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTree1 = new javax.swing.JTree();
         Panel_Views = new javax.swing.JPanel();
         Panel_Text = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        Text_JSON = new javax.swing.JTextArea();
         Panel_Hierarchical = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         Panel_Table = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        Table_JSON = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu_File = new javax.swing.JMenu();
         Import_JSON = new javax.swing.JMenuItem();
@@ -55,36 +75,43 @@ public class MainForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jSplitPane1.setDividerLocation(150);
+        jSplitPane1.setPreferredSize(new java.awt.Dimension(568, 453));
+
+        jScrollPane2.setViewportView(jTree1);
+
         javax.swing.GroupLayout Panel_ConnectionsLayout = new javax.swing.GroupLayout(Panel_Connections);
         Panel_Connections.setLayout(Panel_ConnectionsLayout);
         Panel_ConnectionsLayout.setHorizontalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 80, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
         );
         Panel_ConnectionsLayout.setVerticalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 451, Short.MAX_VALUE)
+            .addComponent(jScrollPane2)
         );
 
         jSplitPane1.setLeftComponent(Panel_Connections);
 
-        jButton4.setText("jButton4");
+        Text_JSON.setColumns(20);
+        Text_JSON.setRows(5);
+        jScrollPane1.setViewportView(Text_JSON);
 
         javax.swing.GroupLayout Panel_TextLayout = new javax.swing.GroupLayout(Panel_Text);
         Panel_Text.setLayout(Panel_TextLayout);
         Panel_TextLayout.setHorizontalGroup(
             Panel_TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TextLayout.createSequentialGroup()
-                .addGap(152, 152, 152)
-                .addComponent(jButton4)
-                .addContainerGap(261, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 917, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Panel_TextLayout.setVerticalGroup(
             Panel_TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TextLayout.createSequentialGroup()
-                .addGap(154, 154, 154)
-                .addComponent(jButton4)
-                .addContainerGap(274, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jButton2.setText("jButton2");
@@ -94,7 +121,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_HierarchicalLayout.setHorizontalGroup(
             Panel_HierarchicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_HierarchicalLayout.createSequentialGroup()
-                .addContainerGap(239, Short.MAX_VALUE)
+                .addContainerGap(690, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(174, 174, 174))
         );
@@ -106,23 +133,34 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap(279, Short.MAX_VALUE))
         );
 
-        jButton3.setText("jButton3");
+        Table_JSON.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(Table_JSON);
 
         javax.swing.GroupLayout Panel_TableLayout = new javax.swing.GroupLayout(Panel_Table);
         Panel_Table.setLayout(Panel_TableLayout);
         Panel_TableLayout.setHorizontalGroup(
             Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TableLayout.createSequentialGroup()
-                .addGap(135, 135, 135)
-                .addComponent(jButton3)
-                .addContainerGap(278, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(467, Short.MAX_VALUE))
         );
         Panel_TableLayout.setVerticalGroup(
             Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TableLayout.createSequentialGroup()
-                .addGap(189, 189, 189)
-                .addComponent(jButton3)
-                .addContainerGap(239, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout Panel_ViewsLayout = new javax.swing.GroupLayout(Panel_Views);
@@ -150,6 +188,11 @@ public class MainForm extends javax.swing.JFrame {
         Menu_File.setName(""); // NOI18N
 
         Import_JSON.setText("Import JSON file");
+        Import_JSON.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Import_JSONActionPerformed(evt);
+            }
+        });
         Menu_File.add(Import_JSON);
 
         jMenuBar1.add(Menu_File);
@@ -198,11 +241,11 @@ public class MainForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 967, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -227,7 +270,87 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Text.setVisible(false);
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(true);
+        
+        String [] json_field_names = json_util.getFields(sb.toString());
+        DefaultTableModel model = (DefaultTableModel)Table_JSON.getModel();
+        Table_JSON.setModel(new javax.swing.table.DefaultTableModel(new Object [][] {}, json_field_names));
+        
     }//GEN-LAST:event_View_TableActionPerformed
+
+    private void Import_JSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_JSONActionPerformed
+    
+        final JFileChooser fc = new JFileChooser();
+        String[] ext_array = new String [] {"txt", "json"};
+        String extensions = "";
+        
+        for (int i = 0; i < ext_array.length; i++)
+        {
+            extensions += "*." + ext_array[i];
+            if (i != ext_array.length - 1)
+                extensions += ", ";
+                            
+        }
+        
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt, *.json)", ext_array);
+        fc.setFileFilter(filter);
+        
+        int returnVal = fc.showOpenDialog(this);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) 
+        {
+            FileInputStream is = null;
+            try 
+            {
+                File file = fc.getSelectedFile();
+                is = new FileInputStream(file);
+                InputStreamReader isr = new InputStreamReader(is);
+                
+                int i;
+                char c;
+                
+                while((i = isr.read()) != -1)
+                {
+                    c = (char) i;
+                    sb.append(c);
+                }     
+            }
+            catch (FileNotFoundException ex) 
+            {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+            catch (IOException ex)
+            {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+            finally 
+            {
+                try 
+                {
+                    is.close();
+                } 
+                catch (IOException ex) 
+                {
+                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+                Panel_Text.setVisible(true);
+                Panel_Hierarchical.setVisible(false);
+                Panel_Table.setVisible(false);
+                
+                
+                if (json_util.isValid(sb.toString()))
+                {
+                    Text_JSON.setText(sb.toString());
+                }
+                else
+                {
+                    sb.setLength(0);
+                    JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            
+        } 
+    }//GEN-LAST:event_Import_JSONActionPerformed
 
     /**
      * @param args the command line arguments
@@ -276,13 +399,17 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel Panel_Table;
     private javax.swing.JPanel Panel_Text;
     private javax.swing.JPanel Panel_Views;
+    private javax.swing.JTable Table_JSON;
+    private javax.swing.JTextArea Text_JSON;
     private javax.swing.JMenuItem View_Hierarchical;
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
