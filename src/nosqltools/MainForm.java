@@ -5,12 +5,23 @@
  */
 package nosqltools;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -29,6 +40,8 @@ public class MainForm extends javax.swing.JFrame {
     public JSONUtilities json_util = new JSONUtilities();
     
     StringBuilder sb = new StringBuilder();
+    
+    public File file;
     /**
      * Creates new form MainForm
      */
@@ -38,6 +51,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Text.setVisible(false);
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(false);
+        Text_JSON.setEditable(false);
     }
 
     /**
@@ -57,6 +71,8 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Text = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         Text_JSON = new javax.swing.JTextArea();
+        EditCheckBox = new javax.swing.JCheckBox();
+        saveBtn = new javax.swing.JButton();
         Panel_Hierarchical = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         Panel_Table = new javax.swing.JPanel();
@@ -93,26 +109,29 @@ public class MainForm extends javax.swing.JFrame {
 
         jSplitPane1.setLeftComponent(Panel_Connections);
 
+        Panel_Text.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
         Text_JSON.setColumns(20);
         Text_JSON.setRows(5);
         jScrollPane1.setViewportView(Text_JSON);
 
-        javax.swing.GroupLayout Panel_TextLayout = new javax.swing.GroupLayout(Panel_Text);
-        Panel_Text.setLayout(Panel_TextLayout);
-        Panel_TextLayout.setHorizontalGroup(
-            Panel_TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_TextLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 917, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        Panel_TextLayout.setVerticalGroup(
-            Panel_TextLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_TextLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        Panel_Text.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 28, 907, 510));
+
+        EditCheckBox.setText("Editable");
+        EditCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditCheckBoxActionPerformed(evt);
+            }
+        });
+        Panel_Text.add(EditCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(848, 0, -1, -1));
+
+        saveBtn.setText("Save");
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
+        Panel_Text.add(saveBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
 
         jButton2.setText("jButton2");
 
@@ -121,7 +140,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_HierarchicalLayout.setHorizontalGroup(
             Panel_HierarchicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_HierarchicalLayout.createSequentialGroup()
-                .addContainerGap(690, Short.MAX_VALUE)
+                .addContainerGap(670, Short.MAX_VALUE)
                 .addComponent(jButton2)
                 .addGap(174, 174, 174))
         );
@@ -130,7 +149,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(Panel_HierarchicalLayout.createSequentialGroup()
                 .addGap(149, 149, 149)
                 .addComponent(jButton2)
-                .addContainerGap(279, Short.MAX_VALUE))
+                .addContainerGap(366, Short.MAX_VALUE))
         );
 
         Table_JSON.setModel(new javax.swing.table.DefaultTableModel(
@@ -153,14 +172,14 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(Panel_TableLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(467, Short.MAX_VALUE))
+                .addContainerGap(447, Short.MAX_VALUE))
         );
         Panel_TableLayout.setVerticalGroup(
             Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TableLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout Panel_ViewsLayout = new javax.swing.GroupLayout(Panel_Views);
@@ -252,15 +271,13 @@ public class MainForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void View_TextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_TextActionPerformed
-        // TODO add your handling code here
         Panel_Text.setVisible(true);
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(false);
     }//GEN-LAST:event_View_TextActionPerformed
 
     private void View_HierarchicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_HierarchicalActionPerformed
-        // TODO add your handling code here:
-         Panel_Text.setVisible(false);
+        Panel_Text.setVisible(false);
         Panel_Hierarchical.setVisible(true);
         Panel_Table.setVisible(false);
     }//GEN-LAST:event_View_HierarchicalActionPerformed
@@ -278,7 +295,6 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_View_TableActionPerformed
 
     private void Import_JSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_JSONActionPerformed
-    
         final JFileChooser fc = new JFileChooser();
         String[] ext_array = new String [] {"txt", "json"};
         String extensions = "";
@@ -301,7 +317,7 @@ public class MainForm extends javax.swing.JFrame {
             FileInputStream is = null;
             try 
             {
-                File file = fc.getSelectedFile();
+                file = fc.getSelectedFile();
                 is = new FileInputStream(file);
                 InputStreamReader isr = new InputStreamReader(is);
                 
@@ -341,6 +357,7 @@ public class MainForm extends javax.swing.JFrame {
                 
                 if (json_util.isValid(sb.toString()))
                 {
+                    Text_JSON.setText("");
                     Text_JSON.setText(sb.toString());
                 }
                 else
@@ -351,6 +368,48 @@ public class MainForm extends javax.swing.JFrame {
             
         } 
     }//GEN-LAST:event_Import_JSONActionPerformed
+
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        StringBuilder sb_validate = new StringBuilder();
+        sb_validate.append(Text_JSON.getText());
+        
+        if (json_util.isValid(sb_validate.toString()))
+        {
+            sb.setLength(0);
+            sb.append(sb_validate.toString());
+            
+            try 
+            {
+                BufferedWriter writer;
+                writer = new BufferedWriter(new FileWriter(file));
+                writer.write("");
+                writer.write(sb.toString());
+                writer.close();
+            }
+            catch (FileNotFoundException ex) 
+            {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            Text_JSON.setText("");
+            Text_JSON.setText(sb.toString());
+        }
+        else
+        {
+            Text_JSON.setText(null);
+            JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Error", JOptionPane.ERROR_MESSAGE);
+            Text_JSON.append(sb.toString());
+        }            
+    }//GEN-LAST:event_saveBtnActionPerformed
+
+    private void EditCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditCheckBoxActionPerformed
+        if(EditCheckBox.isSelected())
+            Text_JSON.setEditable(true);
+        else
+            Text_JSON.setEditable(false);
+    }//GEN-LAST:event_EditCheckBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -388,6 +447,7 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox EditCheckBox;
     private javax.swing.JMenuItem Import_JSON;
     private javax.swing.JMenu Menu_File;
     private javax.swing.JMenu Menu_Operations;
@@ -411,5 +471,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTree jTree1;
+    private javax.swing.JButton saveBtn;
     // End of variables declaration//GEN-END:variables
 }
