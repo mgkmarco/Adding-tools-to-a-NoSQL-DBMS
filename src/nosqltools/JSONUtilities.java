@@ -5,6 +5,7 @@
  */
 package nosqltools;
 
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,23 +15,25 @@ import static org.json.JSONObject.getNames;
  *
  * @author RebeccaKai
  */
-public class JSONUtilities {
+public class JSONUtilities 
+{
     
-    public JSONArray test = null;
-    public JSONObject test1 = null;
+    public JSONArray json_array = null;
+    public JSONObject json_obj = null;
     
     public boolean isValid(String json_data)
     {
         try 
         {
-            test1 = new JSONObject (json_data);
+            json_obj = new JSONObject (json_data);
+            json_array = null;
         } 
         catch (JSONException e) 
         {
             try 
             {
-               test = new JSONArray(json_data);
-                
+               json_array = new JSONArray(json_data);
+               json_obj = null;
             } 
             catch (JSONException ex1) 
             {
@@ -40,29 +43,35 @@ public class JSONUtilities {
         return true;
     }
     
-    public String [] getFields (String json_data)
+    public String [] getFields ()
     {
-        String [] names = null;
+        ArrayList <String> names = new ArrayList <> ();
         
-        
-        if (test != null)
+        if (json_array != null)
         {
-            for (int i = 0; i < test.length(); i++)
+            for (int i = 0; i < json_array.length(); i++)
             {
-                //JSONObject jobj = new JSONObject();
-                JSONObject jobj = (JSONObject) test.get(i);
-                names = getNames(jobj);
+                JSONObject jobj = json_array.getJSONObject(i);
+                String [] temp_names = getNames(jobj);
+                
+                for (String temp_name : temp_names) 
+                {
+                    if (!names.contains(temp_name))
+                        names.add(temp_name);
+                }
             }
+            
+            return names.toArray(new String[names.size()]);
         }
-        
-        
-//        if (test1 != null)
-//        {
-//            names = getNames(test1);
-//        }
-               
-        
-        return names;
+        else if (json_obj != null)
+        {
+            return getNames (json_obj);
+        }
+        else 
+        {
+            return new String [0];
+        }
+            
     }
     
 }

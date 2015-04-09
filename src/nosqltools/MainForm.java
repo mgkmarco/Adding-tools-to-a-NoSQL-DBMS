@@ -5,23 +5,13 @@
  */
 package nosqltools;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -288,7 +278,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(true);
         
-        String [] json_field_names = json_util.getFields(sb.toString());
+        String [] json_field_names = json_util.getFields();
         DefaultTableModel model = (DefaultTableModel)Table_JSON.getModel();
         Table_JSON.setModel(new javax.swing.table.DefaultTableModel(new Object [][] {}, json_field_names));
         
@@ -298,6 +288,7 @@ public class MainForm extends javax.swing.JFrame {
         final JFileChooser fc = new JFileChooser();
         String[] ext_array = new String [] {"txt", "json"};
         String extensions = "";
+        sb.setLength(0);
         
         for (int i = 0; i < ext_array.length; i++)
         {
@@ -311,7 +302,6 @@ public class MainForm extends javax.swing.JFrame {
         fc.setFileFilter(filter);
         
         int returnVal = fc.showOpenDialog(this);
-
         if (returnVal == JFileChooser.APPROVE_OPTION) 
         {
             FileInputStream is = null;
@@ -348,23 +338,22 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            }  
             
-                Panel_Text.setVisible(true);
-                Panel_Hierarchical.setVisible(false);
-                Panel_Table.setVisible(false);
-                
-                
-                if (json_util.isValid(sb.toString()))
-                {
-                    Text_JSON.setText("");
-                    Text_JSON.setText(sb.toString());
-                }
-                else
-                {
-                    sb.setLength(0);
-                    JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            Panel_Text.setVisible(true);
+            Panel_Hierarchical.setVisible(false);
+            Panel_Table.setVisible(false);
+                             
+            if (json_util.isValid(sb.toString()))
+            {
+                Text_JSON.setText("");
+                Text_JSON.setText(sb.toString());
+            }
+            else
+            {
+                sb.setLength(0);
+                JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Error", JOptionPane.ERROR_MESSAGE);
+            }
             
         } 
     }//GEN-LAST:event_Import_JSONActionPerformed
@@ -389,7 +378,9 @@ public class MainForm extends javax.swing.JFrame {
             catch (FileNotFoundException ex) 
             {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
+            } 
+            catch (IOException ex)
+            {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
             
