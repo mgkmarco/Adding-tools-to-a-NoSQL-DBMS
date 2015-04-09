@@ -7,11 +7,9 @@ package nosqltools;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -27,11 +25,10 @@ import javax.swing.table.DefaultTableModel;
 public class MainForm extends javax.swing.JFrame {
 
     
-    public JSONUtilities json_util = new JSONUtilities();
-    
+    private JSONUtilities json_util = new JSONUtilities();
+    private Utilities util = new Utilities();
     StringBuilder sb = new StringBuilder();
-    
-    public File file;
+    private File file;
     /**
      * Creates new form MainForm
      */
@@ -161,8 +158,8 @@ public class MainForm extends javax.swing.JFrame {
             Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TableLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(447, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 778, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(121, Short.MAX_VALUE))
         );
         Panel_TableLayout.setVerticalGroup(
             Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,65 +277,25 @@ public class MainForm extends javax.swing.JFrame {
         
         String [] json_field_names = json_util.getFields();
         DefaultTableModel model = (DefaultTableModel)Table_JSON.getModel();
-        Table_JSON.setModel(new javax.swing.table.DefaultTableModel(new Object [][] {}, json_field_names));
+        Table_JSON.setModel(new DefaultTableModel(new Object [][] {}, json_field_names));
         
     }//GEN-LAST:event_View_TableActionPerformed
 
     private void Import_JSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_JSONActionPerformed
         final JFileChooser fc = new JFileChooser();
-        String[] ext_array = new String [] {"txt", "json"};
-        String extensions = "";
+        String [] ext_array = new String [] {"txt", "json"};
+        String ext = util.formatExtentsions(ext_array);
+        
         sb.setLength(0);
-        
-        for (int i = 0; i < ext_array.length; i++)
-        {
-            extensions += "*." + ext_array[i];
-            if (i != ext_array.length - 1)
-                extensions += ", ";
-                            
-        }
-        
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt, *.json)", ext_array);
+                
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (" + ext + ")", ext_array);
         fc.setFileFilter(filter);
         
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) 
         {
-            FileInputStream is = null;
-            try 
-            {
-                file = fc.getSelectedFile();
-                is = new FileInputStream(file);
-                InputStreamReader isr = new InputStreamReader(is);
-                
-                int i;
-                char c;
-                
-                while((i = isr.read()) != -1)
-                {
-                    c = (char) i;
-                    sb.append(c);
-                }     
-            }
-            catch (FileNotFoundException ex) 
-            {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-            } 
-            catch (IOException ex)
-            {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-            } 
-            finally 
-            {
-                try 
-                {
-                    is.close();
-                } 
-                catch (IOException ex) 
-                {
-                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }  
+            file = fc.getSelectedFile();
+            sb.append(util.readFromFile(file));
             
             Panel_Text.setVisible(true);
             Panel_Hierarchical.setVisible(false);
