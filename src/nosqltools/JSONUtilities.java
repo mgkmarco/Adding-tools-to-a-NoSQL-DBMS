@@ -45,21 +45,21 @@ public class JSONUtilities {
         String [] names = null;
         
         
-        
-//        if (test != null)
-//        {
-//            for (int i = 0; i < test.length(); i++)
-//            {
-//                JSONObject jobj = new JSONObject();
-//                names = getNames(jobj);
-//            }
-//        }
-//        
-        
-        if (test1 != null)
+        if (test != null)
         {
-            names = getNames(test1);
+            for (int i = 0; i < test.length(); i++)
+            {
+                //JSONObject jobj = new JSONObject();
+                JSONObject jobj = (JSONObject) test.get(i);
+                names = getNames(jobj);
+            }
         }
+        
+        
+//        if (test1 != null)
+//        {
+//            names = getNames(test1);
+//        }
                
         
         return names;
