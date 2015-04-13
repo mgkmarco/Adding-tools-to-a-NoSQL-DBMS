@@ -25,10 +25,10 @@ import javax.swing.table.DefaultTableModel;
 public class MainForm extends javax.swing.JFrame {
 
     
-    private JSONUtilities json_util = new JSONUtilities();
-    private Utilities util = new Utilities();
+    private final JSONUtilities json_util = new JSONUtilities();
+    private final Utilities util = new Utilities();
     StringBuilder sb = new StringBuilder();
-    private File file;
+    private File file = null;
     /**
      * Creates new form MainForm
      */
@@ -59,15 +59,17 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         Text_JSON = new javax.swing.JTextArea();
         EditCheckBox = new javax.swing.JCheckBox();
-        saveBtn = new javax.swing.JButton();
         Panel_Hierarchical = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTreeHierarchicalJson = new javax.swing.JTree();
         Panel_Table = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         Table_JSON = new javax.swing.JTable();
+        Text_MessageBar = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu_File = new javax.swing.JMenu();
         Import_JSON = new javax.swing.JMenuItem();
+        Save = new javax.swing.JMenuItem();
         Menu_Views = new javax.swing.JMenu();
         View_Text = new javax.swing.JMenuItem();
         View_Hierarchical = new javax.swing.JMenuItem();
@@ -87,7 +89,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Connections.setLayout(Panel_ConnectionsLayout);
         Panel_ConnectionsLayout.setHorizontalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
         );
         Panel_ConnectionsLayout.setVerticalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,7 +104,9 @@ public class MainForm extends javax.swing.JFrame {
         Text_JSON.setRows(5);
         jScrollPane1.setViewportView(Text_JSON);
 
-        Panel_Text.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 28, 907, 510));
+        jScrollPane1.setSize(Panel_Text.getSize());
+
+        Panel_Text.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 1200, 630));
 
         EditCheckBox.setText("Editable");
         EditCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -110,34 +114,24 @@ public class MainForm extends javax.swing.JFrame {
                 EditCheckBoxActionPerformed(evt);
             }
         });
-        Panel_Text.add(EditCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(848, 0, -1, -1));
+        Panel_Text.add(EditCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 0, -1, -1));
 
-        saveBtn.setText("Save");
-        saveBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveBtnActionPerformed(evt);
-            }
-        });
-        Panel_Text.add(saveBtn, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, -1, -1));
-
-        jButton2.setText("jButton2");
+        jScrollPane4.setViewportView(jTreeHierarchicalJson);
 
         javax.swing.GroupLayout Panel_HierarchicalLayout = new javax.swing.GroupLayout(Panel_Hierarchical);
         Panel_Hierarchical.setLayout(Panel_HierarchicalLayout);
         Panel_HierarchicalLayout.setHorizontalGroup(
             Panel_HierarchicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, Panel_HierarchicalLayout.createSequentialGroup()
-                .addContainerGap(670, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(174, 174, 174))
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1344, Short.MAX_VALUE)
         );
         Panel_HierarchicalLayout.setVerticalGroup(
             Panel_HierarchicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_HierarchicalLayout.createSequentialGroup()
-                .addGap(149, 149, 149)
-                .addComponent(jButton2)
-                .addContainerGap(366, Short.MAX_VALUE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 27, Short.MAX_VALUE))
         );
+
+        jScrollPane3.setSize(Panel_Table.getSize());
 
         Table_JSON.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -151,22 +145,21 @@ public class MainForm extends javax.swing.JFrame {
             }
         ));
         jScrollPane3.setViewportView(Table_JSON);
+        Table_JSON.setSize(Panel_Table.getSize());
 
         javax.swing.GroupLayout Panel_TableLayout = new javax.swing.GroupLayout(Panel_Table);
         Panel_Table.setLayout(Panel_TableLayout);
         Panel_TableLayout.setHorizontalGroup(
             Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TableLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 778, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(121, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 124, Short.MAX_VALUE))
         );
         Panel_TableLayout.setVerticalGroup(
             Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TableLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout Panel_ViewsLayout = new javax.swing.GroupLayout(Panel_Views);
@@ -181,14 +174,27 @@ public class MainForm extends javax.swing.JFrame {
         );
         Panel_ViewsLayout.setVerticalGroup(
             Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Panel_Text, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(Panel_Text, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 562, Short.MAX_VALUE)
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(Panel_Hierarchical, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(Panel_Table, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        Panel_Text.setSize(Panel_Views.getSize());
+        Panel_Hierarchical.setSize(Panel_Views.getSize());
+        Panel_Table.setSize(Panel_Views.getSize());
+
         jSplitPane1.setRightComponent(Panel_Views);
+
+        Text_MessageBar.setEditable(false);
+        Text_MessageBar.setForeground(new java.awt.Color(255, 0, 0));
+        Text_MessageBar.setText("This is the message Bar");
+        Text_MessageBar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Text_MessageBarActionPerformed(evt);
+            }
+        });
 
         Menu_File.setText("File");
         Menu_File.setName(""); // NOI18N
@@ -200,6 +206,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         Menu_File.add(Import_JSON);
+
+        Save.setText("Save");
+        Save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SaveActionPerformed(evt);
+            }
+        });
+        Menu_File.add(Save);
 
         jMenuBar1.add(Menu_File);
 
@@ -247,11 +261,15 @@ public class MainForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 967, Short.MAX_VALUE)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(Text_MessageBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1500, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 538, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Text_MessageBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -267,6 +285,17 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Text.setVisible(false);
         Panel_Hierarchical.setVisible(true);
         Panel_Table.setVisible(false);
+        
+        if(file == null)
+        {
+            jTreeHierarchicalJson.setVisible(false);
+            JOptionPane.showMessageDialog(null, "No file was chosen","Error",JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+            jTreeHierarchicalJson.setVisible(true);
+            jTreeHierarchicalJson.setModel(json_util.jsonTree(file.getName()));
+        }
     }//GEN-LAST:event_View_HierarchicalActionPerformed
 
     private void View_TableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_TableActionPerformed
@@ -276,8 +305,9 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Table.setVisible(true);
         
         String [] json_field_names = json_util.getFields();
+        String [][] json_row_data = json_util.getRows(json_field_names);
         DefaultTableModel model = (DefaultTableModel)Table_JSON.getModel();
-        Table_JSON.setModel(new DefaultTableModel(new Object [][] {}, json_field_names));
+        Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
         
     }//GEN-LAST:event_View_TableActionPerformed
 
@@ -285,7 +315,7 @@ public class MainForm extends javax.swing.JFrame {
         final JFileChooser fc = new JFileChooser();
         String [] ext_array = new String [] {"txt", "json"};
         String ext = util.formatExtentsions(ext_array);
-        
+        file = null;        
         sb.setLength(0);
                 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (" + ext + ")", ext_array);
@@ -305,32 +335,34 @@ public class MainForm extends javax.swing.JFrame {
             {
                 Text_JSON.setText("");
                 Text_JSON.setText(sb.toString());
+                Text_MessageBar.setText("JSON File has been loaded successfully");
             }
             else
             {
                 sb.setLength(0);
-                JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Validation Error", JOptionPane.ERROR_MESSAGE);
             }
             
         } 
     }//GEN-LAST:event_Import_JSONActionPerformed
 
-    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-        StringBuilder sb_validate = new StringBuilder();
-        sb_validate.append(Text_JSON.getText());
+    private void EditCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditCheckBoxActionPerformed
+        if(EditCheckBox.isSelected())
+            Text_JSON.setEditable(true);
+        else
+            Text_JSON.setEditable(false);
+    }//GEN-LAST:event_EditCheckBoxActionPerformed
+
+    private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
         
-        if (json_util.isValid(sb_validate.toString()))
+        if (json_util.isValid(Text_JSON.getText()))
         {
-            sb.setLength(0);
-            sb.append(sb_validate.toString());
-            
             try 
             {
-                BufferedWriter writer;
-                writer = new BufferedWriter(new FileWriter(file));
-                writer.write("");
-                writer.write(sb.toString());
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                writer.write(Text_JSON.getText());
                 writer.close();
+                Text_MessageBar.setText("JSON File has been saved successfully");
             }
             catch (FileNotFoundException ex) 
             {
@@ -340,24 +372,16 @@ public class MainForm extends javax.swing.JFrame {
             {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            Text_JSON.setText("");
-            Text_JSON.setText(sb.toString());
         }
         else
         {
-            Text_JSON.setText(null);
-            JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Error", JOptionPane.ERROR_MESSAGE);
-            Text_JSON.append(sb.toString());
-        }            
-    }//GEN-LAST:event_saveBtnActionPerformed
+            JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Error", JOptionPane.ERROR_MESSAGE);          
+        }      
+    }//GEN-LAST:event_SaveActionPerformed
 
-    private void EditCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditCheckBoxActionPerformed
-        if(EditCheckBox.isSelected())
-            Text_JSON.setEditable(true);
-        else
-            Text_JSON.setEditable(false);
-    }//GEN-LAST:event_EditCheckBoxActionPerformed
+    private void Text_MessageBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_MessageBarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Text_MessageBarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -407,18 +431,20 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel Panel_Table;
     private javax.swing.JPanel Panel_Text;
     private javax.swing.JPanel Panel_Views;
+    private javax.swing.JMenuItem Save;
     private javax.swing.JTable Table_JSON;
     private javax.swing.JTextArea Text_JSON;
+    private javax.swing.JTextField Text_MessageBar;
     private javax.swing.JMenuItem View_Hierarchical;
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
-    private javax.swing.JButton jButton2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTree jTree1;
-    private javax.swing.JButton saveBtn;
+    private javax.swing.JTree jTreeHierarchicalJson;
     // End of variables declaration//GEN-END:variables
 }
