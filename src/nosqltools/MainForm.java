@@ -12,11 +12,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 /**
  *
@@ -295,6 +297,7 @@ public class MainForm extends javax.swing.JFrame {
         {
             jTreeHierarchicalJson.setVisible(true);
             jTreeHierarchicalJson.setModel(json_util.jsonTree(file.getName()));
+            setImageIcon();
         }
     }//GEN-LAST:event_View_HierarchicalActionPerformed
 
@@ -383,6 +386,32 @@ public class MainForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_Text_MessageBarActionPerformed
 
+    public void setImageIcon()
+    {
+        ImageIcon leafIcon = createImageIcon("resources/json_node.png");
+
+        if (leafIcon != null) 
+        {
+            DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+            renderer.setLeafIcon(leafIcon);
+           jTreeHierarchicalJson.setCellRenderer(renderer);
+        }
+    }
+    
+     private ImageIcon createImageIcon(String path) 
+     {
+        java.net.URL imgUrl = getClass().getResource(path);
+        if (imgUrl != null) 
+        {
+            return new ImageIcon(imgUrl);
+        } 
+        else 
+        {
+            Text_MessageBar.setText("Leaf icon file specified does not exist");
+            return null;
+        }        
+     }
+    
     /**
      * @param args the command line arguments
      */
@@ -445,6 +474,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTree jTree1;
-    private javax.swing.JTree jTreeHierarchicalJson;
+    public javax.swing.JTree jTreeHierarchicalJson;
     // End of variables declaration//GEN-END:variables
 }

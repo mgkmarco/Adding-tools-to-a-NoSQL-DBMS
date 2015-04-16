@@ -141,6 +141,7 @@ public class JSONUtilities
                 {
                     childNode = jobj.optString(fields[val]);
                     DefaultMutableTreeNode child2 = new DefaultMutableTreeNode(fields[val] + ": " + childNode);
+                 
                     dt.insertNodeInto(child2, child, val);
                 }
             }
