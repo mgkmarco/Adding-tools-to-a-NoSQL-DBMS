@@ -19,6 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import org.fife.ui.rtextarea.*;
+import org.fife.ui.rsyntaxtextarea.*;
 
 /**
  *
@@ -31,16 +33,25 @@ public class MainForm extends javax.swing.JFrame {
     private final Utilities util = new Utilities();
     StringBuilder sb = new StringBuilder();
     private File file = null;
+    RSyntaxTextArea textArea;
+    
     /**
      * Creates new form MainForm
      */
     public MainForm() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        textArea = new RSyntaxTextArea(20, 60);
+        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
+        textArea.setCodeFoldingEnabled(true);
+        textArea.setAntiAliasingEnabled(true);
+        RTextScrollPane sp = new RTextScrollPane(textArea);
+        sp.setFoldIndicatorEnabled(true);
+        Panel_Text.add(sp);
+        
         Panel_Text.setVisible(false);
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(false);
-        Text_JSON.setEditable(false);
     }
 
     /**
@@ -58,9 +69,6 @@ public class MainForm extends javax.swing.JFrame {
         jTree1 = new javax.swing.JTree();
         Panel_Views = new javax.swing.JPanel();
         Panel_Text = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        Text_JSON = new javax.swing.JTextArea();
-        EditCheckBox = new javax.swing.JCheckBox();
         Panel_Hierarchical = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTreeHierarchicalJson = new javax.swing.JTree();
@@ -100,23 +108,7 @@ public class MainForm extends javax.swing.JFrame {
 
         jSplitPane1.setLeftComponent(Panel_Connections);
 
-        Panel_Text.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        Text_JSON.setColumns(20);
-        Text_JSON.setRows(5);
-        jScrollPane1.setViewportView(Text_JSON);
-
-        jScrollPane1.setSize(Panel_Text.getSize());
-
-        Panel_Text.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 20, 1200, 630));
-
-        EditCheckBox.setText("Editable");
-        EditCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditCheckBoxActionPerformed(evt);
-            }
-        });
-        Panel_Text.add(EditCheckBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 0, -1, -1));
+        Panel_Text.setLayout(new java.awt.BorderLayout());
 
         jScrollPane4.setViewportView(jTreeHierarchicalJson);
 
@@ -130,7 +122,7 @@ public class MainForm extends javax.swing.JFrame {
             Panel_HierarchicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_HierarchicalLayout.createSequentialGroup()
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 27, Short.MAX_VALUE))
+                .addGap(0, 1, Short.MAX_VALUE))
         );
 
         jScrollPane3.setSize(Panel_Table.getSize());
@@ -160,7 +152,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_TableLayout.setVerticalGroup(
             Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Panel_TableLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -176,14 +168,13 @@ public class MainForm extends javax.swing.JFrame {
         );
         Panel_ViewsLayout.setVerticalGroup(
             Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Panel_Text, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 562, Short.MAX_VALUE)
+            .addComponent(Panel_Text, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(Panel_Hierarchical, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(Panel_Table, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        Panel_Text.setSize(Panel_Views.getSize());
         Panel_Hierarchical.setSize(Panel_Views.getSize());
         Panel_Table.setSize(Panel_Views.getSize());
 
@@ -269,7 +260,7 @@ public class MainForm extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 538, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Text_MessageBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -336,8 +327,8 @@ public class MainForm extends javax.swing.JFrame {
                              
             if (json_util.isValid(sb.toString()))
             {
-                Text_JSON.setText("");
-                Text_JSON.setText(sb.toString());
+                textArea.setText("");
+                textArea.setText(sb.toString());
                 Text_MessageBar.setText("JSON File has been loaded successfully");
             }
             else
@@ -345,25 +336,17 @@ public class MainForm extends javax.swing.JFrame {
                 sb.setLength(0);
                 JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Validation Error", JOptionPane.ERROR_MESSAGE);
             }
-            
         } 
     }//GEN-LAST:event_Import_JSONActionPerformed
 
-    private void EditCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditCheckBoxActionPerformed
-        if(EditCheckBox.isSelected())
-            Text_JSON.setEditable(true);
-        else
-            Text_JSON.setEditable(false);
-    }//GEN-LAST:event_EditCheckBoxActionPerformed
-
     private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
         
-        if (json_util.isValid(Text_JSON.getText()))
+        if (json_util.isValid(textArea.getText()))
         {
             try 
             {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                writer.write(Text_JSON.getText());
+                writer.write(textArea.getText());
                 writer.close();
                 Text_MessageBar.setText("JSON File has been saved successfully");
             }
@@ -448,7 +431,6 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox EditCheckBox;
     private javax.swing.JMenuItem Import_JSON;
     private javax.swing.JMenu Menu_File;
     private javax.swing.JMenu Menu_Operations;
@@ -462,13 +444,11 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel Panel_Views;
     private javax.swing.JMenuItem Save;
     private javax.swing.JTable Table_JSON;
-    private javax.swing.JTextArea Text_JSON;
     private javax.swing.JTextField Text_MessageBar;
     private javax.swing.JMenuItem View_Hierarchical;
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
