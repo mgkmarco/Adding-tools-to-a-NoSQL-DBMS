@@ -159,4 +159,20 @@ public class JSONUtilities
         }
         return dt;
     }
+    
+    public String compareResult(String text1, String text2)
+    {
+     String c_result = "";
+     //check if both text area 1 and text area 2 are the same
+     if (text1.equals(text2))
+     {
+         c_result = "Compare result: There is no difference";
+     }
+     //find the differences and output them 
+     else
+     {
+         c_result = "Compare result: There are some differences";
+     }
+     return c_result;
+    }
 }
