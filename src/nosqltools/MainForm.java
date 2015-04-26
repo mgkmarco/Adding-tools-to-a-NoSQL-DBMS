@@ -351,13 +351,13 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Hierarchical.setVisible(true);
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(false);
-
+        
         if (file == null) {
             jTreeHierarchicalJson.setVisible(false);
             JOptionPane.showMessageDialog(null, "No file was chosen", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             jTreeHierarchicalJson.setVisible(true);
-            jTreeHierarchicalJson.setModel(json_util.jsonTree(file.getName()));
+            jTreeHierarchicalJson.setModel(json_util.makeJtreeModel(file.getName()));
             setImageIcon();
         }
     }//GEN-LAST:event_View_HierarchicalActionPerformed
@@ -390,7 +390,7 @@ public class MainForm extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             file = fc.getSelectedFile();
             sb.append(util.readFromFile(file));
-
+                        
             Panel_Text.setVisible(true);
             Panel_Hierarchical.setVisible(false);
             Panel_Table.setVisible(false);
@@ -398,6 +398,8 @@ public class MainForm extends javax.swing.JFrame {
             if (json_util.isValid(sb.toString())) {
                 textArea.setText("");
                 textArea.setText(sb.toString());
+                
+                json_util.isDataParsed(textArea.getText());
                 Text_MessageBar.setText("JSON File has been loaded successfully");
             } else {
                 sb.setLength(0);

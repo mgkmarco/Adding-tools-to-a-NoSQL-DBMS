@@ -5,6 +5,14 @@
  */
 package nosqltools;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.ArrayList;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -21,6 +29,7 @@ public class JSONUtilities
 {
     public JSONArray json_array = null;
     public JSONObject json_obj = null;
+    public JsonNode JSONParsedData;
 
     public boolean isValid(String json_data) 
     {
@@ -43,7 +52,64 @@ public class JSONUtilities
         }
         return true;
     }
+    
+    private DefaultMutableTreeNode makeJtree(String name, JsonNode node) 
+    {
+       DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(name);
+       Iterator <Entry <String,JsonNode>> iterator = node.fields();
 
+       while (iterator.hasNext()) 
+       {
+           Entry <String, JsonNode> entry = iterator.next();
+           treeNode.add(makeJtree(entry.getKey() + " : " + entry.getValue(), entry.getValue()));   
+           //treeNode.add(traverse(entry.getKey(), entry.getValue()));
+       }
+
+       if (node.isArray()) 
+       {
+           for (int i = 0; i < node.size(); i++)
+           {
+               JsonNode child = node.get(i);
+
+               if (child.isValueNode())
+                   treeNode.add(new DefaultMutableTreeNode(child.asText()));
+               else
+                   treeNode.add(makeJtree(String.format("Node %d", i), child));
+           }
+       } 
+
+       return treeNode;
+   }
+    
+    public DefaultTreeModel makeJtreeModel(String filename) 
+    {
+        DefaultMutableTreeNode root = makeJtree(filename, JSONParsedData);
+        DefaultTreeModel dt = new DefaultTreeModel(root);
+        
+        return dt;
+    }
+     
+    public boolean isDataParsed(String json_data) 
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        try 
+        {
+            //use the object mapper to read the json string and create a tree
+            JSONParsedData = mapper.readTree(json_data);
+            return true;
+        } 
+        catch (JsonParseException | JsonGenerationException | JsonMappingException e) 
+        {
+            e.printStackTrace();
+        } 
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+           
+        return false;
+    }
+    
     public String[] getFields() 
     {
         ArrayList<String> names = new ArrayList<>();
@@ -118,6 +184,7 @@ public class JSONUtilities
 
     }
 
+    /*
     public DefaultTreeModel jsonTree(String filename) 
     {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(filename);
@@ -127,6 +194,7 @@ public class JSONUtilities
         String[][] objectNodes = null;
         String[] fields;
 
+        /*
         if (json_array != null) 
         {
             objectNodes = new String[json_array.length()][getFields().length];
@@ -157,22 +225,30 @@ public class JSONUtilities
                 dt.insertNodeInto(child, root, i);
             }
         }
-        return dt;
+             
+        
+         for (int i = 0; i < JSONParsedData.size(); i++)
+        {
+            newNode(JSONParsedData.get(i));
+        }
+                
+        return dt; 
     }
-    
+    */ 
+     
     public String compareResult(String text1, String text2)
     {
      String c_result = "";
-     //check if both text area 1 and text area 2 are the same
-     if (text1.equals(text2))
-     {
-         c_result = "Compare result: There is no difference";
-     }
-     //find the differences and output them 
-     else
-     {
-         c_result = "Compare result: There are some differences";
-     }
-     return c_result;
+        //check if both text area 1 and text area 2 are the same
+        if (text1.equals(text2))
+        {
+            c_result = "Compare result: There is no difference";
+        }
+        //find the differences and output them 
+        else
+        {
+            c_result = "Compare result: There are some differences";
+        }
+        return c_result;
     }
 }
