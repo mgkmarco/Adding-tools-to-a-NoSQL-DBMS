@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
 import org.fife.ui.rtextarea.*;
 import org.fife.ui.rsyntaxtextarea.*;
 import org.json.simple.parser.JSONParser;
@@ -36,13 +37,15 @@ public class MainForm extends javax.swing.JFrame {
     private File file = null;
     RSyntaxTextArea textArea;
     JSONParser parser = new JSONParser();
+    DBConnection dbcon = new DBConnection();
 
     /**
      * Creates new form MainForm
      */
-    public MainForm() {
+    public MainForm() {     
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         textArea = new RSyntaxTextArea(20, 60);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
         textArea.setCodeFoldingEnabled(true);
@@ -51,11 +54,30 @@ public class MainForm extends javax.swing.JFrame {
         sp.setFoldIndicatorEnabled(true);
         Panel_Text.add(sp);
         Save.setEnabled(false);
-        
+
         Panel_Text.setVisible(false);
         Panel_Table.setVisible(false);
         Panel_Hierarchical.setVisible(false);
         Panel_Compare.setVisible(false);
+        
+        if (dbcon.connect())
+        {
+            DefaultTreeModel defTableMod = dbcon.buildDBTree();
+            if (defTableMod != null && dbcon.isConnectionSuccess())
+            {
+                Text_MessageBar.setText("Connection to MongoDB has been successful");
+            }
+            else
+            {
+                Text_MessageBar.setText("Connection to MongoDB has failed. Please try again.");
+            }
+            
+            jTree1.setModel(defTableMod);
+        }
+        else
+        {
+            Text_MessageBar.setText("Connection to MongoDB has failed. Please try again.");
+        }
     }
 
     /**
