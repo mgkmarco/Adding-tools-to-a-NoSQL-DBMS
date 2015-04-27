@@ -70,18 +70,18 @@ public class MainForm extends javax.swing.JFrame {
             DefaultTreeModel defTableMod = dbcon.buildDBTree();
             if (defTableMod != null && dbcon.isConnectionSuccess())
             {
-                Text_MessageBar.setText("Connection to MongoDB has been successful");
+                Text_MessageBar.setText(Inititalizations.DBCONNSUCCESS);
             }
             else
             {
-                Text_MessageBar.setText("Connection to MongoDB has failed. Please try again.");
+                Text_MessageBar.setText(Inititalizations.DBCONNFAIL);
             }
             
             jTree1.setModel(defTableMod);
         }
         else
         {
-            Text_MessageBar.setText("Connection to MongoDB has failed. Please try again.");
+            Text_MessageBar.setText(Inititalizations.DBCONNFAIL);
         }
     }
 
@@ -176,11 +176,10 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Compare.setLayout(new java.awt.BorderLayout());
 
         ComparePane.setResizeWeight(0.5);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("nosqltools/Bundle"); // NOI18N
-        ComparePane.setToolTipText(bundle.getString("MainForm.ComparePane.toolTipText")); // NOI18N
+        ComparePane.setToolTipText("");
         Panel_Compare.add(ComparePane, java.awt.BorderLayout.CENTER);
 
-        Compare_Button.setText(bundle.getString("MainForm.Compare_Button.text")); // NOI18N
+        Compare_Button.setText("Compare");
         Compare_Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Compare_ButtonActionPerformed(evt);
@@ -230,17 +229,17 @@ public class MainForm extends javax.swing.JFrame {
 
         Text_MessageBar.setEditable(false);
         Text_MessageBar.setForeground(new java.awt.Color(255, 0, 0));
-        Text_MessageBar.setText(bundle.getString("MainForm.Text_MessageBar.text")); // NOI18N
+        Text_MessageBar.setText("This is the message Bar");
         Text_MessageBar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Text_MessageBarActionPerformed(evt);
             }
         });
 
-        Menu_File.setText(bundle.getString("MainForm.Menu_File.text")); // NOI18N
+        Menu_File.setText("File");
         Menu_File.setName(""); // NOI18N
 
-        Import_JSON.setText(bundle.getString("MainForm.Import_JSON.text")); // NOI18N
+        Import_JSON.setText("Import JSON file");
         Import_JSON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Import_JSONActionPerformed(evt);
@@ -248,7 +247,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_File.add(Import_JSON);
 
-        Save.setText(bundle.getString("MainForm.Save.text")); // NOI18N
+        Save.setText("Save");
         Save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SaveActionPerformed(evt);
@@ -258,9 +257,9 @@ public class MainForm extends javax.swing.JFrame {
 
         jMenuBar1.add(Menu_File);
 
-        Menu_Views.setText(bundle.getString("MainForm.Menu_Views.text")); // NOI18N
+        Menu_Views.setText("Views");
 
-        View_Text.setText(bundle.getString("MainForm.View_Text.text")); // NOI18N
+        View_Text.setText("Text");
         View_Text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 View_TextActionPerformed(evt);
@@ -268,7 +267,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_Views.add(View_Text);
 
-        View_Hierarchical.setText(bundle.getString("MainForm.View_Hierarchical.text")); // NOI18N
+        View_Hierarchical.setText("Hierarchical");
         View_Hierarchical.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 View_HierarchicalActionPerformed(evt);
@@ -276,7 +275,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_Views.add(View_Hierarchical);
 
-        View_Table.setText(bundle.getString("MainForm.View_Table.text")); // NOI18N
+        View_Table.setText("Table");
         View_Table.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 View_TableActionPerformed(evt);
@@ -286,9 +285,9 @@ public class MainForm extends javax.swing.JFrame {
 
         jMenuBar1.add(Menu_Views);
 
-        Menu_Operations.setText(bundle.getString("MainForm.Menu_Operations.text")); // NOI18N
+        Menu_Operations.setText("Operations");
 
-        Op_Compare.setText(bundle.getString("MainForm.Op_Compare.text")); // NOI18N
+        Op_Compare.setText("Compare");
         Op_Compare.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Op_CompareActionPerformed(evt);
@@ -296,7 +295,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_Operations.add(Op_Compare);
 
-        Op_Validate.setText(bundle.getString("MainForm.Op_Validate.text")); // NOI18N
+        Op_Validate.setText("Validate");
         Menu_Operations.add(Op_Validate);
 
         jMenuBar1.add(Menu_Operations);
@@ -336,7 +335,7 @@ public class MainForm extends javax.swing.JFrame {
         
         if (file == null) {
             jTreeHierarchicalJson.setVisible(false);
-            JOptionPane.showMessageDialog(null, "No file was chosen", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, Inititalizations.NOFILECHOSEN, Inititalizations.ERRROR, JOptionPane.ERROR_MESSAGE);
         } else {
             jTreeHierarchicalJson.setVisible(true);
             jTreeHierarchicalJson.setModel(json_util.makeJtreeModel(file.getName()));
@@ -360,7 +359,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void Import_JSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_JSONActionPerformed
         final JFileChooser fc = new JFileChooser();
-        String[] ext_array = new String[]{"txt", "json"};
+        String[] ext_array = new String[]{Inititalizations.TXT, Inititalizations.JSON};
         String ext = util.formatExtentsions(ext_array);
         file = null;
         sb.setLength(0);
@@ -379,17 +378,17 @@ public class MainForm extends javax.swing.JFrame {
             Panel_Hierarchical.setVisible(false);
             Panel_Table.setVisible(false);
 
-            textArea.setText("");
+            textArea.setText(Inititalizations.INITSTRING);
             textArea.setText(sb.toString());
             if (json_util.isValid(sb.toString())) 
             {
                 json_util.isDataParsed(textArea.getText());
-                Text_MessageBar.setText("JSON File has been loaded successfully");
+                Text_MessageBar.setText(Inititalizations.JSONFILESUCCESS);
             } 
             else 
             {
                 sb.setLength(0);
-                JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Validation Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, Inititalizations.JSONINCORRECTFORMAT , Inititalizations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
            
                 try
                 {
@@ -397,7 +396,7 @@ public class MainForm extends javax.swing.JFrame {
                 }
                 catch(org.json.simple.parser.ParseException pe)
                 {
-                   Text_MessageBar.setText("Error on line: " + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                   Text_MessageBar.setText(Inititalizations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
                 }
             }
         }
@@ -414,7 +413,7 @@ public class MainForm extends javax.swing.JFrame {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
                 writer.write(textArea.getText());
                 writer.close();
-                Text_MessageBar.setText("JSON File has been saved successfully");
+                Text_MessageBar.setText(Inititalizations.JSONSAVESUCCESS);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -423,7 +422,7 @@ public class MainForm extends javax.swing.JFrame {
         }
         catch(org.json.simple.parser.ParseException pe)
         {
-           Text_MessageBar.setText("Error in line: " + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+           Text_MessageBar.setText(Inititalizations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
         }
     }//GEN-LAST:event_SaveActionPerformed
 
@@ -462,7 +461,7 @@ public class MainForm extends javax.swing.JFrame {
         //validate both text areas 
         if (json_util.isValid(textArea1Comp.getText()) && json_util.isValid(textArea2Comp.getText())) 
         {
-            Text_MessageBar.setText("JSON in has been loaded successfully... compare is starting");
+            Text_MessageBar.setText(Inititalizations.JSONFILESUCCESS + Inititalizations.COMPARESTART);
             //call compare_result method found in JSONUtilitites
             try
             {
@@ -476,13 +475,13 @@ public class MainForm extends javax.swing.JFrame {
                 
                 if (jNodeCompRes == null)
                 {
-                    Text_MessageBar.setText("Compare failed"); 
-                    Compare_ResultText.setText("Compare between an object and an array is not possible!");
+                    Text_MessageBar.setText(Inititalizations.COMPAREFAIL); 
+                    Compare_ResultText.setText(Inititalizations.COMPOBJARRERR);
                 }
                 else
                 {
                     //Compare_ResultText.setText(jNodeCompRes.toString());
-                    Compare_ResultText.setText("Summary: " + json_util.printDiff(jNodeCompRes));
+                    Compare_ResultText.setText(Inititalizations.SUMMARY + json_util.printDiff(jNodeCompRes));
                 }    
             }
             catch (IOException e)
@@ -495,8 +494,8 @@ public class MainForm extends javax.swing.JFrame {
         } 
         else 
         {
-            JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Validation Error", JOptionPane.ERROR_MESSAGE);
-            Text_MessageBar.setText("Compare failed");
+            JOptionPane.showMessageDialog(this, Inititalizations.JSONINCORRECTFORMAT, Inititalizations.VALIDATIONERROR, JOptionPane.ERROR_MESSAGE);
+            Text_MessageBar.setText(Inititalizations.COMPAREFAIL);
         }
     }//GEN-LAST:event_Compare_ButtonActionPerformed
 
@@ -515,7 +514,7 @@ public class MainForm extends javax.swing.JFrame {
         if (imgUrl != null) {
             return new ImageIcon(imgUrl);
         } else {
-            Text_MessageBar.setText("Leaf icon file specified does not exist");
+            Text_MessageBar.setText(Inititalizations.LEAFICON);
             return null;
         }
     }
