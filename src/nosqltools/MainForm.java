@@ -41,11 +41,8 @@ public class MainForm extends javax.swing.JFrame {
     RSyntaxTextArea textArea1Comp;
     RSyntaxTextArea textArea2Comp;
     JSONParser parser = new JSONParser();
-<<<<<<< HEAD
     ObjectMapper mapper = new ObjectMapper();
-=======
     DBConnection dbcon = new DBConnection();
->>>>>>> origin/master
 
     /**
      * Creates new form MainForm
