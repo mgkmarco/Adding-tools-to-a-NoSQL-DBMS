@@ -10,6 +10,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.github.fge.jsonpatch.JsonDiff;
+import java.util.List;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -235,22 +238,6 @@ public class JSONUtilities
         return dt; 
     }
     */ 
-     
-    public String compareResult(String text1, String text2)
-    {
-     String c_result = "";
-        //check if both text area 1 and text area 2 are the same
-        if (text1.equals(text2))
-        {
-            c_result = "Compare result: There is no difference";
-        }
-        //find the differences and output them 
-        else
-        {
-            c_result = "Compare result: There are some differences";
-        }
-        return c_result;
-    }
     
     public int getLineNumber(int pos, String x)
     {
@@ -270,5 +257,45 @@ public class JSONUtilities
         }
         
         return lineCounter;
+    }
+    
+    //this method will be used to compare two json nodes
+    public JsonNode compareResult(JsonNode jNode1, JsonNode jNode2)
+    {
+        JsonNode jNodeRes = null;
+        //check that the comparison will be performed between two objects or two arrays
+        if ((jNode1.isObject() && jNode2.isObject())||(jNode1.isArray()&&jNode2.isArray()))
+        {
+            //get result and store it in Json node
+            jNodeRes = JsonDiff.asJson(jNode1, jNode2);
+        }        
+        
+        return jNodeRes;
+    }
+    //this method will print the differences from the left text area and right text area.
+    public String printDiff(JsonNode resCompNode)
+    {
+        String opType = "";
+        String path = "";
+        String value = "";
+        Iterator<JsonNode> elements = null;
+        
+        ArrayNode opNodes = (ArrayNode) resCompNode;
+        List<String> res = new ArrayList<String>();
+        elements = opNodes.elements();
+        while (elements.hasNext())
+        {
+                JsonNode opNode = elements.next();	
+                opType = opNode.get("op").textValue();
+                path = opNode.get("path").textValue().substring(1);
+                if (!opType.equals("remove")){
+                    //the value is not shown the the operation is removed because of null pointer exception 
+                    value = ": " + opNode.get("value").textValue();
+                }
+                
+                res.add(opType + " operation -> "+ path + value);
+        }
+
+        return res.toString();
     }
 }

@@ -5,6 +5,8 @@
  */
 package nosqltools;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,7 +37,10 @@ public class MainForm extends javax.swing.JFrame {
     StringBuilder sb = new StringBuilder();
     private File file = null;
     RSyntaxTextArea textArea;
+    RSyntaxTextArea textArea1Comp;
+    RSyntaxTextArea textArea2Comp;
     JSONParser parser = new JSONParser();
+    ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Creates new form MainForm
@@ -80,12 +85,10 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         Table_JSON = new javax.swing.JTable();
         Panel_Compare = new javax.swing.JPanel();
-        jSplitPane2 = new javax.swing.JSplitPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        ComparePane = new javax.swing.JSplitPane();
         Compare_Button = new javax.swing.JButton();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        Compare_ResultText = new javax.swing.JTextArea();
         Text_MessageBar = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu_File = new javax.swing.JMenu();
@@ -121,20 +124,13 @@ public class MainForm extends javax.swing.JFrame {
 
         Panel_Text.setLayout(new java.awt.BorderLayout());
 
+        Panel_Hierarchical.setLayout(new java.awt.BorderLayout());
+
         jScrollPane4.setViewportView(jTreeHierarchicalJson);
 
-        javax.swing.GroupLayout Panel_HierarchicalLayout = new javax.swing.GroupLayout(Panel_Hierarchical);
-        Panel_Hierarchical.setLayout(Panel_HierarchicalLayout);
-        Panel_HierarchicalLayout.setHorizontalGroup(
-            Panel_HierarchicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1344, Short.MAX_VALUE)
-        );
-        Panel_HierarchicalLayout.setVerticalGroup(
-            Panel_HierarchicalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_HierarchicalLayout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        Panel_Hierarchical.add(jScrollPane4, java.awt.BorderLayout.CENTER);
+
+        Panel_Table.setLayout(new java.awt.BorderLayout());
 
         jScrollPane3.setSize(Panel_Table.getSize());
 
@@ -152,37 +148,14 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane3.setViewportView(Table_JSON);
         Table_JSON.setSize(Panel_Table.getSize());
 
-        javax.swing.GroupLayout Panel_TableLayout = new javax.swing.GroupLayout(Panel_Table);
-        Panel_Table.setLayout(Panel_TableLayout);
-        Panel_TableLayout.setHorizontalGroup(
-            Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_TableLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        Panel_TableLayout.setVerticalGroup(
-            Panel_TableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_TableLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
-                .addContainerGap())
-        );
+        Panel_Table.add(jScrollPane3, java.awt.BorderLayout.CENTER);
 
         Panel_Compare.setPreferredSize(new java.awt.Dimension(1203, 511));
+        Panel_Compare.setLayout(new java.awt.BorderLayout());
 
-        jSplitPane2.setResizeWeight(0.5);
-        jSplitPane2.setToolTipText("");
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-
-        jSplitPane2.setLeftComponent(jScrollPane1);
-
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane5.setViewportView(jTextArea2);
-
-        jSplitPane2.setRightComponent(jScrollPane5);
+        ComparePane.setResizeWeight(0.5);
+        ComparePane.setToolTipText("");
+        Panel_Compare.add(ComparePane, java.awt.BorderLayout.CENTER);
 
         Compare_Button.setText("Compare");
         Compare_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -190,30 +163,13 @@ public class MainForm extends javax.swing.JFrame {
                 Compare_ButtonActionPerformed(evt);
             }
         });
+        Panel_Compare.add(Compare_Button, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout Panel_CompareLayout = new javax.swing.GroupLayout(Panel_Compare);
-        Panel_Compare.setLayout(Panel_CompareLayout);
-        Panel_CompareLayout.setHorizontalGroup(
-            Panel_CompareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_CompareLayout.createSequentialGroup()
-                .addGroup(Panel_CompareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(Panel_CompareLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jSplitPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1044, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(Panel_CompareLayout.createSequentialGroup()
-                        .addGap(482, 482, 482)
-                        .addComponent(Compare_Button)))
-                .addContainerGap())
-        );
-        Panel_CompareLayout.setVerticalGroup(
-            Panel_CompareLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_CompareLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Compare_Button)
-                .addContainerGap(67, Short.MAX_VALUE))
-        );
+        Compare_ResultText.setColumns(20);
+        Compare_ResultText.setRows(5);
+        jScrollPane6.setViewportView(Compare_ResultText);
+
+        Panel_Compare.add(jScrollPane6, java.awt.BorderLayout.PAGE_END);
 
         javax.swing.GroupLayout Panel_ViewsLayout = new javax.swing.GroupLayout(Panel_Views);
         Panel_Views.setLayout(Panel_ViewsLayout);
@@ -227,7 +183,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(Panel_Compare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
         Panel_ViewsLayout.setVerticalGroup(
@@ -240,7 +196,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(Panel_Compare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
 
@@ -329,14 +285,14 @@ public class MainForm extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(Text_MessageBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 1500, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(Text_MessageBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1500, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Text_MessageBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(Text_MessageBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -454,6 +410,23 @@ public class MainForm extends javax.swing.JFrame {
 
     private void Op_CompareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Op_CompareActionPerformed
 
+        textArea1Comp = new RSyntaxTextArea();
+        textArea1Comp.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
+        textArea1Comp.setCodeFoldingEnabled(true);
+        textArea1Comp.setAntiAliasingEnabled(true);
+        RTextScrollPane spComp1 = new RTextScrollPane(textArea1Comp);
+        spComp1.setFoldIndicatorEnabled(true);
+        
+        textArea2Comp = new RSyntaxTextArea();
+        textArea2Comp.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
+        textArea2Comp.setCodeFoldingEnabled(true);
+        textArea2Comp.setAntiAliasingEnabled(true);
+        RTextScrollPane spComp2 = new RTextScrollPane(textArea2Comp);
+        spComp2.setFoldIndicatorEnabled(true);
+        
+        ComparePane.add(spComp1, ComparePane.LEFT, 60);
+        ComparePane.add(spComp2, ComparePane.RIGHT, 60);
+        
         Panel_Text.setVisible(false);
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(false);
@@ -464,12 +437,38 @@ public class MainForm extends javax.swing.JFrame {
     private void Compare_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Compare_ButtonActionPerformed
 
         //validate both text areas 
-        if (json_util.isValid(jTextArea1.getText()) && json_util.isValid(jTextArea2.getText())) 
+        if (json_util.isValid(textArea1Comp.getText()) && json_util.isValid(textArea2Comp.getText())) 
         {
-            Text_MessageBar.setText("JSON in has been loaded successfully... start comparing");
+            Text_MessageBar.setText("JSON in has been loaded successfully... compare is starting");
             //call compare_result method found in JSONUtilitites
-            String comp_result = json_util.compareResult(jTextArea1.getText(), jTextArea2.getText());
-            Text_MessageBar.setText(comp_result);
+            try
+            {
+                JsonNode jNode1 = mapper.readTree(textArea1Comp.getText());
+                textArea1Comp.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                
+                JsonNode jNode2 = mapper.readTree(textArea2Comp.getText()); 
+                textArea2Comp.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode2));
+                
+                JsonNode jNodeCompRes = json_util.compareResult(jNode1, jNode2);
+                
+                if (jNodeCompRes == null)
+                {
+                    Text_MessageBar.setText("Compare failed"); 
+                    Compare_ResultText.setText("Compare between an object and an array is not possible!");
+                }
+                else
+                {
+                    //Compare_ResultText.setText(jNodeCompRes.toString());
+                    Compare_ResultText.setText("Summary: " + json_util.printDiff(jNodeCompRes));
+                }    
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            //cater for json processing exception
+                    
+            //Text_MessageBar.setText(comp_result);
         } 
         else 
         {
@@ -534,7 +533,9 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSplitPane ComparePane;
     private javax.swing.JButton Compare_Button;
+    private javax.swing.JTextArea Compare_ResultText;
     private javax.swing.JMenuItem Import_JSON;
     private javax.swing.JMenu Menu_File;
     private javax.swing.JMenu Menu_Operations;
@@ -554,15 +555,11 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JSplitPane jSplitPane2;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTree jTree1;
     public javax.swing.JTree jTreeHierarchicalJson;
     // End of variables declaration//GEN-END:variables
