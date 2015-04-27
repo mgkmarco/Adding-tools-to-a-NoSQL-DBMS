@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.fife.ui.rtextarea.*;
 import org.fife.ui.rsyntaxtextarea.*;
+import org.json.simple.parser.JSONParser;
 
 
 /**
@@ -34,6 +35,7 @@ public class MainForm extends javax.swing.JFrame {
     StringBuilder sb = new StringBuilder();
     private File file = null;
     RSyntaxTextArea textArea;
+    JSONParser parser = new JSONParser();
 
     /**
      * Creates new form MainForm
@@ -48,7 +50,8 @@ public class MainForm extends javax.swing.JFrame {
         RTextScrollPane sp = new RTextScrollPane(textArea);
         sp.setFoldIndicatorEnabled(true);
         Panel_Text.add(sp);
-
+        Save.setEnabled(false);
+        
         Panel_Text.setVisible(false);
         Panel_Table.setVisible(false);
         Panel_Hierarchical.setVisible(false);
@@ -387,7 +390,9 @@ public class MainForm extends javax.swing.JFrame {
         fc.setFileFilter(filter);
 
         int returnVal = fc.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == JFileChooser.APPROVE_OPTION) 
+        {
+            Save.setEnabled(true);
             file = fc.getSelectedFile();
             sb.append(util.readFromFile(file));
                         
@@ -395,23 +400,38 @@ public class MainForm extends javax.swing.JFrame {
             Panel_Hierarchical.setVisible(false);
             Panel_Table.setVisible(false);
 
-            if (json_util.isValid(sb.toString())) {
-                textArea.setText("");
-                textArea.setText(sb.toString());
-                
+            textArea.setText("");
+            textArea.setText(sb.toString());
+            if (json_util.isValid(sb.toString())) 
+            {
                 json_util.isDataParsed(textArea.getText());
                 Text_MessageBar.setText("JSON File has been loaded successfully");
-            } else {
+            } 
+            else 
+            {
                 sb.setLength(0);
                 JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Validation Error", JOptionPane.ERROR_MESSAGE);
+           
+                try
+                {
+                    Object obj = parser.parse(sb.toString());
+                }
+                catch(org.json.simple.parser.ParseException pe)
+                {
+                   Text_MessageBar.setText("Error on line: " + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                }
             }
         }
     }//GEN-LAST:event_Import_JSONActionPerformed
 
     private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
-
-        if (json_util.isValid(textArea.getText())) {
-            try {
+        Object obj = null;
+        
+        try 
+        {
+            obj = parser.parse(textArea.getText());
+            try
+            {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
                 writer.write(textArea.getText());
                 writer.close();
@@ -421,8 +441,10 @@ public class MainForm extends javax.swing.JFrame {
             } catch (IOException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Incorrect JSON format", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(org.json.simple.parser.ParseException pe)
+        {
+           Text_MessageBar.setText("Error in line: " + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
         }
     }//GEN-LAST:event_SaveActionPerformed
 

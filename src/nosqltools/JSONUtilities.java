@@ -251,4 +251,24 @@ public class JSONUtilities
         }
         return c_result;
     }
+    
+    public int getLineNumber(int pos, String x)
+    {
+        char character = ' '; 
+        int  lineCounter = 1;
+        
+        System.out.println(pos);
+        System.out.println(x.length());
+        
+        for (int i = 0; i < pos; i++)
+        {
+            character = x.charAt(i);
+            if(((int) character) == 10 || ((int) character) == 13)
+            {
+                lineCounter++;
+            }
+        }
+        
+        return lineCounter;
+    }
 }
