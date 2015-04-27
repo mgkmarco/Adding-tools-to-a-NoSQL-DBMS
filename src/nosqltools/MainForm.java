@@ -176,10 +176,11 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Compare.setLayout(new java.awt.BorderLayout());
 
         ComparePane.setResizeWeight(0.5);
-        ComparePane.setToolTipText("");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("nosqltools/Bundle"); // NOI18N
+        ComparePane.setToolTipText(bundle.getString("MainForm.ComparePane.toolTipText")); // NOI18N
         Panel_Compare.add(ComparePane, java.awt.BorderLayout.CENTER);
 
-        Compare_Button.setText("Compare");
+        Compare_Button.setText(bundle.getString("MainForm.Compare_Button.text")); // NOI18N
         Compare_Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Compare_ButtonActionPerformed(evt);
@@ -229,17 +230,17 @@ public class MainForm extends javax.swing.JFrame {
 
         Text_MessageBar.setEditable(false);
         Text_MessageBar.setForeground(new java.awt.Color(255, 0, 0));
-        Text_MessageBar.setText("This is the message Bar");
+        Text_MessageBar.setText(bundle.getString("MainForm.Text_MessageBar.text")); // NOI18N
         Text_MessageBar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Text_MessageBarActionPerformed(evt);
             }
         });
 
-        Menu_File.setText("File");
+        Menu_File.setText(bundle.getString("MainForm.Menu_File.text")); // NOI18N
         Menu_File.setName(""); // NOI18N
 
-        Import_JSON.setText("Import JSON file");
+        Import_JSON.setText(bundle.getString("MainForm.Import_JSON.text")); // NOI18N
         Import_JSON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Import_JSONActionPerformed(evt);
@@ -247,7 +248,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_File.add(Import_JSON);
 
-        Save.setText("Save");
+        Save.setText(bundle.getString("MainForm.Save.text")); // NOI18N
         Save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SaveActionPerformed(evt);
@@ -257,9 +258,9 @@ public class MainForm extends javax.swing.JFrame {
 
         jMenuBar1.add(Menu_File);
 
-        Menu_Views.setText("Views");
+        Menu_Views.setText(bundle.getString("MainForm.Menu_Views.text")); // NOI18N
 
-        View_Text.setText("Text");
+        View_Text.setText(bundle.getString("MainForm.View_Text.text")); // NOI18N
         View_Text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 View_TextActionPerformed(evt);
@@ -267,7 +268,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_Views.add(View_Text);
 
-        View_Hierarchical.setText("Hierarchical");
+        View_Hierarchical.setText(bundle.getString("MainForm.View_Hierarchical.text")); // NOI18N
         View_Hierarchical.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 View_HierarchicalActionPerformed(evt);
@@ -275,7 +276,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_Views.add(View_Hierarchical);
 
-        View_Table.setText("Table");
+        View_Table.setText(bundle.getString("MainForm.View_Table.text")); // NOI18N
         View_Table.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 View_TableActionPerformed(evt);
@@ -285,9 +286,9 @@ public class MainForm extends javax.swing.JFrame {
 
         jMenuBar1.add(Menu_Views);
 
-        Menu_Operations.setText("Operations");
+        Menu_Operations.setText(bundle.getString("MainForm.Menu_Operations.text")); // NOI18N
 
-        Op_Compare.setText("Compare");
+        Op_Compare.setText(bundle.getString("MainForm.Op_Compare.text")); // NOI18N
         Op_Compare.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Op_CompareActionPerformed(evt);
@@ -295,7 +296,7 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_Operations.add(Op_Compare);
 
-        Op_Validate.setText("Validate");
+        Op_Validate.setText(bundle.getString("MainForm.Op_Validate.text")); // NOI18N
         Menu_Operations.add(Op_Validate);
 
         jMenuBar1.add(Menu_Operations);
