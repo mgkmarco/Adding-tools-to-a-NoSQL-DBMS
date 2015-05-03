@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
@@ -36,7 +37,7 @@ public class MainForm extends javax.swing.JFrame {
     private final JSONUtilities json_util = new JSONUtilities();
     private final Utilities util = new Utilities();
     StringBuilder sb = new StringBuilder();
-    private File file = null;
+    private File file = null;   
     RSyntaxTextArea textArea;
     RSyntaxTextArea textArea1Comp;
     RSyntaxTextArea textArea2Comp;
@@ -50,7 +51,7 @@ public class MainForm extends javax.swing.JFrame {
     public MainForm() {     
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-
+        
         textArea = new RSyntaxTextArea(20, 60);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
         textArea.setCodeFoldingEnabled(true);
@@ -64,24 +65,27 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Table.setVisible(false);
         Panel_Hierarchical.setVisible(false);
         Panel_Compare.setVisible(false);
+        Panel_Compare_Upper.setVisible(false);
+        
+        util.changeTextAreaTheme(textArea);
         
         if (dbcon.connect())
         {
             DefaultTreeModel defTableMod = dbcon.buildDBTree();
             if (defTableMod != null && dbcon.isConnectionSuccess())
             {
-                Text_MessageBar.setText(Inititalizations.DBCONNSUCCESS);
+                Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
             }
             else
             {
-                Text_MessageBar.setText(Inititalizations.DBCONNFAIL);
+                Text_MessageBar.setText(Initializations.DBCONNFAIL);
             }
             
             jTree1.setModel(defTableMod);
         }
         else
         {
-            Text_MessageBar.setText(Inititalizations.DBCONNFAIL);
+            Text_MessageBar.setText(Initializations.DBCONNFAIL);
         }
     }
 
@@ -108,9 +112,14 @@ public class MainForm extends javax.swing.JFrame {
         Table_JSON = new javax.swing.JTable();
         Panel_Compare = new javax.swing.JPanel();
         ComparePane = new javax.swing.JSplitPane();
-        Compare_Button = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         Compare_ResultText = new javax.swing.JTextArea();
+        Panel_Compare_Upper = new javax.swing.JPanel();
+        Compare_Button = new javax.swing.JButton();
+        left_label = new javax.swing.JLabel();
+        right_label = new javax.swing.JLabel();
+        left_obj_to_array = new javax.swing.JCheckBox();
+        right_obj_to_array = new javax.swing.JCheckBox();
         Text_MessageBar = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu_File = new javax.swing.JMenu();
@@ -179,19 +188,70 @@ public class MainForm extends javax.swing.JFrame {
         ComparePane.setToolTipText("");
         Panel_Compare.add(ComparePane, java.awt.BorderLayout.CENTER);
 
-        Compare_Button.setText("Compare");
-        Compare_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Compare_ButtonActionPerformed(evt);
-            }
-        });
-        Panel_Compare.add(Compare_Button, java.awt.BorderLayout.PAGE_START);
-
         Compare_ResultText.setColumns(20);
         Compare_ResultText.setRows(5);
         jScrollPane6.setViewportView(Compare_ResultText);
 
         Panel_Compare.add(jScrollPane6, java.awt.BorderLayout.PAGE_END);
+
+        Panel_Compare_Upper.setPreferredSize(new java.awt.Dimension(75, 23));
+
+        Compare_Button.setText("Compare");
+        Compare_Button.setPreferredSize(new java.awt.Dimension(20, 23));
+        Compare_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Compare_ButtonActionPerformed(evt);
+            }
+        });
+
+        left_label.setText("Document 1");
+
+        right_label.setText("Document 2");
+
+        left_obj_to_array.setText("Convert Document 1 to Array");
+        left_obj_to_array.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                left_obj_to_arrayActionPerformed(evt);
+            }
+        });
+
+        right_obj_to_array.setText("Convert Document 2 to Array");
+        right_obj_to_array.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                right_obj_to_arrayActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout Panel_Compare_UpperLayout = new javax.swing.GroupLayout(Panel_Compare_Upper);
+        Panel_Compare_Upper.setLayout(Panel_Compare_UpperLayout);
+        Panel_Compare_UpperLayout.setHorizontalGroup(
+            Panel_Compare_UpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_Compare_UpperLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(left_obj_to_array, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(114, 114, 114)
+                .addComponent(left_label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(199, 199, 199)
+                .addComponent(Compare_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addGap(198, 198, 198)
+                .addComponent(right_label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(111, 111, 111)
+                .addComponent(right_obj_to_array, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(16, 16, 16))
+        );
+        Panel_Compare_UpperLayout.setVerticalGroup(
+            Panel_Compare_UpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(Panel_Compare_UpperLayout.createSequentialGroup()
+                .addGroup(Panel_Compare_UpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(left_label)
+                    .addComponent(left_obj_to_array)
+                    .addComponent(Compare_Button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(right_label)
+                    .addComponent(right_obj_to_array))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        Panel_Compare.add(Panel_Compare_Upper, java.awt.BorderLayout.NORTH);
 
         javax.swing.GroupLayout Panel_ViewsLayout = new javax.swing.GroupLayout(Panel_Views);
         Panel_Views.setLayout(Panel_ViewsLayout);
@@ -325,6 +385,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(false);
+        Panel_Compare_Upper.setVisible(false);
     }//GEN-LAST:event_View_TextActionPerformed
 
     private void View_HierarchicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_HierarchicalActionPerformed
@@ -332,10 +393,11 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Hierarchical.setVisible(true);
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(false);
+        Panel_Compare_Upper.setVisible(false);
         
         if (file == null) {
             jTreeHierarchicalJson.setVisible(false);
-            JOptionPane.showMessageDialog(null, Inititalizations.NOFILECHOSEN, Inititalizations.ERRROR, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, Initializations.NOFILECHOSEN, Initializations.ERRROR, JOptionPane.ERROR_MESSAGE);
         } else {
             jTreeHierarchicalJson.setVisible(true);
             jTreeHierarchicalJson.setModel(json_util.makeJtreeModel(file.getName()));
@@ -349,6 +411,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(true);
         Panel_Compare.setVisible(false);
+        Panel_Compare_Upper.setVisible(false);
 
         String[] json_field_names = json_util.getFields();
         String[][] json_row_data = json_util.getRows(json_field_names);
@@ -359,7 +422,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void Import_JSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_JSONActionPerformed
         final JFileChooser fc = new JFileChooser();
-        String[] ext_array = new String[]{Inititalizations.TXT, Inititalizations.JSON};
+        String[] ext_array = new String[]{Initializations.TXT, Initializations.JSON};
         String ext = util.formatExtentsions(ext_array);
         file = null;
         sb.setLength(0);
@@ -378,17 +441,17 @@ public class MainForm extends javax.swing.JFrame {
             Panel_Hierarchical.setVisible(false);
             Panel_Table.setVisible(false);
 
-            textArea.setText(Inititalizations.INITSTRING);
+            textArea.setText(Initializations.INITSTRING);
             textArea.setText(sb.toString());
             if (json_util.isValid(sb.toString())) 
             {
                 json_util.isDataParsed(textArea.getText());
-                Text_MessageBar.setText(Inititalizations.JSONFILESUCCESS);
+                Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
             } 
             else 
             {
                 sb.setLength(0);
-                JOptionPane.showMessageDialog(this, Inititalizations.JSONINCORRECTFORMAT , Inititalizations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT , Initializations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
            
                 try
                 {
@@ -396,7 +459,7 @@ public class MainForm extends javax.swing.JFrame {
                 }
                 catch(org.json.simple.parser.ParseException pe)
                 {
-                   Text_MessageBar.setText(Inititalizations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                   Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
                 }
             }
         }
@@ -413,7 +476,7 @@ public class MainForm extends javax.swing.JFrame {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
                 writer.write(textArea.getText());
                 writer.close();
-                Text_MessageBar.setText(Inititalizations.JSONSAVESUCCESS);
+                Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -422,7 +485,7 @@ public class MainForm extends javax.swing.JFrame {
         }
         catch(org.json.simple.parser.ParseException pe)
         {
-           Text_MessageBar.setText(Inititalizations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+           Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
         }
     }//GEN-LAST:event_SaveActionPerformed
 
@@ -438,6 +501,7 @@ public class MainForm extends javax.swing.JFrame {
         textArea1Comp.setAntiAliasingEnabled(true);
         RTextScrollPane spComp1 = new RTextScrollPane(textArea1Comp);
         spComp1.setFoldIndicatorEnabled(true);
+        util.changeTextAreaTheme(textArea1Comp);
         
         textArea2Comp = new RSyntaxTextArea();
         textArea2Comp.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
@@ -445,6 +509,7 @@ public class MainForm extends javax.swing.JFrame {
         textArea2Comp.setAntiAliasingEnabled(true);
         RTextScrollPane spComp2 = new RTextScrollPane(textArea2Comp);
         spComp2.setFoldIndicatorEnabled(true);
+        util.changeTextAreaTheme(textArea2Comp);
         
         ComparePane.add(spComp1, ComparePane.LEFT, 60);
         ComparePane.add(spComp2, ComparePane.RIGHT, 60);
@@ -453,15 +518,17 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(true);
+        Panel_Compare_Upper.setVisible(true);
 
     }//GEN-LAST:event_Op_CompareActionPerformed
 
     private void Compare_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Compare_ButtonActionPerformed
-
+        Compare_ResultText.setText("");  
         //validate both text areas 
         if (json_util.isValid(textArea1Comp.getText()) && json_util.isValid(textArea2Comp.getText())) 
         {
-            Text_MessageBar.setText(Inititalizations.JSONFILESUCCESS + Inititalizations.COMPARESTART);
+            
+            Text_MessageBar.setText(Initializations.JSONFILESUCCESS + Initializations.COMPARESTART);
             //call compare_result method found in JSONUtilitites
             try
             {
@@ -475,29 +542,97 @@ public class MainForm extends javax.swing.JFrame {
                 
                 if (jNodeCompRes == null)
                 {
-                    Text_MessageBar.setText(Inititalizations.COMPAREFAIL); 
-                    Compare_ResultText.setText(Inititalizations.COMPOBJARRERR);
+                    Text_MessageBar.setText(Initializations.COMPAREFAIL); 
+                    Compare_ResultText.setText(Initializations.COMPOBJARRERR);
                 }
                 else
                 {
                     //Compare_ResultText.setText(jNodeCompRes.toString());
-                    Compare_ResultText.setText(Inititalizations.SUMMARY + json_util.printDiff(jNodeCompRes));
-                }    
+                    Compare_ResultText.setText(Initializations.SUMMARY + json_util.printDiff(jNodeCompRes));           
+                    Text_MessageBar.setText(Initializations.COMPARESUCCESS); 
+                }        
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
-            //cater for json processing exception
-                    
-            //Text_MessageBar.setText(comp_result);
+            // may need to cater for json processing exception
+                   
         } 
         else 
         {
-            JOptionPane.showMessageDialog(this, Inititalizations.JSONINCORRECTFORMAT, Inititalizations.VALIDATIONERROR, JOptionPane.ERROR_MESSAGE);
-            Text_MessageBar.setText(Inititalizations.COMPAREFAIL);
+            JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT, Initializations.VALIDATIONERROR, JOptionPane.ERROR_MESSAGE);
+            Text_MessageBar.setText(Initializations.COMPAREFAIL);
         }
     }//GEN-LAST:event_Compare_ButtonActionPerformed
+
+    private void left_obj_to_arrayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_left_obj_to_arrayActionPerformed
+        if (left_obj_to_array.isSelected())
+        {
+            try
+            {
+                if (textArea1Comp.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(this, Initializations.CONVERRDOC1, Initializations.CONVERR, JOptionPane.ERROR_MESSAGE);
+                    Text_MessageBar.setText(Initializations.DOC1EMPTY);
+                    left_obj_to_array.setSelected(false);
+                }
+                else
+                {
+                    JsonNode jNode1 = mapper.readTree(textArea1Comp.getText()); 
+                    if (jNode1.isObject())
+                    {
+                        jNode1 = json_util.convertJArr(jNode1);
+                        textArea1Comp.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                    }
+                    else
+                    {
+                        Text_MessageBar.setText(Initializations.OBJCONVERTED);
+                    }
+                    
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            
+        }
+    }//GEN-LAST:event_left_obj_to_arrayActionPerformed
+
+    private void right_obj_to_arrayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_right_obj_to_arrayActionPerformed
+        if (right_obj_to_array.isSelected())
+        {
+            try
+            {
+                if (textArea2Comp.getText().isEmpty())
+                {
+                    JOptionPane.showMessageDialog(this, Initializations.CONVERRDOC2, Initializations.CONVERR, JOptionPane.ERROR_MESSAGE);
+                    Text_MessageBar.setText("Document 2 is empty!");
+                    right_obj_to_array.setSelected(false);
+                }
+                else
+                {
+                    JsonNode jNode2 = mapper.readTree(textArea2Comp.getText()); 
+                    if (jNode2.isObject())
+                    {
+                        jNode2 = json_util.convertJArr(jNode2);
+                        textArea2Comp.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode2));
+                    }
+                    else
+                    {
+                        Text_MessageBar.setText("Object is already converted to array!");
+                    }
+                    
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            
+        }
+    }//GEN-LAST:event_right_obj_to_arrayActionPerformed
 
     public void setImageIcon() {
         ImageIcon leafIcon = createImageIcon("resources/json_node.png");
@@ -514,7 +649,7 @@ public class MainForm extends javax.swing.JFrame {
         if (imgUrl != null) {
             return new ImageIcon(imgUrl);
         } else {
-            Text_MessageBar.setText(Inititalizations.LEAFICON);
+            Text_MessageBar.setText(Initializations.LEAFICON);
             return null;
         }
     }
@@ -565,6 +700,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem Op_Compare;
     private javax.swing.JMenuItem Op_Validate;
     private javax.swing.JPanel Panel_Compare;
+    private javax.swing.JPanel Panel_Compare_Upper;
     private javax.swing.JPanel Panel_Connections;
     private javax.swing.JPanel Panel_Hierarchical;
     private javax.swing.JPanel Panel_Table;
@@ -584,5 +720,9 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTree jTree1;
     public javax.swing.JTree jTreeHierarchicalJson;
+    private javax.swing.JLabel left_label;
+    private javax.swing.JCheckBox left_obj_to_array;
+    private javax.swing.JLabel right_label;
+    private javax.swing.JCheckBox right_obj_to_array;
     // End of variables declaration//GEN-END:variables
 }

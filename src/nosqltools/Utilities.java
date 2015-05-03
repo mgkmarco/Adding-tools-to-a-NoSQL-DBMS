@@ -9,9 +9,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Theme;
 
 /**
  *
@@ -73,5 +76,20 @@ public class Utilities {
             
             return sb.toString();
         } 
+    
+    //this method will change text area in view text and compare screens
+    public void changeTextAreaTheme(RSyntaxTextArea textArea)
+    {
+        try
+        {
+            InputStream is = new FileInputStream("Themes/eclipse.xml");
+            Theme theme = Theme.load(is);
+            theme.apply(textArea);
+        } 
+        catch (IOException ioe) 
+        {
+            ioe.printStackTrace();
+        } 
+    }
                                             
 }

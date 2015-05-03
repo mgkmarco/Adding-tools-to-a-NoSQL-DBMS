@@ -10,7 +10,7 @@ package nosqltools;
  *
  * @author natasha nikolic
  */
-public class Inititalizations {
+public class Initializations {
     
     public static String DBCONNSUCCESS = "Connection to MongoDB has been successful ";
     public static String DBCONNFAIL = "Connection to MongoDB has failed. Please try again.";
@@ -27,9 +27,15 @@ public class Inititalizations {
     public static String ERRORLINE = "Error in line: ";
     public static String COMPARESTART = "...compare is starting";
     public static String COMPAREFAIL = "Compare failed";
+    public static String COMPARESUCCESS = "Compare successful";
     public static String COMPOBJARRERR = "Compare between an object and an array is not possible!";
     public static String SUMMARY = "Summary: ";
     public static String LEAFICON = "Leaf icon file specified does not exist";
+    public static String CONVERRDOC1 = "Object cannot be converted to array because Document 1 is empty!";
+    public static String CONVERRDOC2 = "Object cannot be converted to array because Document 2 is empty!";
+    public static String CONVERR = "Conversion Error";
+    public static String DOC1EMPTY = "Document 1 is empty!";
+    public static String OBJCONVERTED = "Object is already converted to array!";
     
     public static String INITSTRING = "";
     

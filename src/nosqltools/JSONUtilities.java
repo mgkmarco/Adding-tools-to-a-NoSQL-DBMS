@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import org.json.JSONArray;
@@ -268,9 +269,34 @@ public class JSONUtilities
         {
             //get result and store it in Json node
             jNodeRes = JsonDiff.asJson(jNode1, jNode2);
-        }        
+        }
         
         return jNodeRes;
+    }
+    
+    //this method will accept an array and converts it to an objects so it can be compared
+    public JsonNode convertJArr(JsonNode jNode)
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode convertedNode = null;          
+        try 
+        {
+            String nodeText = jNode.toString();
+            //boolean valid = isValid("{ object:" + nodetext + " }");
+            //will key: be required ??
+            //to convertJObj
+            //convertedNode = mapper.readTree("{ \"object\" :"+ nodeText + " }");
+            convertedNode = mapper.readTree("[" + nodeText + "]");
+        } 
+        catch (JsonParseException | JsonGenerationException | JsonMappingException e) 
+        {
+            e.printStackTrace();
+        } 
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }      
+        return convertedNode;
     }
     //this method will print the differences from the left text area and right text area.
     public String printDiff(JsonNode resCompNode)
