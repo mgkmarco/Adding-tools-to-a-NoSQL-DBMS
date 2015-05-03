@@ -7,6 +7,7 @@ package nosqltools;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.awt.Font;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,8 +18,8 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -44,6 +45,7 @@ public class MainForm extends javax.swing.JFrame {
     JSONParser parser = new JSONParser();
     ObjectMapper mapper = new ObjectMapper();
     DBConnection dbcon = new DBConnection();
+    public static JProgressBar progBar;
 
     /**
      * Creates new form MainForm
@@ -66,27 +68,11 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Hierarchical.setVisible(false);
         Panel_Compare.setVisible(false);
         Panel_Compare_Upper.setVisible(false);
+        Panel_Connect.setVisible(false);
         
         util.changeTextAreaTheme(textArea);
         
-        if (dbcon.connect())
-        {
-            DefaultTreeModel defTableMod = dbcon.buildDBTree();
-            if (defTableMod != null && dbcon.isConnectionSuccess())
-            {
-                Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
-            }
-            else
-            {
-                Text_MessageBar.setText(Initializations.DBCONNFAIL);
-            }
-            
-            jTree1.setModel(defTableMod);
-        }
-        else
-        {
-            Text_MessageBar.setText(Initializations.DBCONNFAIL);
-        }
+        
     }
 
     /**
@@ -115,16 +101,18 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane6 = new javax.swing.JScrollPane();
         Compare_ResultText = new javax.swing.JTextArea();
         Panel_Compare_Upper = new javax.swing.JPanel();
-        Compare_Button = new javax.swing.JButton();
         left_label = new javax.swing.JLabel();
-        right_label = new javax.swing.JLabel();
         left_obj_to_array = new javax.swing.JCheckBox();
+        Compare_Button = new javax.swing.JButton();
         right_obj_to_array = new javax.swing.JCheckBox();
+        right_label = new javax.swing.JLabel();
+        Panel_Connect = new javax.swing.JPanel();
         Text_MessageBar = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu_File = new javax.swing.JMenu();
         Import_JSON = new javax.swing.JMenuItem();
         Save = new javax.swing.JMenuItem();
+        connect_DB = new javax.swing.JMenuItem();
         Menu_Views = new javax.swing.JMenu();
         View_Text = new javax.swing.JMenuItem();
         View_Hierarchical = new javax.swing.JMenuItem();
@@ -182,7 +170,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Table.add(jScrollPane3, java.awt.BorderLayout.CENTER);
 
         Panel_Compare.setPreferredSize(new java.awt.Dimension(1203, 511));
-        Panel_Compare.setLayout(new java.awt.BorderLayout());
+        Panel_Compare.setLayout(new java.awt.BorderLayout(2, 2));
 
         ComparePane.setResizeWeight(0.5);
         ComparePane.setToolTipText("");
@@ -196,17 +184,10 @@ public class MainForm extends javax.swing.JFrame {
 
         Panel_Compare_Upper.setPreferredSize(new java.awt.Dimension(75, 23));
 
-        Compare_Button.setText("Compare");
-        Compare_Button.setPreferredSize(new java.awt.Dimension(20, 23));
-        Compare_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Compare_ButtonActionPerformed(evt);
-            }
-        });
-
         left_label.setText("Document 1");
-
-        right_label.setText("Document 2");
+        Panel_Compare_Upper.add(left_label);
+        Font font = new Font("Courier", Font.BOLD,12);
+        left_label.setFont(font);
 
         left_obj_to_array.setText("Convert Document 1 to Array");
         left_obj_to_array.addActionListener(new java.awt.event.ActionListener() {
@@ -214,6 +195,16 @@ public class MainForm extends javax.swing.JFrame {
                 left_obj_to_arrayActionPerformed(evt);
             }
         });
+        Panel_Compare_Upper.add(left_obj_to_array);
+
+        Compare_Button.setText("Compare");
+        Compare_Button.setPreferredSize(new java.awt.Dimension(100, 20));
+        Compare_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Compare_ButtonActionPerformed(evt);
+            }
+        });
+        Panel_Compare_Upper.add(Compare_Button);
 
         right_obj_to_array.setText("Convert Document 2 to Array");
         right_obj_to_array.addActionListener(new java.awt.event.ActionListener() {
@@ -221,37 +212,15 @@ public class MainForm extends javax.swing.JFrame {
                 right_obj_to_arrayActionPerformed(evt);
             }
         });
+        Panel_Compare_Upper.add(right_obj_to_array);
 
-        javax.swing.GroupLayout Panel_Compare_UpperLayout = new javax.swing.GroupLayout(Panel_Compare_Upper);
-        Panel_Compare_Upper.setLayout(Panel_Compare_UpperLayout);
-        Panel_Compare_UpperLayout.setHorizontalGroup(
-            Panel_Compare_UpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_Compare_UpperLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(left_obj_to_array, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(114, 114, 114)
-                .addComponent(left_label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(199, 199, 199)
-                .addComponent(Compare_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-                .addGap(198, 198, 198)
-                .addComponent(right_label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(111, 111, 111)
-                .addComponent(right_obj_to_array, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(16, 16, 16))
-        );
-        Panel_Compare_UpperLayout.setVerticalGroup(
-            Panel_Compare_UpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Panel_Compare_UpperLayout.createSequentialGroup()
-                .addGroup(Panel_Compare_UpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(left_label)
-                    .addComponent(left_obj_to_array)
-                    .addComponent(Compare_Button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(right_label)
-                    .addComponent(right_obj_to_array))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
+        right_label.setText("Document 2");
+        Panel_Compare_Upper.add(right_label);
+        right_label.setFont(font);
 
         Panel_Compare.add(Panel_Compare_Upper, java.awt.BorderLayout.NORTH);
+
+        Panel_Connect.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout Panel_ViewsLayout = new javax.swing.GroupLayout(Panel_Views);
         Panel_Views.setLayout(Panel_ViewsLayout);
@@ -267,6 +236,11 @@ public class MainForm extends javax.swing.JFrame {
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(Panel_ViewsLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(Panel_Connect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         Panel_ViewsLayout.setVerticalGroup(
             Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,6 +253,11 @@ public class MainForm extends javax.swing.JFrame {
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
                     .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(Panel_ViewsLayout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(Panel_Connect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
 
@@ -314,6 +293,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         Menu_File.add(Save);
+
+        connect_DB.setText("Connect");
+        connect_DB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                connect_DBActionPerformed(evt);
+            }
+        });
+        Menu_File.add(connect_DB);
 
         jMenuBar1.add(Menu_File);
 
@@ -386,6 +373,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(false);
         Panel_Compare_Upper.setVisible(false);
+        Panel_Connect.setVisible(false);
     }//GEN-LAST:event_View_TextActionPerformed
 
     private void View_HierarchicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_HierarchicalActionPerformed
@@ -394,6 +382,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(false);
         Panel_Compare_Upper.setVisible(false);
+        Panel_Connect.setVisible(false);
         
         if (file == null) {
             jTreeHierarchicalJson.setVisible(false);
@@ -412,6 +401,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Table.setVisible(true);
         Panel_Compare.setVisible(false);
         Panel_Compare_Upper.setVisible(false);
+        Panel_Connect.setVisible(false);
 
         String[] json_field_names = json_util.getFields();
         String[][] json_row_data = json_util.getRows(json_field_names);
@@ -440,6 +430,9 @@ public class MainForm extends javax.swing.JFrame {
             Panel_Text.setVisible(true);
             Panel_Hierarchical.setVisible(false);
             Panel_Table.setVisible(false);
+            Panel_Compare.setVisible(false);
+            Panel_Compare_Upper.setVisible(false);
+            Panel_Connect.setVisible(false);
 
             textArea.setText(Initializations.INITSTRING);
             textArea.setText(sb.toString());
@@ -519,6 +512,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(true);
         Panel_Compare_Upper.setVisible(true);
+        Panel_Connect.setVisible(false);
 
     }//GEN-LAST:event_Op_CompareActionPerformed
 
@@ -634,6 +628,41 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_right_obj_to_arrayActionPerformed
 
+    private void connect_DBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connect_DBActionPerformed
+        
+        Panel_Text.setVisible(false);
+        Panel_Hierarchical.setVisible(false);
+        Panel_Table.setVisible(false);
+        Panel_Compare.setVisible(false);
+        Panel_Compare_Upper.setVisible(false);
+        Panel_Connect.setVisible(true);
+            
+        int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to \n" + "connect to mongodb?\n","Connect",JOptionPane.YES_NO_OPTION);
+        if(result == 0)
+        {
+            //Text_MessageBar.setText("Attempting to connect, please wait!");
+            if (dbcon.connect())
+            {
+                DefaultTreeModel defTableMod = dbcon.buildDBTree();
+                if (defTableMod != null && dbcon.isConnectionSuccess())
+                {
+                    Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
+                }
+                else
+                {
+                    Text_MessageBar.setText(Initializations.DBCONNFAIL);
+                }
+
+                jTree1.setModel(defTableMod);
+            }
+            else
+            {
+                Text_MessageBar.setText(Initializations.DBCONNFAIL);
+            }
+        }
+        
+    }//GEN-LAST:event_connect_DBActionPerformed
+   
     public void setImageIcon() {
         ImageIcon leafIcon = createImageIcon("resources/json_node.png");
 
@@ -701,6 +730,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem Op_Validate;
     private javax.swing.JPanel Panel_Compare;
     private javax.swing.JPanel Panel_Compare_Upper;
+    private javax.swing.JPanel Panel_Connect;
     private javax.swing.JPanel Panel_Connections;
     private javax.swing.JPanel Panel_Hierarchical;
     private javax.swing.JPanel Panel_Table;
@@ -712,6 +742,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem View_Hierarchical;
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
+    private javax.swing.JMenuItem connect_DB;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
