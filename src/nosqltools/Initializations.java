@@ -14,6 +14,8 @@ public class Initializations {
     
     public static String DBCONNSUCCESS = "Connection to MongoDB has been successful ";
     public static String DBCONNFAIL = "Connection to MongoDB has failed. Please try again.";
+    public static String DBATTEMPTING = "Attempting to connect, please wait!";
+    public static String DBCONNECT2MONGO = "Connect to MongoDB";
     
     public static String NOFILECHOSEN = "No file was chosen";
     public static String ERRROR = "Error";

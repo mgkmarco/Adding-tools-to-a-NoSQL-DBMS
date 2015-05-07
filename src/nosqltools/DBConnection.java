@@ -7,9 +7,16 @@ package nosqltools;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCommandException;
+import com.mongodb.MongoCredential;
 import com.mongodb.MongoTimeoutException;
+import com.mongodb.ServerAddress;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -23,19 +30,25 @@ public class DBConnection
 {
     private MongoClient mongoClient = null;
     private boolean success = false;
+    DB db;
     
-    public boolean connect() 
+    public boolean connect(String username, String password, String database) 
     {
         try
         {
-            mongoClient = new MongoClient();
+            MongoCredential credential = MongoCredential.createCredential(username, database, password.toCharArray());
+            mongoClient = new MongoClient(new ServerAddress(), Arrays.asList(credential));
+            db = mongoClient.getDB(database);
+            
+            boolean auth = db.authenticate(username, password.toCharArray());
+            return auth;
+      
         }
-        catch (UnknownHostException e)
+        catch (UnknownHostException | MongoCommandException e)
         {
             return false;
         }
         
-        return true;
     }
     
     public boolean isConnectionSuccess()
@@ -81,6 +94,29 @@ public class DBConnection
     
     public void closeConnection()
     {
+        success = false;
         mongoClient.close();
+    }
+    
+    //this method return json data found in the collection to be loaded in Panel_Text
+    public StringBuilder getCollectionData(String coll)
+    {
+        StringBuilder res = new StringBuilder();
+        DBCollection collection = db.getCollection(coll);
+        DBCursor cursor = collection.find();
+	while(cursor.hasNext()) {
+            DBObject obj = cursor.next();
+            res.append(obj);
+	}
+        return res;
+    }
+    
+    //create method to get list of collections for the current db
+    public List<String> getAllCollections()
+    {
+        Set<String> setNames = db.getCollectionNames();
+        List<String> collectionNames = new ArrayList<>(setNames);
+        
+        return collectionNames;
     }
 }

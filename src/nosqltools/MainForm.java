@@ -8,6 +8,10 @@ package nosqltools;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import javax.swing.tree.TreePath;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -127,6 +131,7 @@ public class MainForm extends javax.swing.JFrame {
         jSplitPane1.setPreferredSize(new java.awt.Dimension(568, 453));
 
         jScrollPane2.setViewportView(jTree1);
+        jTree1.setModel(null);
 
         javax.swing.GroupLayout Panel_ConnectionsLayout = new javax.swing.GroupLayout(Panel_Connections);
         Panel_Connections.setLayout(Panel_ConnectionsLayout);
@@ -268,7 +273,6 @@ public class MainForm extends javax.swing.JFrame {
 
         Text_MessageBar.setEditable(false);
         Text_MessageBar.setForeground(new java.awt.Color(255, 0, 0));
-        Text_MessageBar.setText("This is the message Bar");
         Text_MessageBar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Text_MessageBarActionPerformed(evt);
@@ -436,6 +440,8 @@ public class MainForm extends javax.swing.JFrame {
 
             textArea.setText(Initializations.INITSTRING);
             textArea.setText(sb.toString());
+            validateDataPanel_text(sb);
+            /*
             if (json_util.isValid(sb.toString())) 
             {
                 json_util.isDataParsed(textArea.getText());
@@ -455,6 +461,7 @@ public class MainForm extends javax.swing.JFrame {
                    Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
                 }
             }
+            */
         }
     }//GEN-LAST:event_Import_JSONActionPerformed
 
@@ -594,6 +601,30 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_left_obj_to_arrayActionPerformed
 
+    //method is used to validate data in Panel_text when a file is imported from file or when connected to the database to view collection data
+    private void validateDataPanel_text(StringBuilder sb)
+    {
+        if (json_util.isValid(sb.toString())) 
+            {
+                json_util.isDataParsed(textArea.getText());
+                Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
+            } 
+            else 
+            {
+                sb.setLength(0);
+                JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT , Initializations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
+           
+                try
+                {
+                    Object obj = parser.parse(sb.toString());
+                }
+                catch(org.json.simple.parser.ParseException pe)
+                {
+                   Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                }
+            }
+    }
+    
     private void right_obj_to_arrayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_right_obj_to_arrayActionPerformed
         if (right_obj_to_array.isSelected())
         {
@@ -637,34 +668,108 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Compare_Upper.setVisible(false);
         Panel_Connect.setVisible(true);
             
-        int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to \n" + "connect to mongodb?\n","Connect",JOptionPane.YES_NO_OPTION);
-        if(result == 0)
+        if (dbcon.isConnectionSuccess())
         {
-            //Text_MessageBar.setText("Attempting to connect, please wait!");
-            if (dbcon.connect())
+            dbcon.closeConnection();
+        }
+        
+        String user;
+        String pass;
+        String dbname;
+        LoginDialog dlg_login = new LoginDialog(null);
+        dlg_login.setVisible(true);
+            
+        //If user chose login and not cancel option on dialog box
+        if (dlg_login.isToLogin())
+        {
+            user = dlg_login.getUsername();
+            pass = dlg_login.getPassword();
+            dbname = dlg_login.getDatabase();
+
+            Text_MessageBar.setText(Initializations.DBATTEMPTING);
+
+            if (dbcon.connect(user, pass, dbname))
             {
                 DefaultTreeModel defTableMod = dbcon.buildDBTree();
                 if (defTableMod != null && dbcon.isConnectionSuccess())
                 {
+                    jTree1.setModel(defTableMod);
                     Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
+                    
+                    //load the data of collection in panel_text on double click
+                    jTree1.addMouseListener(new MouseAdapter() 
+                    {
+                        @Override
+                        public void mouseClicked(MouseEvent me) 
+                        { 
+                            if (me.getClickCount()==2)
+                            {
+                                //get the path of the mouse click ex:[localhost,test,testData] 
+                                TreePath tp = jTree1.getPathForLocation(me.getX(), me.getY());
+                                if (tp != null)
+                                {
+                                    List<String> coll_db = dbcon.getAllCollections();
+                                    int cnt = tp.getPathCount();
+                                    for (int i = 0; i<cnt;i++)
+                                    {
+                                        //if one of the collection matches the coll that was clicked by the user load data
+                                        if(coll_db.contains(tp.getPathComponent(i).toString()))
+                                        {
+                                            sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
+
+                                            Panel_Text.setVisible(true);
+
+                                            textArea.setText(Initializations.INITSTRING);
+                                            textArea.setText(sb.toString());
+                                            validateDataPanel_text(sb);
+                                            /*
+                                            if (json_util.isValid(sb.toString())) 
+                                            {
+                                                json_util.isDataParsed(textArea.getText());
+                                                Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
+                                            } 
+                                            else 
+                                            {
+                                                sb.setLength(0);
+                                                //JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT , Initializations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
+
+                                                try
+                                                {
+                                                    Object obj = parser.parse(sb.toString());
+                                                }
+                                                catch(org.json.simple.parser.ParseException pe)
+                                                {
+                                                   Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                                                }
+                                            } */
+                                        }
+                                    }
+                                }
+                            }    
+                        } 
+                    });
                 }
                 else
                 {
+                    jTree1.setModel(null);
                     Text_MessageBar.setText(Initializations.DBCONNFAIL);
                 }
 
-                jTree1.setModel(defTableMod);
+                
             }
             else
             {
+                jTree1.setModel(null);
                 Text_MessageBar.setText(Initializations.DBCONNFAIL);
             }
         }
+           
+       
         
     }//GEN-LAST:event_connect_DBActionPerformed
    
     public void setImageIcon() {
-        ImageIcon leafIcon = createImageIcon("resources/json_node.png");
+        ImageIcon leafIcon = createImageIcon("/resources/json_node.png");
 
         if (leafIcon != null) {
             DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
