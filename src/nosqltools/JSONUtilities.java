@@ -35,6 +35,21 @@ public class JSONUtilities
     public JSONObject json_obj = null;
     public JsonNode JSONParsedData;
 
+    public boolean isArray(String json_data)
+    {
+         try 
+            {
+                json_array = new JSONArray(json_data);
+                json_obj = null;
+            } 
+            catch (JSONException ex1) 
+            {
+                return false;
+            }
+         
+        return true;
+    }
+    
     public boolean isValid(String json_data) 
     {
         try 

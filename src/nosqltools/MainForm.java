@@ -62,6 +62,36 @@ public class MainForm extends javax.swing.JFrame {
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
         textArea.setCodeFoldingEnabled(true);
         textArea.setAntiAliasingEnabled(true);
+         Table_JSON.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            int row = Table_JSON.rowAtPoint(evt.getPoint());
+            int col = Table_JSON.columnAtPoint(evt.getPoint());
+            
+            
+            JOptionPane.showMessageDialog(null,"Value in the cell clicked :" + " "+ Table_JSON.getValueAt(row,col).toString());
+
+            System.out.println("Value in the cell clicked :  "+Table_JSON.getValueAt(row,col).toString());
+ 
+                
+            if(json_util.isArray(Table_JSON.getValueAt(row,col).toString()))
+            {
+                if(JOptionPane.showConfirmDialog( null, "View the array as a table:",
+                                 "VIEW", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.YES_OPTION)
+                {
+                    Panel_Views.setEnabled(false);
+                    Panel_Connections.setEnabled(false);
+                    jMenuBar1.setEnabled(false);
+
+
+                    if (row >= 0 && col >= 0) {
+
+                        TableForm tableForm = new TableForm(Table_JSON.getValueAt(row,col).toString());
+                    }
+                }
+            }
+        }
+        });
         RTextScrollPane sp = new RTextScrollPane(textArea);
         sp.setFoldIndicatorEnabled(true);
         Panel_Text.add(sp);
@@ -381,37 +411,52 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_View_TextActionPerformed
 
     private void View_HierarchicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_HierarchicalActionPerformed
-        Panel_Text.setVisible(false);
-        Panel_Hierarchical.setVisible(true);
-        Panel_Table.setVisible(false);
-        Panel_Compare.setVisible(false);
-        Panel_Compare_Upper.setVisible(false);
-        Panel_Connect.setVisible(false);
-        
-        if (file == null) {
-            jTreeHierarchicalJson.setVisible(false);
-            JOptionPane.showMessageDialog(null, Initializations.NOFILECHOSEN, Initializations.ERRROR, JOptionPane.ERROR_MESSAGE);
-        } else {
-            jTreeHierarchicalJson.setVisible(true);
-            jTreeHierarchicalJson.setModel(json_util.makeJtreeModel(file.getName()));
-            setImageIcon();
+        if("".equals(textArea.getText()))
+            JOptionPane.showMessageDialog(null, "There are no JSON objects!", "Error", JOptionPane.ERROR_MESSAGE);
+         else    
+        if(!validateDataPanel_text(sb))
+            JOptionPane.showMessageDialog(null, "Text is not in correct JSON format! Please input correct JSON text!", "Error", JOptionPane.ERROR_MESSAGE);
+        else{
+            Panel_Text.setVisible(false);
+            Panel_Hierarchical.setVisible(true);
+            Panel_Table.setVisible(false);
+            Panel_Compare.setVisible(false);
+            Panel_Compare_Upper.setVisible(false);
+            Panel_Connect.setVisible(false);
+            if (file == null) {
+                jTreeHierarchicalJson.setVisible(false);
+                JOptionPane.showMessageDialog(null, Initializations.NOFILECHOSEN, Initializations.ERRROR, JOptionPane.ERROR_MESSAGE);
+            } else {
+                jTreeHierarchicalJson.setVisible(true);
+                jTreeHierarchicalJson.setModel(json_util.makeJtreeModel(file.getName()));
+                setImageIcon();
+            }
         }
+        
+        
     }//GEN-LAST:event_View_HierarchicalActionPerformed
 
     private void View_TableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_TableActionPerformed
-        // TODO add your handling code here:
-        Panel_Text.setVisible(false);
-        Panel_Hierarchical.setVisible(false);
-        Panel_Table.setVisible(true);
-        Panel_Compare.setVisible(false);
-        Panel_Compare_Upper.setVisible(false);
-        Panel_Connect.setVisible(false);
+        if("".equals(textArea.getText()))
+            JOptionPane.showMessageDialog(null, "There are no JSON objects!", "Error", JOptionPane.ERROR_MESSAGE);
+        else 
+        if(!validateDataPanel_text(sb) && !"".equals(textArea.getText()))
+            JOptionPane.showMessageDialog(null, "Text is not in correct JSON format! Please input correct JSON text!", "Error", JOptionPane.ERROR_MESSAGE);
+        else{ 
+            Panel_Text.setVisible(false);
+            Panel_Hierarchical.setVisible(false);
+            Panel_Table.setVisible(true);
+            Panel_Compare.setVisible(false);
+            Panel_Compare_Upper.setVisible(false);
+            Panel_Connect.setVisible(false); 
 
-        String[] json_field_names = json_util.getFields();
-        String[][] json_row_data = json_util.getRows(json_field_names);
-        DefaultTableModel model = (DefaultTableModel) Table_JSON.getModel();
-        Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
 
+
+            String[] json_field_names = json_util.getFields();
+            String[][] json_row_data = json_util.getRows(json_field_names);
+            DefaultTableModel model = (DefaultTableModel) Table_JSON.getModel();
+            Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
+        }
     }//GEN-LAST:event_View_TableActionPerformed
 
     private void Import_JSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_JSONActionPerformed
@@ -431,16 +476,25 @@ public class MainForm extends javax.swing.JFrame {
             file = fc.getSelectedFile();
             sb.append(util.readFromFile(file));
                         
-            Panel_Text.setVisible(true);
-            Panel_Hierarchical.setVisible(false);
-            Panel_Table.setVisible(false);
-            Panel_Compare.setVisible(false);
-            Panel_Compare_Upper.setVisible(false);
-            Panel_Connect.setVisible(false);
-
             textArea.setText(Initializations.INITSTRING);
             textArea.setText(sb.toString());
-            validateDataPanel_text(sb);
+            Panel_Text.setVisible(true);
+                Panel_Hierarchical.setVisible(false);
+                Panel_Table.setVisible(false);
+                Panel_Compare.setVisible(false);
+                Panel_Compare_Upper.setVisible(false);
+                Panel_Connect.setVisible(false);
+            if(!validateDataPanel_text(sb))
+            {
+                View_Text.setEnabled(false);
+                View_Hierarchical.setEnabled(false);
+                View_Table.setEnabled(false);
+            }else
+            {
+                View_Text.setEnabled(true);
+                View_Hierarchical.setEnabled(true);
+                View_Table.setEnabled(true);
+            }
             /*
             if (json_util.isValid(sb.toString())) 
             {
@@ -466,11 +520,9 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Import_JSONActionPerformed
 
     private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
-        Object obj = null;
-        
-        try 
+       try 
         {
-            obj = parser.parse(textArea.getText());
+            parser.parse(textArea.getText());
             try
             {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -485,6 +537,7 @@ public class MainForm extends javax.swing.JFrame {
         }
         catch(org.json.simple.parser.ParseException pe)
         {
+           JOptionPane.showMessageDialog(null, "Incorrect JSON format - check Message Bar!", "Error", JOptionPane.ERROR_MESSAGE);
            Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
         }
     }//GEN-LAST:event_SaveActionPerformed
@@ -602,12 +655,23 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_left_obj_to_arrayActionPerformed
 
     //method is used to validate data in Panel_text when a file is imported from file or when connected to the database to view collection data
-    private void validateDataPanel_text(StringBuilder sb)
+    private boolean validateDataPanel_text(StringBuilder sb)
     {
+        boolean flag = false;
         if (json_util.isValid(sb.toString())) 
             {
-                json_util.isDataParsed(textArea.getText());
-                Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
+                try{
+                    json_util.isDataParsed(textArea.getText());
+                    Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
+                    parser.parse(sb.toString());
+                    flag = true;
+                }catch(org.json.simple.parser.ParseException pe)
+                {
+                   JOptionPane.showMessageDialog(null, "Incorrect JSON format - check Message Bar!", "Error", JOptionPane.ERROR_MESSAGE);
+                   Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                   flag = false;
+                }
+               
             } 
             else 
             {
@@ -620,9 +684,11 @@ public class MainForm extends javax.swing.JFrame {
                 }
                 catch(org.json.simple.parser.ParseException pe)
                 {
+                   JOptionPane.showMessageDialog(null, "Incorrect JSON format - check Message Bar!", "Error", JOptionPane.ERROR_MESSAGE);
                    Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
                 }
             }
+        return flag;
     }
     
     private void right_obj_to_arrayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_right_obj_to_arrayActionPerformed
