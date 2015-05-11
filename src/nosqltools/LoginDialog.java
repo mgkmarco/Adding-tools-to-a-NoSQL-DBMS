@@ -23,14 +23,18 @@ import javax.swing.JTextField;
  * @author RebeccaKai
  */
 public class LoginDialog extends JDialog {
-    private JTextField tfUsername;
-    private JPasswordField pfPassword;
-    private JTextField tfDatabase;
-    private JLabel lbUsername;
-    private JLabel lbPassword;
-    private JLabel lbDatabase;
-    private JButton btnLogin;
-    private JButton btnCancel;
+    private final JTextField tfUsername;
+    private final JPasswordField pfPassword;
+    private final JTextField tfDatabase;
+    private JTextField tfServerAddress;
+    private JTextField tfPort;
+    private final JLabel lbUsername;
+    private final JLabel lbPassword;
+    private final JLabel lbDatabase;
+    private final JLabel lbServerAddress;
+    private final JLabel lbPort;
+    private final JButton btnLogin;
+    private final JButton btnCancel;
     private boolean succeeded;
     private boolean choice = false;
 
@@ -76,15 +80,51 @@ public class LoginDialog extends JDialog {
         cs.gridx = 1;
         cs.gridy = 2;
         cs.gridwidth = 2;
-        panel.add(tfDatabase, cs);      
+        panel.add(tfDatabase, cs);     
+        
+           
+        lbServerAddress = new JLabel("Server Address: ");
+        cs.gridx = 0;
+        cs.gridy = 3;
+        cs.gridwidth = 1;
+        panel.add(lbServerAddress, cs);
+
+        tfServerAddress = new JTextField();
+        cs.gridx = 1;
+        cs.gridy = 3;
+        cs.gridwidth = 2;
+        panel.add(tfServerAddress, cs);      
+         
+        lbPort = new JLabel("Port: ");
+        cs.gridx = 0;
+        cs.gridy = 4;
+        cs.gridwidth = 1;
+        panel.add(lbPort, cs);
+
+        tfPort = new JTextField();
+        cs.gridx = 1;
+        cs.gridy = 4;
+        cs.gridwidth = 2;
+        panel.add(tfPort, cs);      
+
 
         btnLogin = new JButton("Login");
 
         btnLogin.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {         
-            choice = true;
-            dispose();
+            public void actionPerformed(ActionEvent e) { 
+                
+                if ((tfServerAddress.getText().trim().equals("") || tfPort.getText().trim().equals(""))  && !
+                        ( tfServerAddress.getText().equals("") && tfPort.getText().trim().equals("")))
+                {
+                    choice = false;
+                    dispose();
+                }
+                else
+                {
+                    choice = true;
+                    dispose();
+                }
             }
         });
                
@@ -119,6 +159,23 @@ public class LoginDialog extends JDialog {
 
     public String getPassword() {
         return new String(pfPassword.getPassword());
+    }
+    
+     public String getServerAddr() {
+        return tfServerAddress.getText().trim();
+    }
+    
+     public int getPort() {
+         
+        try 
+        {
+            return Integer.parseInt(tfPort.getText().trim());
+        
+        }
+        catch (NumberFormatException e)
+        {
+            return -1;
+        }
     }
 
      public boolean isToLogin() {

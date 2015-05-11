@@ -39,6 +39,8 @@ public class Initializations {
     public static String DOC1EMPTY = "Document 1 is empty!";
     public static String OBJCONVERTED = "Object is already converted to array!";
     
+    public static String IMPFILE = "Import File";
+    
     public static String INITSTRING = "";
     
     

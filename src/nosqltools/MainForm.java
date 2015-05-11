@@ -5,8 +5,10 @@
  */
 package nosqltools;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -50,7 +52,12 @@ public class MainForm extends javax.swing.JFrame {
     ObjectMapper mapper = new ObjectMapper();
     DBConnection dbcon = new DBConnection();
     public static JProgressBar progBar;
-
+    
+    
+    final JFileChooser fc = new JFileChooser();
+    String[] ext_array = new String[]{Initializations.TXT, Initializations.JSON};
+    String ext = util.formatExtentsions(ext_array);
+    
     /**
      * Creates new form MainForm
      */
@@ -95,7 +102,7 @@ public class MainForm extends javax.swing.JFrame {
         RTextScrollPane sp = new RTextScrollPane(textArea);
         sp.setFoldIndicatorEnabled(true);
         Panel_Text.add(sp);
-        Save.setEnabled(false);
+        Save_File.setEnabled(false);
 
         Panel_Text.setVisible(false);
         Panel_Table.setVisible(false);
@@ -103,6 +110,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Compare.setVisible(false);
         Panel_Compare_Upper.setVisible(false);
         Panel_Connect.setVisible(false);
+        Menu_Collections.setEnabled(false);
         
         util.changeTextAreaTheme(textArea);
         
@@ -145,7 +153,8 @@ public class MainForm extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu_File = new javax.swing.JMenu();
         Import_JSON = new javax.swing.JMenuItem();
-        Save = new javax.swing.JMenuItem();
+        Save_File = new javax.swing.JMenuItem();
+        Save_Mongo = new javax.swing.JMenuItem();
         connect_DB = new javax.swing.JMenuItem();
         Menu_Views = new javax.swing.JMenu();
         View_Text = new javax.swing.JMenuItem();
@@ -154,6 +163,9 @@ public class MainForm extends javax.swing.JFrame {
         Menu_Operations = new javax.swing.JMenu();
         Op_Compare = new javax.swing.JMenuItem();
         Op_Validate = new javax.swing.JMenuItem();
+        Menu_Collections = new javax.swing.JMenu();
+        Import_File = new javax.swing.JMenuItem();
+        Export_File = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -320,13 +332,21 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_File.add(Import_JSON);
 
-        Save.setText("Save");
-        Save.addActionListener(new java.awt.event.ActionListener() {
+        Save_File.setText("Save File");
+        Save_File.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SaveActionPerformed(evt);
+                Save_FileActionPerformed(evt);
             }
         });
-        Menu_File.add(Save);
+        Menu_File.add(Save_File);
+
+        Save_Mongo.setText("Save to MongoDB");
+        Save_Mongo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Save_MongoActionPerformed(evt);
+            }
+        });
+        Menu_File.add(Save_Mongo);
 
         connect_DB.setText("Connect");
         connect_DB.addActionListener(new java.awt.event.ActionListener() {
@@ -381,6 +401,21 @@ public class MainForm extends javax.swing.JFrame {
 
         jMenuBar1.add(Menu_Operations);
 
+        Menu_Collections.setText("Collections");
+
+        Import_File.setText("Import File");
+        Import_File.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Import_FileActionPerformed(evt);
+            }
+        });
+        Menu_Collections.add(Import_File);
+
+        Export_File.setText("Export File");
+        Menu_Collections.add(Export_File);
+
+        jMenuBar1.add(Menu_Collections);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -411,58 +446,56 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_View_TextActionPerformed
 
     private void View_HierarchicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_HierarchicalActionPerformed
-        if("".equals(textArea.getText()))
-            JOptionPane.showMessageDialog(null, "There are no JSON objects!", "Error", JOptionPane.ERROR_MESSAGE);
-         else    
-        if(!validateDataPanel_text(sb))
-            JOptionPane.showMessageDialog(null, "Text is not in correct JSON format! Please input correct JSON text!", "Error", JOptionPane.ERROR_MESSAGE);
-        else{
-            Panel_Text.setVisible(false);
-            Panel_Hierarchical.setVisible(true);
-            Panel_Table.setVisible(false);
-            Panel_Compare.setVisible(false);
-            Panel_Compare_Upper.setVisible(false);
-            Panel_Connect.setVisible(false);
-            if (file == null) {
-                jTreeHierarchicalJson.setVisible(false);
-                JOptionPane.showMessageDialog(null, Initializations.NOFILECHOSEN, Initializations.ERRROR, JOptionPane.ERROR_MESSAGE);
-            } else {
-                jTreeHierarchicalJson.setVisible(true);
-                jTreeHierarchicalJson.setModel(json_util.makeJtreeModel(file.getName()));
-                setImageIcon();
-            }
+        Panel_Text.setVisible(false);
+        Panel_Hierarchical.setVisible(true);
+        Panel_Table.setVisible(false);
+        Panel_Compare.setVisible(false);
+        Panel_Compare_Upper.setVisible(false);
+        Panel_Connect.setVisible(false);
+        
+        /*
+        if (file == null) {
+            jTreeHierarchicalJson.setVisible(false);
+            JOptionPane.showMessageDialog(null, Initializations.NOFILECHOSEN, Initializations.ERRROR, JOptionPane.ERROR_MESSAGE);
+        } else {
+            jTreeHierarchicalJson.setVisible(true);
+            jTreeHierarchicalJson.setModel(json_util.makeJtreeModel(file.getName()));
+            setImageIcon();
         }
+        */
         
+        jTreeHierarchicalJson.setVisible(true);
+        jTreeHierarchicalJson.setModel(null);
         
+        if (dbcon.isConnectionSuccess())
+        {
+            jTreeHierarchicalJson.setModel(json_util.makeJtreeModel("Collection"));
+            //setImageIcon();
+        }
+        else
+        {
+            jTreeHierarchicalJson.setModel(json_util.makeJtreeModel("Collection"));
+        }
+           
     }//GEN-LAST:event_View_HierarchicalActionPerformed
 
     private void View_TableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_TableActionPerformed
-        if("".equals(textArea.getText()))
-            JOptionPane.showMessageDialog(null, "There are no JSON objects!", "Error", JOptionPane.ERROR_MESSAGE);
-        else 
-        if(!validateDataPanel_text(sb) && !"".equals(textArea.getText()))
-            JOptionPane.showMessageDialog(null, "Text is not in correct JSON format! Please input correct JSON text!", "Error", JOptionPane.ERROR_MESSAGE);
-        else{ 
-            Panel_Text.setVisible(false);
-            Panel_Hierarchical.setVisible(false);
-            Panel_Table.setVisible(true);
-            Panel_Compare.setVisible(false);
-            Panel_Compare_Upper.setVisible(false);
-            Panel_Connect.setVisible(false); 
+        // TODO add your handling code here:
+        Panel_Text.setVisible(false);
+        Panel_Hierarchical.setVisible(false);
+        Panel_Table.setVisible(true);
+        Panel_Compare.setVisible(false);
+        Panel_Compare_Upper.setVisible(false);
+        Panel_Connect.setVisible(false);
 
+        String[] json_field_names = json_util.getFields();
+        String[][] json_row_data = json_util.getRows(json_field_names);
+        DefaultTableModel model = (DefaultTableModel) Table_JSON.getModel();
+        Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
 
-
-            String[] json_field_names = json_util.getFields();
-            String[][] json_row_data = json_util.getRows(json_field_names);
-            DefaultTableModel model = (DefaultTableModel) Table_JSON.getModel();
-            Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
-        }
     }//GEN-LAST:event_View_TableActionPerformed
 
     private void Import_JSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_JSONActionPerformed
-        final JFileChooser fc = new JFileChooser();
-        String[] ext_array = new String[]{Initializations.TXT, Initializations.JSON};
-        String ext = util.formatExtentsions(ext_array);
         file = null;
         sb.setLength(0);
 
@@ -472,29 +505,20 @@ public class MainForm extends javax.swing.JFrame {
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) 
         {
-            Save.setEnabled(true);
+            Save_File.setEnabled(true);
             file = fc.getSelectedFile();
             sb.append(util.readFromFile(file));
                         
+            Panel_Text.setVisible(true);
+            Panel_Hierarchical.setVisible(false);
+            Panel_Table.setVisible(false);
+            Panel_Compare.setVisible(false);
+            Panel_Compare_Upper.setVisible(false);
+            Panel_Connect.setVisible(false);
+
             textArea.setText(Initializations.INITSTRING);
             textArea.setText(sb.toString());
-            Panel_Text.setVisible(true);
-                Panel_Hierarchical.setVisible(false);
-                Panel_Table.setVisible(false);
-                Panel_Compare.setVisible(false);
-                Panel_Compare_Upper.setVisible(false);
-                Panel_Connect.setVisible(false);
-            if(!validateDataPanel_text(sb))
-            {
-                View_Text.setEnabled(false);
-                View_Hierarchical.setEnabled(false);
-                View_Table.setEnabled(false);
-            }else
-            {
-                View_Text.setEnabled(true);
-                View_Hierarchical.setEnabled(true);
-                View_Table.setEnabled(true);
-            }
+            validateDataPanel_text(sb);
             /*
             if (json_util.isValid(sb.toString())) 
             {
@@ -519,28 +543,44 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_Import_JSONActionPerformed
 
-    private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
-       try 
+    private void Save_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Save_FileActionPerformed
+        try 
         {
-            parser.parse(textArea.getText());
+            file = null;
+            sb.setLength(0);
+
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (" + ext + ")", ext_array);
+            fc.setFileFilter(filter);
+
+            int returnVal = fc.showSaveDialog(this);
+            if (returnVal == JFileChooser.APPROVE_OPTION) 
+            {
+                Save_File.setEnabled(true);
+                file = fc.getSelectedFile();
+                //sb.append(util.readFromFile(file));
+
+                parser.parse(textArea.getText());
             try
             {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(fc.getSelectedFile()+".json"));
                 writer.write(textArea.getText());
                 writer.close();
                 Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
+                Text_MessageBar.setForeground(Color.GREEN);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
+                
+            }
         }
         catch(org.json.simple.parser.ParseException pe)
         {
-           JOptionPane.showMessageDialog(null, "Incorrect JSON format - check Message Bar!", "Error", JOptionPane.ERROR_MESSAGE);
+           Text_MessageBar.setForeground(Color.RED);
            Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
         }
-    }//GEN-LAST:event_SaveActionPerformed
+    }//GEN-LAST:event_Save_FileActionPerformed
 
     private void Text_MessageBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_MessageBarActionPerformed
         // TODO add your handling code here:
@@ -581,7 +621,7 @@ public class MainForm extends javax.swing.JFrame {
         //validate both text areas 
         if (json_util.isValid(textArea1Comp.getText()) && json_util.isValid(textArea2Comp.getText())) 
         {
-            
+            Text_MessageBar.setForeground(Color.GREEN);
             Text_MessageBar.setText(Initializations.JSONFILESUCCESS + Initializations.COMPARESTART);
             //call compare_result method found in JSONUtilitites
             try
@@ -596,11 +636,13 @@ public class MainForm extends javax.swing.JFrame {
                 
                 if (jNodeCompRes == null)
                 {
+                    Text_MessageBar.setForeground(Color.RED);
                     Text_MessageBar.setText(Initializations.COMPAREFAIL); 
                     Compare_ResultText.setText(Initializations.COMPOBJARRERR);
                 }
                 else
                 {
+                    Text_MessageBar.setForeground(Color.GREEN);
                     //Compare_ResultText.setText(jNodeCompRes.toString());
                     Compare_ResultText.setText(Initializations.SUMMARY + json_util.printDiff(jNodeCompRes));           
                     Text_MessageBar.setText(Initializations.COMPARESUCCESS); 
@@ -615,6 +657,7 @@ public class MainForm extends javax.swing.JFrame {
         } 
         else 
         {
+            Text_MessageBar.setForeground(Color.RED);
             JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT, Initializations.VALIDATIONERROR, JOptionPane.ERROR_MESSAGE);
             Text_MessageBar.setText(Initializations.COMPAREFAIL);
         }
@@ -629,6 +672,7 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     JOptionPane.showMessageDialog(this, Initializations.CONVERRDOC1, Initializations.CONVERR, JOptionPane.ERROR_MESSAGE);
                     Text_MessageBar.setText(Initializations.DOC1EMPTY);
+                    Text_MessageBar.setForeground(Color.YELLOW);
                     left_obj_to_array.setSelected(false);
                 }
                 else
@@ -641,6 +685,7 @@ public class MainForm extends javax.swing.JFrame {
                     }
                     else
                     {
+                        Text_MessageBar.setForeground(Color.YELLOW);
                         Text_MessageBar.setText(Initializations.OBJCONVERTED);
                     }
                     
@@ -655,23 +700,14 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_left_obj_to_arrayActionPerformed
 
     //method is used to validate data in Panel_text when a file is imported from file or when connected to the database to view collection data
-    private boolean validateDataPanel_text(StringBuilder sb)
+    private void validateDataPanel_text(StringBuilder sb)
     {
-        boolean flag = false;
         if (json_util.isValid(sb.toString())) 
             {
-                try{
-                    json_util.isDataParsed(textArea.getText());
-                    Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
-                    parser.parse(sb.toString());
-                    flag = true;
-                }catch(org.json.simple.parser.ParseException pe)
-                {
-                   JOptionPane.showMessageDialog(null, "Incorrect JSON format - check Message Bar!", "Error", JOptionPane.ERROR_MESSAGE);
-                   Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
-                   flag = false;
-                }
-               
+              //  json_util.isDataParsed(textArea.getText());
+                json_util.isDataParsed(sb.toString());
+                Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
+                Text_MessageBar.setForeground(Color.GREEN);
             } 
             else 
             {
@@ -684,11 +720,10 @@ public class MainForm extends javax.swing.JFrame {
                 }
                 catch(org.json.simple.parser.ParseException pe)
                 {
-                   JOptionPane.showMessageDialog(null, "Incorrect JSON format - check Message Bar!", "Error", JOptionPane.ERROR_MESSAGE);
                    Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                   Text_MessageBar.setForeground(Color.RED);
                 }
             }
-        return flag;
     }
     
     private void right_obj_to_arrayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_right_obj_to_arrayActionPerformed
@@ -700,6 +735,7 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     JOptionPane.showMessageDialog(this, Initializations.CONVERRDOC2, Initializations.CONVERR, JOptionPane.ERROR_MESSAGE);
                     Text_MessageBar.setText("Document 2 is empty!");
+                    Text_MessageBar.setForeground(Color.RED);
                     right_obj_to_array.setSelected(false);
                 }
                 else
@@ -713,6 +749,7 @@ public class MainForm extends javax.swing.JFrame {
                     else
                     {
                         Text_MessageBar.setText("Object is already converted to array!");
+                        Text_MessageBar.setForeground(Color.YELLOW);
                     }
                     
                 }
@@ -736,31 +773,74 @@ public class MainForm extends javax.swing.JFrame {
             
         if (dbcon.isConnectionSuccess())
         {
-            dbcon.closeConnection();
+            int result = JOptionPane.showConfirmDialog(null,"A connection to MongoDB"
+                    + "already exists. Are you sure you want to disconnect and open "
+                    + "a different connection?", "Confirm", JOptionPane.YES_NO_OPTION);
+            
+            if (result == JOptionPane.YES_OPTION)
+            {
+                dbcon.closeConnection();
+                connect();
+            }
         }
-        
+        else
+        {
+            connect();
+  }     
+    }//GEN-LAST:event_connect_DBActionPerformed
+
+    private void Import_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_FileActionPerformed
+        ImportFileDialog dlg_import = new ImportFileDialog(null);
+        dlg_import.setVisible(true);
+    }//GEN-LAST:event_Import_FileActionPerformed
+
+    private void Save_MongoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Save_MongoActionPerformed
+        if (dbcon.isConnectionSuccess())
+        {
+            System.out.print("You can save");
+            String json = textArea.getText();
+            dbcon.saveColl(json);
+            
+            System.out.print("SAVED");
+        }
+        else
+        {
+            System.out.println("you cannot save");
+        }
+    }//GEN-LAST:event_Save_MongoActionPerformed
+   
+    
+    public void connect()
+    {
         String user;
         String pass;
         String dbname;
+        String serveradd;
+        int port;
+        
         LoginDialog dlg_login = new LoginDialog(null);
         dlg_login.setVisible(true);
             
         //If user chose login and not cancel option on dialog box
         if (dlg_login.isToLogin())
         {
+            Text_MessageBar.setText(Initializations.DBATTEMPTING);
+            Text_MessageBar.setForeground(Color.YELLOW);
             user = dlg_login.getUsername();
             pass = dlg_login.getPassword();
             dbname = dlg_login.getDatabase();
+            serveradd = dlg_login.getServerAddr();
+            port = dlg_login.getPort();
 
-            Text_MessageBar.setText(Initializations.DBATTEMPTING);
-
-            if (dbcon.connect(user, pass, dbname))
+            if (dbcon.connect(user, pass, dbname, serveradd, port))
             {
                 DefaultTreeModel defTableMod = dbcon.buildDBTree();
                 if (defTableMod != null && dbcon.isConnectionSuccess())
                 {
                     jTree1.setModel(defTableMod);
                     Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
+                    Text_MessageBar.setForeground(Color.GREEN);
+                    Menu_Collections.setEnabled(true);
                     
                     //load the data of collection in panel_text on double click
                     jTree1.addMouseListener(new MouseAdapter() 
@@ -768,7 +848,9 @@ public class MainForm extends javax.swing.JFrame {
                         @Override
                         public void mouseClicked(MouseEvent me) 
                         { 
-                            if (me.getClickCount()==2)
+                            if (me.getButton() == MouseEvent.BUTTON1)
+                            {
+                                if (me.getClickCount()==2)
                             {
                                 //get the path of the mouse click ex:[localhost,test,testData] 
                                 TreePath tp = jTree1.getPathForLocation(me.getX(), me.getY());
@@ -781,12 +863,24 @@ public class MainForm extends javax.swing.JFrame {
                                         //if one of the collection matches the coll that was clicked by the user load data
                                         if(coll_db.contains(tp.getPathComponent(i).toString()))
                                         {
+                                            System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
                                             sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
 
                                             Panel_Text.setVisible(true);
 
-                                            textArea.setText(Initializations.INITSTRING);
-                                            textArea.setText(sb.toString());
+                                            JsonNode jNode1;
+                                            try
+                                            {
+                                                jNode1 = mapper.readTree(sb.toString());
+                                                textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                                            } catch (IOException ex) 
+                                            {
+                                                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                            } 
+                                                                           
+                                            
+                                            Text_MessageBar.setText(Initializations.INITSTRING);
+                                           // textArea.setText(sb.toString());
                                             validateDataPanel_text(sb);
                                             /*
                                             if (json_util.isValid(sb.toString())) 
@@ -811,7 +905,8 @@ public class MainForm extends javax.swing.JFrame {
                                         }
                                     }
                                 }
-                            }    
+                            } 
+                            }                            
                         } 
                     });
                 }
@@ -819,21 +914,25 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     jTree1.setModel(null);
                     Text_MessageBar.setText(Initializations.DBCONNFAIL);
-                }
-
-                
+                    Text_MessageBar.setForeground(Color.RED);
+                }      
             }
             else
             {
                 jTree1.setModel(null);
                 Text_MessageBar.setText(Initializations.DBCONNFAIL);
+                Text_MessageBar.setForeground(Color.RED);
             }
         }
+        else
+        {
+            jTree1.setModel(null);
+            Text_MessageBar.setText(Initializations.DBCONNFAIL);
+            Text_MessageBar.setForeground(Color.RED);
+        }
            
-       
-        
-    }//GEN-LAST:event_connect_DBActionPerformed
-   
+    }
+    
     public void setImageIcon() {
         ImageIcon leafIcon = createImageIcon("/resources/json_node.png");
 
@@ -893,7 +992,10 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JSplitPane ComparePane;
     private javax.swing.JButton Compare_Button;
     private javax.swing.JTextArea Compare_ResultText;
+    private javax.swing.JMenuItem Export_File;
+    private javax.swing.JMenuItem Import_File;
     private javax.swing.JMenuItem Import_JSON;
+    private javax.swing.JMenu Menu_Collections;
     private javax.swing.JMenu Menu_File;
     private javax.swing.JMenu Menu_Operations;
     private javax.swing.JMenu Menu_Views;
@@ -907,7 +1009,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel Panel_Table;
     private javax.swing.JPanel Panel_Text;
     private javax.swing.JPanel Panel_Views;
-    private javax.swing.JMenuItem Save;
+    private javax.swing.JMenuItem Save_File;
+    private javax.swing.JMenuItem Save_Mongo;
     private javax.swing.JTable Table_JSON;
     private javax.swing.JTextField Text_MessageBar;
     private javax.swing.JMenuItem View_Hierarchical;

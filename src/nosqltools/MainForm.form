@@ -18,12 +18,20 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Import_JSONActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="Save">
+            <MenuItem class="javax.swing.JMenuItem" name="Save_File">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Save"/>
+                <Property name="text" type="java.lang.String" value="Save File"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SaveActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Save_FileActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="Save_Mongo">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Save to MongoDB"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Save_MongoActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="connect_DB">
@@ -83,6 +91,26 @@
             <MenuItem class="javax.swing.JMenuItem" name="Op_Validate">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Validate"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="Menu_Collections">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Collections"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="Import_File">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Import File"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Import_FileActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="Export_File">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Export File"/>
               </Properties>
             </MenuItem>
           </SubComponents>
