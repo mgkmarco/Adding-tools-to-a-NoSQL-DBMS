@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -81,7 +83,6 @@ public class JSONUtilities
        {
            Entry <String, JsonNode> entry = iterator.next();
            treeNode.add(makeJtree(entry.getKey() + " : " + entry.getValue(), entry.getValue()));   
-           //treeNode.add(traverse(entry.getKey(), entry.getValue()));
        }
 
        if (node.isArray()) 
@@ -339,4 +340,6 @@ public class JSONUtilities
 
         return res.toString();
     }
+    
+   
 }

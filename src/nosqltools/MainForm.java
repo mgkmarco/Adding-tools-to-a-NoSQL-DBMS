@@ -17,6 +17,7 @@ import javax.swing.tree.TreePath;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -52,6 +53,8 @@ public class MainForm extends javax.swing.JFrame {
     ObjectMapper mapper = new ObjectMapper();
     DBConnection dbcon = new DBConnection();
     public static JProgressBar progBar;
+    TreePath tp;
+    int indexOfCurrentCollection;
     
     
     final JFileChooser fc = new JFileChooser();
@@ -111,6 +114,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Compare_Upper.setVisible(false);
         Panel_Connect.setVisible(false);
         Menu_Collections.setEnabled(false);
+        Op_Refresh.setEnabled(false);
         
         util.changeTextAreaTheme(textArea);
         
@@ -163,6 +167,7 @@ public class MainForm extends javax.swing.JFrame {
         Menu_Operations = new javax.swing.JMenu();
         Op_Compare = new javax.swing.JMenuItem();
         Op_Validate = new javax.swing.JMenuItem();
+        Op_Refresh = new javax.swing.JMenuItem();
         Menu_Collections = new javax.swing.JMenu();
         Import_File = new javax.swing.JMenuItem();
         Export_File = new javax.swing.JMenuItem();
@@ -399,6 +404,14 @@ public class MainForm extends javax.swing.JFrame {
         Op_Validate.setText("Validate");
         Menu_Operations.add(Op_Validate);
 
+        Op_Refresh.setText("Refresh");
+        Op_Refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Op_RefreshActionPerformed(evt);
+            }
+        });
+        Menu_Operations.add(Op_Refresh);
+
         jMenuBar1.add(Menu_Operations);
 
         Menu_Collections.setText("Collections");
@@ -412,6 +425,11 @@ public class MainForm extends javax.swing.JFrame {
         Menu_Collections.add(Import_File);
 
         Export_File.setText("Export File");
+        Export_File.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Export_FileActionPerformed(evt);
+            }
+        });
         Menu_Collections.add(Export_File);
 
         jMenuBar1.add(Menu_Collections);
@@ -452,29 +470,14 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Compare.setVisible(false);
         Panel_Compare_Upper.setVisible(false);
         Panel_Connect.setVisible(false);
-        
-        /*
-        if (file == null) {
-            jTreeHierarchicalJson.setVisible(false);
-            JOptionPane.showMessageDialog(null, Initializations.NOFILECHOSEN, Initializations.ERRROR, JOptionPane.ERROR_MESSAGE);
-        } else {
-            jTreeHierarchicalJson.setVisible(true);
-            jTreeHierarchicalJson.setModel(json_util.makeJtreeModel(file.getName()));
-            setImageIcon();
-        }
-        */
-        
+     
         jTreeHierarchicalJson.setVisible(true);
         jTreeHierarchicalJson.setModel(null);
         
-        if (dbcon.isConnectionSuccess())
+        if (!textArea.getText().trim().equals("") && json_util.isDataParsed(textArea.getText()))
         {
             jTreeHierarchicalJson.setModel(json_util.makeJtreeModel("Collection"));
             //setImageIcon();
-        }
-        else
-        {
-            jTreeHierarchicalJson.setModel(json_util.makeJtreeModel("Collection"));
         }
            
     }//GEN-LAST:event_View_HierarchicalActionPerformed
@@ -488,10 +491,13 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Compare_Upper.setVisible(false);
         Panel_Connect.setVisible(false);
 
-        String[] json_field_names = json_util.getFields();
-        String[][] json_row_data = json_util.getRows(json_field_names);
-        DefaultTableModel model = (DefaultTableModel) Table_JSON.getModel();
-        Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
+        if (json_util.isValid(textArea.getText()))
+        {
+            String[] json_field_names = json_util.getFields();
+            String[][] json_row_data = json_util.getRows(json_field_names);
+            DefaultTableModel model = (DefaultTableModel) Table_JSON.getModel();
+            Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
+        }
 
     }//GEN-LAST:event_View_TableActionPerformed
 
@@ -808,6 +814,64 @@ public class MainForm extends javax.swing.JFrame {
             System.out.println("you cannot save");
         }
     }//GEN-LAST:event_Save_MongoActionPerformed
+
+    private void Export_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Export_FileActionPerformed
+        List <String> connectionStrings = dbcon.getAllCollections();
+        ExportFileDialog dlg_export = new ExportFileDialog(null, connectionStrings);
+        dlg_export.setVisible(true);
+        
+        String collectionToExport = dlg_export.collectionToExport();
+        String typeToExport = dlg_export.typeToExport();
+        String locToExport = dlg_export.locToExport();
+        
+        //Converting JSON to CSV and export it to file is done in the dbcon.export method
+        //Exporting JSON on the other hand, is done here
+        if (typeToExport.equals("CSV") || typeToExport.equals("TSV"))
+        {
+           if (dbcon.export(collectionToExport, typeToExport, locToExport).equals("true"))
+            { 
+                Text_MessageBar.setForeground(Color.GREEN);
+                Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+            }
+            else
+            {
+                Text_MessageBar.setForeground(Color.RED);
+                Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+            }
+        }
+        else
+        {
+            String dataToExport = dbcon.export(collectionToExport, typeToExport, locToExport);
+            if(util.writeToFile(locToExport, dataToExport))
+            {
+                Text_MessageBar.setForeground(Color.GREEN);
+                Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+            }
+            else
+            {
+                Text_MessageBar.setForeground(Color.RED);
+                Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+            }
+        }
+    }//GEN-LAST:event_Export_FileActionPerformed
+
+    private void Op_RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Op_RefreshActionPerformed
+        if (dbcon.isConnectionSuccess())
+        {
+            String loc = tp.getPathComponent(indexOfCurrentCollection).toString();
+            String new_data = dbcon.getCollectionData(loc).toString();
+           
+            JsonNode jNode1;
+            try
+            {
+                jNode1 = mapper.readTree(new_data);
+                textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+            } catch (IOException ex) 
+            {
+                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+        }
+    }//GEN-LAST:event_Op_RefreshActionPerformed
    
     
     public void connect()
@@ -841,7 +905,7 @@ public class MainForm extends javax.swing.JFrame {
                     Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
                     Text_MessageBar.setForeground(Color.GREEN);
                     Menu_Collections.setEnabled(true);
-                    
+                
                     //load the data of collection in panel_text on double click
                     jTree1.addMouseListener(new MouseAdapter() 
                     {
@@ -853,7 +917,8 @@ public class MainForm extends javax.swing.JFrame {
                                 if (me.getClickCount()==2)
                             {
                                 //get the path of the mouse click ex:[localhost,test,testData] 
-                                TreePath tp = jTree1.getPathForLocation(me.getX(), me.getY());
+                                Op_Refresh.setEnabled(true);
+                                tp = jTree1.getPathForLocation(me.getX(), me.getY());
                                 if (tp != null)
                                 {
                                     List<String> coll_db = dbcon.getAllCollections();
@@ -863,6 +928,7 @@ public class MainForm extends javax.swing.JFrame {
                                         //if one of the collection matches the coll that was clicked by the user load data
                                         if(coll_db.contains(tp.getPathComponent(i).toString()))
                                         {
+                                            indexOfCurrentCollection = i;
                                             System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
                                             sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
 
@@ -1000,6 +1066,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenu Menu_Operations;
     private javax.swing.JMenu Menu_Views;
     private javax.swing.JMenuItem Op_Compare;
+    private javax.swing.JMenuItem Op_Refresh;
     private javax.swing.JMenuItem Op_Validate;
     private javax.swing.JPanel Panel_Compare;
     private javax.swing.JPanel Panel_Compare_Upper;

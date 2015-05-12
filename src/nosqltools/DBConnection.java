@@ -5,9 +5,9 @@
  */
 package nosqltools;
 
+import com.jsontocsv.parser.JsonFlattener;
+import com.jsontocsv.writer.CSVWriter;
 import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.BulkWriteOperation;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCommandException;
@@ -17,13 +17,16 @@ import com.mongodb.ServerAddress;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
-import com.mongodb.WriteResult;
 import com.mongodb.util.JSON;
+import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -106,13 +109,52 @@ public class DBConnection
         mongoClient.close();
     }
     
+    public String export(String coll, String type, String location)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb = getCollectionData(coll);
+        
+        switch (type)
+        {
+            case "CSV":
+        
+            JsonFlattener parser = new JsonFlattener();
+            CSVWriter writer = new CSVWriter();
+
+            List<Map<String, String>> flatJson;
+            try {
+                flatJson = parser.parseJson(sb.toString());
+                 writer.writeAsCSV(flatJson, location);
+                 return "true";
+            }
+            catch (FileNotFoundException ex) {
+                    Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            catch (Exception ex)
+            {
+                Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            }
+       
+             return "false";
+            
+            case "TSV":
+          
+             return "false";
+                
+            case "JSON":
+                return sb.toString();
+               
+        }
+        
+        return null;
+    }
+    
     //this method return json data found in the collection to be loaded in Panel_Text
     public StringBuilder getCollectionData(String coll)
     {
         StringBuilder res = new StringBuilder();
         collection = db.getCollection(coll);
         DBCursor cursor = collection.find();
-	
         //Reference: http://www.codeconfuse.com/2014/03/mongodb-convert-data-getting-from.html
         JSON json = new JSON();
         String serialize = json.serialize(cursor);

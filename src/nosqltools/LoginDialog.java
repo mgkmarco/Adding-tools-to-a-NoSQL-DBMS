@@ -11,12 +11,20 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRootPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 /**
  *
@@ -40,7 +48,7 @@ public class LoginDialog extends JDialog {
 
     public LoginDialog(Frame parent) {
         super(parent, Initializations.DBCONNECT2MONGO, true);
-        
+       
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
 
@@ -57,6 +65,7 @@ public class LoginDialog extends JDialog {
         cs.gridy = 0;
         cs.gridwidth = 2;
         panel.add(tfUsername, cs);
+      
 
         lbPassword = new JLabel("Password: ");
         cs.gridx = 0;
@@ -109,7 +118,7 @@ public class LoginDialog extends JDialog {
 
 
         btnLogin = new JButton("Login");
-
+        
         btnLogin.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) { 
@@ -136,7 +145,7 @@ public class LoginDialog extends JDialog {
                 dispose();
             }
         });
-        
+     
         JPanel bp = new JPanel();
         bp.add(btnLogin);
         bp.add(btnCancel);
@@ -148,6 +157,8 @@ public class LoginDialog extends JDialog {
         setResizable(false);
         setLocationRelativeTo(parent);
     }
+    
+    
 
     public String getUsername() {
         return tfUsername.getText().trim();
@@ -185,4 +196,21 @@ public class LoginDialog extends JDialog {
     public boolean isSucceeded() {
         return succeeded;
     }
+    
+     protected JRootPane createRootPane() { 
+        JRootPane rootPane = new JRootPane();
+        KeyStroke stroke = KeyStroke.getKeyStroke("ESCAPE");
+       
+        Action actionListener = new AbstractAction() { 
+          public void actionPerformed(ActionEvent actionEvent) { 
+            setVisible(false);
+          } 
+        } ;
+        
+        InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        inputMap.put(stroke, "ESCAPE");
+        rootPane.getActionMap().put("ESCAPE", actionListener);
+
+        return rootPane;
+  } 
 }

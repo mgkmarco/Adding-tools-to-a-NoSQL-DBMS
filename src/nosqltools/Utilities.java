@@ -8,6 +8,7 @@ package nosqltools;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -91,5 +92,33 @@ public class Utilities {
             ioe.printStackTrace();
         } 
     }
-                                            
+      
+    public boolean writeToFile(String locToExport, String dataToExport)
+    {
+        FileOutputStream fop = null;
+        File file;
+ 
+        try {
+                file = new File(locToExport);
+                fop = new FileOutputStream(file);
+
+                // if file doesnt exists, then create it
+                if (!file.exists()) {
+                        file.createNewFile();
+                }
+
+                // get the content in bytes
+                byte[] contentInBytes = dataToExport.getBytes();
+
+                fop.write(contentInBytes);
+                fop.flush();
+                fop.close();
+                
+                return true;
+
+        } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+        }
+    }
 }
