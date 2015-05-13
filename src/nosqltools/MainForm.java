@@ -106,6 +106,7 @@ public class MainForm extends javax.swing.JFrame {
         sp.setFoldIndicatorEnabled(true);
         Panel_Text.add(sp);
         Save_File.setEnabled(false);
+        
 
         Panel_Text.setVisible(false);
         Panel_Table.setVisible(false);
@@ -779,6 +780,7 @@ public class MainForm extends javax.swing.JFrame {
             
         if (dbcon.isConnectionSuccess())
         {
+            
             int result = JOptionPane.showConfirmDialog(null,"A connection to MongoDB"
                     + "already exists. Are you sure you want to disconnect and open "
                     + "a different connection?", "Confirm", JOptionPane.YES_NO_OPTION);
@@ -801,17 +803,29 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Import_FileActionPerformed
 
     private void Save_MongoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Save_MongoActionPerformed
-        if (dbcon.isConnectionSuccess())
+      
+        try 
         {
-            System.out.print("You can save");
-            String json = textArea.getText();
-            dbcon.saveColl(json);
-            
-            System.out.print("SAVED");
+            file = null;
+            sb.setLength(0);
+
+            if (dbcon.isConnectionSuccess() && textArea.getText()!=null) 
+            {
+                Save_Mongo.setEnabled(true);
+
+                parser.parse(textArea.getText());
+                
+                String json = textArea.getText();
+                dbcon.saveColl(json);
+                
+                Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
+                Text_MessageBar.setForeground(Color.GREEN);           
+            }
         }
-        else
+        catch(org.json.simple.parser.ParseException pe)
         {
-            System.out.println("you cannot save");
+           Text_MessageBar.setForeground(Color.RED);
+           Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
         }
     }//GEN-LAST:event_Save_MongoActionPerformed
 
@@ -824,35 +838,45 @@ public class MainForm extends javax.swing.JFrame {
         String typeToExport = dlg_export.typeToExport();
         String locToExport = dlg_export.locToExport();
         
-        //Converting JSON to CSV and export it to file is done in the dbcon.export method
-        //Exporting JSON on the other hand, is done here
-        if (typeToExport.equals("CSV") || typeToExport.equals("TSV"))
+        if(!locToExport.isEmpty())
         {
-           if (dbcon.export(collectionToExport, typeToExport, locToExport).equals("true"))
-            { 
-                Text_MessageBar.setForeground(Color.GREEN);
-                Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+           //Converting JSON to CSV and export it to file is done in the dbcon.export method
+            //Exporting JSON on the other hand, is done here
+            if (typeToExport.equals("CSV") || typeToExport.equals("TSV"))
+            {
+               if (dbcon.export(collectionToExport, typeToExport, locToExport).equals("true"))
+                { 
+                    Text_MessageBar.setForeground(Color.GREEN);
+                    Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+                }
+                else
+                {
+                    Text_MessageBar.setForeground(Color.RED);
+                    Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+                }
             }
             else
             {
-                Text_MessageBar.setForeground(Color.RED);
-                Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
-            }
+                String dataToExport = dbcon.export(collectionToExport, typeToExport, locToExport);
+                if(util.writeToFile(locToExport, dataToExport))
+                {
+                    Text_MessageBar.setForeground(Color.GREEN);
+                    Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+                }
+                else
+                {
+                    Text_MessageBar.setForeground(Color.RED);
+                    Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+                }
+            } 
         }
         else
         {
-            String dataToExport = dbcon.export(collectionToExport, typeToExport, locToExport);
-            if(util.writeToFile(locToExport, dataToExport))
-            {
-                Text_MessageBar.setForeground(Color.GREEN);
-                Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
-            }
-            else
-            {
-                Text_MessageBar.setForeground(Color.RED);
-                Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
-            }
+            JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
+            Text_MessageBar.setForeground(Color.RED);
+            Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
         }
+        
     }//GEN-LAST:event_Export_FileActionPerformed
 
     private void Op_RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Op_RefreshActionPerformed
@@ -914,7 +938,7 @@ public class MainForm extends javax.swing.JFrame {
                         { 
                             if (me.getButton() == MouseEvent.BUTTON1)
                             {
-                                if (me.getClickCount()==2)
+                            if (me.getClickCount()==2)
                             {
                                 //get the path of the mouse click ex:[localhost,test,testData] 
                                 Op_Refresh.setEnabled(true);
@@ -931,43 +955,52 @@ public class MainForm extends javax.swing.JFrame {
                                             indexOfCurrentCollection = i;
                                             System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
                                             sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
-
-                                            Panel_Text.setVisible(true);
-
-                                            JsonNode jNode1;
-                                            try
-                                            {
-                                                jNode1 = mapper.readTree(sb.toString());
-                                                textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
-                                            } catch (IOException ex) 
-                                            {
-                                                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                                            } 
-                                                                           
                                             
-                                            Text_MessageBar.setText(Initializations.INITSTRING);
-                                           // textArea.setText(sb.toString());
-                                            validateDataPanel_text(sb);
-                                            /*
-                                            if (json_util.isValid(sb.toString())) 
+                                            if(sb != null)
                                             {
-                                                json_util.isDataParsed(textArea.getText());
-                                                Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
-                                            } 
-                                            else 
-                                            {
-                                                sb.setLength(0);
-                                                //JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT , Initializations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
+                                                Panel_Text.setVisible(true);
 
+                                                JsonNode jNode1;
                                                 try
                                                 {
-                                                    Object obj = parser.parse(sb.toString());
-                                                }
-                                                catch(org.json.simple.parser.ParseException pe)
+                                                    jNode1 = mapper.readTree(sb.toString());
+                                                    textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                                                } catch (IOException ex) 
                                                 {
-                                                   Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
-                                                }
-                                            } */
+                                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                                } 
+
+
+                                                Text_MessageBar.setText(Initializations.INITSTRING);
+                                               // textArea.setText(sb.toString());
+                                                validateDataPanel_text(sb);
+                                                /*
+                                                if (json_util.isValid(sb.toString())) 
+                                                {
+                                                    json_util.isDataParsed(textArea.getText());
+                                                    Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
+                                                } 
+                                                else 
+                                                {
+                                                    sb.setLength(0);
+                                                    //JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT , Initializations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
+
+                                                    try
+                                                    {
+                                                        Object obj = parser.parse(sb.toString());
+                                                    }
+                                                    catch(org.json.simple.parser.ParseException pe)
+                                                    {
+                                                       Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                                                    }
+                                                } */ 
+                                            }
+                                            else
+                                            {
+                                                Panel_Text.setVisible(false);
+                                                Text_MessageBar.setText(Initializations.SYSTEMCOLL);
+                                                Text_MessageBar.setForeground(Color.RED);
+                                            }    
                                         }
                                     }
                                 }

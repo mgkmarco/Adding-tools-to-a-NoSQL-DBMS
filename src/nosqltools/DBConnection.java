@@ -153,13 +153,21 @@ public class DBConnection
     public StringBuilder getCollectionData(String coll)
     {
         StringBuilder res = new StringBuilder();
-        collection = db.getCollection(coll);
-        DBCursor cursor = collection.find();
-        //Reference: http://www.codeconfuse.com/2014/03/mongodb-convert-data-getting-from.html
-        JSON json = new JSON();
-        String serialize = json.serialize(cursor);
-        System.out.println(serialize);
-        res.append(serialize);
+        if (checkSystemColl(coll))
+        {
+            collection = db.getCollection(coll);
+            DBCursor cursor = collection.find();
+            //Reference: http://www.codeconfuse.com/2014/03/mongodb-convert-data-getting-from.html
+            JSON json = new JSON();
+            String serialize = json.serialize(cursor);
+            System.out.println(serialize);
+            res.append(serialize);
+        }
+        else 
+        {
+            res = null;
+        }
+        
             
         return res;
     }
@@ -173,33 +181,36 @@ public class DBConnection
         return collectionNames;
     }
     
+    public boolean checkSystemColl(String coll)
+    {
+        if (!coll.startsWith("system."))
+            return true;
+        
+        else
+            return false;
+    }
+    
     //saving a collection
     public void saveColl(String json)
     {
         BasicDBList objList = null;
-        DBObject obj = null;
-        List<DBObject> documents = new ArrayList<>();
-        //while ()
-        //{
-        //    obj = (DBObject)JSON.parse(json);
-        //    documents.add(obj);
-            
-            //create basicDB objects
-            // add them to basicDBList
-        //}
+        List<Object> documents = new ArrayList<>();
         
-        //DBObject obj = (DBObject)JSON.parse(json);
+        //get the string from text area and typecast to basic db list and dbobjects respectively
+        objList = (BasicDBList)JSON.parse(json);
         
-        
-        //System.out.println(obj);
-        //System.out.println(json);
-        //collection.save(obj);
-        
-        for (int i=0; i < documents.size(); i++)
+        //add objects to array list
+        for (int i = 0; i<objList.size(); i++)
         {
-            System.out.println(documents.get(i));
-            collection.save(documents.get(i));
+            documents.add(objList.get(i));
+            System.out.println(documents);
         }
         
+        //save each document to collection
+        for (int i=0; i < documents.size(); i++)
+        {
+            DBObject object = (DBObject) documents.get(i);
+            collection.save(object);
+        }     
     }
 }
