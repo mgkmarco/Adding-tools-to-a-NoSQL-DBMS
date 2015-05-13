@@ -161,6 +161,7 @@ public class MainForm extends javax.swing.JFrame {
         Save_File = new javax.swing.JMenuItem();
         Save_Mongo = new javax.swing.JMenuItem();
         connect_DB = new javax.swing.JMenuItem();
+        file_close = new javax.swing.JMenuItem();
         Menu_Views = new javax.swing.JMenu();
         View_Text = new javax.swing.JMenuItem();
         View_Hierarchical = new javax.swing.JMenuItem();
@@ -169,6 +170,7 @@ public class MainForm extends javax.swing.JFrame {
         Op_Compare = new javax.swing.JMenuItem();
         Op_Validate = new javax.swing.JMenuItem();
         Op_Refresh = new javax.swing.JMenuItem();
+        Op_DBActions = new javax.swing.JMenuItem();
         Menu_Collections = new javax.swing.JMenu();
         Import_File = new javax.swing.JMenuItem();
         Export_File = new javax.swing.JMenuItem();
@@ -362,6 +364,14 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_File.add(connect_DB);
 
+        file_close.setText("Close");
+        file_close.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                file_closeActionPerformed(evt);
+            }
+        });
+        Menu_File.add(file_close);
+
         jMenuBar1.add(Menu_File);
 
         Menu_Views.setText("Views");
@@ -412,6 +422,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         Menu_Operations.add(Op_Refresh);
+
+        Op_DBActions.setText("Database Actions");
+        Op_DBActions.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Op_DBActionsActionPerformed(evt);
+            }
+        });
+        Menu_Operations.add(Op_DBActions);
 
         jMenuBar1.add(Menu_Operations);
 
@@ -896,6 +914,31 @@ public class MainForm extends javax.swing.JFrame {
             } 
         }
     }//GEN-LAST:event_Op_RefreshActionPerformed
+
+    private void file_closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_file_closeActionPerformed
+        dispose();
+    }//GEN-LAST:event_file_closeActionPerformed
+
+    private void Op_DBActionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Op_DBActionsActionPerformed
+        if(dbcon.isConnectionSuccess())
+        {
+            if(indexOfCurrentCollection != 0)
+            {
+                ActionOnDB dbAction = new ActionOnDB(dbcon);
+                Text_MessageBar.setText(Initializations.DBACTIONSSUCCESS);
+                Text_MessageBar.setForeground(Color.GREEN);
+                dbAction.setVisible(true);
+            }
+            else
+            {
+                Text_MessageBar.setText(Initializations.DBACTIONNOCOLLECTION);
+                Text_MessageBar.setForeground(Color.RED);
+                JOptionPane.showMessageDialog(null, Initializations.DBACTIONNOCOLLECTION, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, Initializations.NODBCONNECTION, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_Op_DBActionsActionPerformed
    
     
     public void connect()
@@ -1099,6 +1142,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenu Menu_Operations;
     private javax.swing.JMenu Menu_Views;
     private javax.swing.JMenuItem Op_Compare;
+    private javax.swing.JMenuItem Op_DBActions;
     private javax.swing.JMenuItem Op_Refresh;
     private javax.swing.JMenuItem Op_Validate;
     private javax.swing.JPanel Panel_Compare;
@@ -1117,6 +1161,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
     private javax.swing.JMenuItem connect_DB;
+    private javax.swing.JMenuItem file_close;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;

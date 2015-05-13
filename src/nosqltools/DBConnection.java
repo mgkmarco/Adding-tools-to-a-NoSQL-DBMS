@@ -17,6 +17,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.MongoException;
 import com.mongodb.util.JSON;
 import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -40,6 +42,7 @@ public class DBConnection
     private boolean success = false;
     DB db;
     DBCollection collection;
+    JSONUtilities json_util = new JSONUtilities();
     
     public boolean connect(String username, String password, String database, String serveraddr, int port) 
     {
@@ -212,5 +215,113 @@ public class DBConnection
             DBObject object = (DBObject) documents.get(i);
             collection.save(object);
         }     
+    }
+    
+    public void insertInDatabase(String obj)
+    {
+        try{
+            if(json_util.isArray(obj))
+            {
+                JOptionPane.showMessageDialog(null, "JSON Arrays are not allowed - Insert only one JSON object!", "Error", JOptionPane.ERROR_MESSAGE);
+            }else{
+                DBObject dbobj = (DBObject)JSON.parse(obj);
+                collection.insert(dbobj);
+                JOptionPane.showMessageDialog(null, "JSON Object " + dbobj +" has been added to Collection!", "Inserted Successfully", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        catch(MongoException me)
+        {
+             JOptionPane.showMessageDialog(null, me.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public boolean updateDatabase(String obj1, String obj2)
+    {
+        boolean flag = false;
+        try{
+            if(json_util.isArray(obj1) || json_util.isArray(obj2))
+            {
+                JOptionPane.showMessageDialog(null, "JSON Arrays are not allowed - Change details for only one JSON object!", "Error", JOptionPane.ERROR_MESSAGE);
+            }else{
+                
+                DBObject dbobj1 = (DBObject)JSON.parse(obj1);
+                DBObject dbobj2 = (DBObject)JSON.parse(obj2);
+                
+                DBCursor cursor = collection.find(dbobj1);
+                int count = cursor.count();
+                
+                if(cursor.count() == 0)
+                {
+                    flag = true;
+                    JOptionPane.showMessageDialog(null, "JSON object " + dbobj2 + " does not exist in collection!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    while(count != 0)
+                    {
+                        while(cursor.hasNext()) {
+                            System.out.println(cursor.next());
+                        }
+
+                        if(count != 0)
+                            collection.update(dbobj1, dbobj2, true, false);
+                        count-- ;
+                    }
+                    JOptionPane.showMessageDialog(null, "JSON Object " + dbobj2 +" has been updated to Collection!", "Updated Successfully", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
+        catch(MongoException me)
+        {
+             JOptionPane.showMessageDialog(null, me.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return flag;
+    }
+    
+    public boolean deleteFromDatabase(String obj)
+    {
+        boolean flag = false;
+         try{
+            if(json_util.isArray(obj))
+            {
+                JOptionPane.showMessageDialog(null, "JSON Arrays are not allowed - Change details for only one JSON object!", "Error", JOptionPane.ERROR_MESSAGE);
+            }else{
+                
+                DBObject dbobj = (DBObject)JSON.parse(obj);
+                
+                DBCursor cursor = collection.find(dbobj);
+                int count = cursor.count();
+                if(cursor.count() == 0)
+                {
+                    flag = true;
+                    JOptionPane.showMessageDialog(null, "JSON object " + dbobj + " does not exist in collection!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    while(count != 0)
+                    {
+                        while(cursor.hasNext()) {
+                            System.out.println(cursor.next());
+                        }
+
+                        if(count != 0)
+                            collection.remove(dbobj);
+                        count-- ;
+                    }
+                    JOptionPane.showMessageDialog(null, "JSON Object " + dbobj +" has been removed from Collection!", "Deleted Successfully", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
+        catch(MongoException me)
+        {
+             JOptionPane.showMessageDialog(null, me.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+         return flag;
+    }
+    
+    public boolean checkIfEmpty(String x)
+    {
+        return x.isEmpty();
     }
 }
