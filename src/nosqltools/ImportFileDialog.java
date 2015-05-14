@@ -34,19 +34,24 @@ public class ImportFileDialog extends JDialog {
     private JButton btnBrowse;
     
     private JLabel lbCollection;
+    private JLabel lbFileType;
     private JComboBox dropColl;
-    private DBConnection db_conn = null;
-    private ArrayList<String> coll;
+    private final JComboBox dropType;
+    private List<String> coll;
     
     private JButton btnOk;
     private JButton btnCancel;
     private boolean choice = false;
+    private String collectionToImport = null;
+    private String locationToImport = null;
+    private String typeToImport = null;
     
-    public ImportFileDialog(Frame parent) {
+    public ImportFileDialog(Frame parent, List<String> collections) {
         super(parent, Initializations.IMPFILE, true);
         
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
+        this.coll = collections;
 
         cs.fill = GridBagConstraints.HORIZONTAL;
 
@@ -98,29 +103,32 @@ public class ImportFileDialog extends JDialog {
         cs.gridwidth = 1;
         panel.add(lbCollection, cs);
 
-        dropColl = fillCollCombo();
+        dropColl = new JComboBox(coll.toArray());
         cs.gridx = 1;
         cs.gridy = 1;
         cs.gridwidth = 2;
-        panel.add(dropColl, cs);    
+        panel.add(dropColl, cs);  
         
-        dropColl.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                ArrayList<String> coll = db_conn.getAllCollections();
-//                for (int i = 0; i< coll.size(); i++)
-//                {
-//                    dropColl.addItem(coll.get(i));        
-//                }
-            }
-        });
+        lbFileType = new JLabel("Import from: ");
+        cs.gridx = 0;
+        cs.gridy = 2;
+        cs.gridwidth = 1;
+        panel.add(lbFileType, cs);
+        
+        dropType = new JComboBox(populateFileTypes().toArray());
+        cs.gridx = 1;
+        cs.gridy = 2;
+        cs.gridwidth = 2;
+        panel.add(dropType, cs); 
 
         btnOk = new JButton("Import");
 
         btnOk.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {         
+            public void actionPerformed(ActionEvent e) {   
+            locationToImport = fcFile.getText();
+            typeToImport = dropType.getSelectedItem().toString();
+            collectionToImport = dropColl.getSelectedItem().toString();
             choice = true;
             dispose();
             }
@@ -147,19 +155,30 @@ public class ImportFileDialog extends JDialog {
         setLocationRelativeTo(parent);
     }
     
+    public String collectionToImport()
+    {
+        return collectionToImport;
+    }
+    
+     public String locToImport()
+    {
+        return locationToImport;
+    }
+     
+     public String typeToImport()
+    {
+        return typeToImport;
+    }
+    
     public boolean isToImport() {
         return choice;
     }
     
-    public JComboBox fillCollCombo()
-    {
-        dropColl = new JComboBox();
-        dropColl.addItem("none");
-        //for (int i = 0; i< coll.size(); i++)
-        //{
-        //    dropColl.addItem(coll.get(i));        
-        //}
-        return dropColl;
+    private List<String> populateFileTypes() {
+       List <String> types = new ArrayList <String>();
+       types.add("CSV");
+    
+       return types;
     }
     
 }
