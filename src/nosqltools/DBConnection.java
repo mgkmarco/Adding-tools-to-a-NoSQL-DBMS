@@ -193,6 +193,24 @@ public class DBConnection
             return false;
     }
     
+    //Combination of getAllCollections() and checkSystemColl()
+    public List<String> getAllCollectionsLessSystem()
+    {
+        Set<String> setNames = db.getCollectionNames();
+        List<String> collectionNames = new ArrayList<>(setNames);
+        List<String> collectionNamesLessSystem = new ArrayList<>();
+        
+        for (int i = 0; i < collectionNames.size(); i++)
+        {
+            if (checkSystemColl(collectionNames.get(i)))
+            {
+                collectionNamesLessSystem.add(collectionNames.get(i));
+            }
+        }
+        
+        return collectionNamesLessSystem;
+    }
+    
     //saving a collection
     public void saveColl(String json)
     {

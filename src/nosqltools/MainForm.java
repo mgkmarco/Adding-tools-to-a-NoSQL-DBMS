@@ -848,7 +848,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Save_MongoActionPerformed
 
     private void Export_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Export_FileActionPerformed
-        List <String> connectionStrings = dbcon.getAllCollections();
+        List <String> connectionStrings = dbcon.getAllCollectionsLessSystem();
         ExportFileDialog dlg_export = new ExportFileDialog(null, connectionStrings);
         dlg_export.setVisible(true);
         
@@ -892,7 +892,7 @@ public class MainForm extends javax.swing.JFrame {
         {
             JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
             Text_MessageBar.setForeground(Color.RED);
-            Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+            Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
         }
         
     }//GEN-LAST:event_Export_FileActionPerformed
@@ -996,7 +996,7 @@ public class MainForm extends javax.swing.JFrame {
                                         if(coll_db.contains(tp.getPathComponent(i).toString()))
                                         {
                                             indexOfCurrentCollection = i;
-                                            System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
+                                            //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
                                             sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
                                             
                                             if(sb != null)
