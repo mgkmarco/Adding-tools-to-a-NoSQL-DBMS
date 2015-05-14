@@ -826,8 +826,54 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_connect_DBActionPerformed
 
     private void Import_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_FileActionPerformed
-        ImportFileDialog dlg_import = new ImportFileDialog(null);
+        
+        List <String> connectionStrings = dbcon.getAllCollections();
+        ImportFileDialog dlg_import = new ImportFileDialog(null, connectionStrings);
         dlg_import.setVisible(true);
+        
+        String collectionToImport = dlg_import.collectionToImport();
+        String typeToImport= dlg_import.typeToImport();
+        String locToImport = dlg_import.locToImport();
+        
+        if(!locToImport.isEmpty())
+        {
+           //Converting JSON to CSV and export it to file is done in the dbcon.export method
+            //Exporting JSON on the other hand, is done here
+            if (typeToImport.equals("CSV"))
+            {
+               /*if (dbcon.import(collectionToImport, typeToImport, locToImport).equals("true"))
+                { 
+                    Text_MessageBar.setForeground(Color.GREEN);
+                    Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
+                }
+                else
+                {
+                    Text_MessageBar.setForeground(Color.RED);
+                    Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
+                }*/
+            }
+            else
+            {
+                String dataToExport = dbcon.export(collectionToImport, typeToImport, locToImport);
+                if(util.writeToFile(locToImport, dataToExport))
+                {
+                    Text_MessageBar.setForeground(Color.GREEN);
+                    Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
+                }
+                else
+                {
+                    Text_MessageBar.setForeground(Color.RED);
+                    Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
+                }
+            } 
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
+            Text_MessageBar.setForeground(Color.RED);
+            Text_MessageBar.setText("Export to " + typeToImport + " has been successful.");
+        }
+        
     }//GEN-LAST:event_Import_FileActionPerformed
 
     private void Save_MongoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Save_MongoActionPerformed
@@ -866,7 +912,7 @@ public class MainForm extends javax.swing.JFrame {
         String typeToExport = dlg_export.typeToExport();
         String locToExport = dlg_export.locToExport();
         
-        if(!locToExport.isEmpty())
+        if(locToExport != null)
         {
            //Converting JSON to CSV and export it to file is done in the dbcon.export method
             //Exporting JSON on the other hand, is done here

@@ -42,9 +42,9 @@ public class ExportFileDialog extends JDialog {
     private final JButton btnOk;
     private final JButton btnCancel;
     private boolean choice = false;
-    private String collectionToExport;
-    private String locationToExport;
-    private String typeToExport;
+    private String collectionToExport = null;
+    private String locationToExport = null;
+    private String typeToExport = null;
     
     public ExportFileDialog(Frame parent, List<String> collections) {
         super(parent, Initializations.EXPFILE, true);
