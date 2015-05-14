@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -64,7 +67,13 @@ public class MainForm extends javax.swing.JFrame {
     /**
      * Creates new form MainForm
      */
-    public MainForm() {     
+    public MainForm() {  
+        Image img = null;
+        try {
+            img = ImageIO.read(new File("resources/mongoicon.png"));
+        } catch (IOException e) {
+        }
+        this.setIconImage(img);
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         
@@ -176,6 +185,7 @@ public class MainForm extends javax.swing.JFrame {
         Export_File = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Mongo View");
 
         jSplitPane1.setDividerLocation(150);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(568, 453));
