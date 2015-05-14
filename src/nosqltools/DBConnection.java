@@ -19,8 +19,15 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.util.JSON;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +38,9 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import net.sf.json.CDL;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
 
 /**
  *
@@ -110,6 +120,36 @@ public class DBConnection
     {
         success = false;
         mongoClient.close();
+    }
+    
+    public String import_CSV(String import_to_coll, String import_type, String import_location)
+    {
+        //StringBuilder sb = new StringBuilder();
+        CDL cdl = new CDL();
+        
+        switch (import_type)
+        {
+            case "CSV": 
+                try
+                {
+                    String content = new String(Files.readAllBytes(Paths.get(import_location)));
+                    try
+                    {
+                        //JSONArray array = cdl.toJSONArray(csv.toString());
+                        JSONArray array = cdl.toJSONArray(content);
+                        return array.toString(array.length());
+                    }
+                    catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }            
+        }   
+        return null;
     }
     
     public String export(String coll, String type, String location)

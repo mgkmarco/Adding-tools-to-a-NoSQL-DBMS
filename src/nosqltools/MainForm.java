@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -827,7 +828,8 @@ public class MainForm extends javax.swing.JFrame {
 
     private void Import_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_FileActionPerformed
         
-        List <String> connectionStrings = dbcon.getAllCollections();
+        List <String> connectionStrings = dbcon.getAllCollectionsLessSystem();
+        connectionStrings.add(0, "none");
         ImportFileDialog dlg_import = new ImportFileDialog(null, connectionStrings);
         dlg_import.setVisible(true);
         
@@ -835,43 +837,74 @@ public class MainForm extends javax.swing.JFrame {
         String typeToImport= dlg_import.typeToImport();
         String locToImport = dlg_import.locToImport();
         
-        if(!locToImport.isEmpty())
+        StringBuilder sb = new StringBuilder();
+        
+        if(locToImport != null)
         {
            //Converting JSON to CSV and export it to file is done in the dbcon.export method
             //Exporting JSON on the other hand, is done here
             if (typeToImport.equals("CSV"))
-            {
-               /*if (dbcon.import(collectionToImport, typeToImport, locToImport).equals("true"))
-                { 
-                    Text_MessageBar.setForeground(Color.GREEN);
-                    Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
+            {    
+                try {
+                    if (collectionToImport.equals("none"))
+                    {
+                        Panel_Text.setVisible(true);
+                        JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
+                        textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
+                        Text_MessageBar.setForeground(Color.GREEN);
+                        Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
+                    }
+                    else if (connectionStrings.contains(collectionToImport))
+                    {
+                        
+                        //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
+                        sb = dbcon.getCollectionData(collectionToImport);
+
+                        if(sb != null)
+                        {
+                            Panel_Text.setVisible(true);
+
+                            JsonNode jNode1;
+                            try
+                            {
+                                jNode1 = mapper.readTree(sb.toString());
+                                textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                                JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
+                                textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
+                            } catch (IOException ex) 
+                            {
+                                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                            } 
+
+
+                            Text_MessageBar.setText(Initializations.INITSTRING);
+                           // textArea.setText(sb.toString());
+                            validateDataPanel_text(sb);
+                        }
+                        else
+                        {
+                            Panel_Text.setVisible(false);
+                            Text_MessageBar.setText(Initializations.SYSTEMCOLL);
+                            Text_MessageBar.setForeground(Color.RED);
+                        }    
+                        
+                    }
+                    
+                } catch (IOException ex) {
+                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                else
-                {
-                    Text_MessageBar.setForeground(Color.RED);
-                    Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
-                }*/
             }
             else
             {
-                String dataToExport = dbcon.export(collectionToImport, typeToImport, locToImport);
-                if(util.writeToFile(locToImport, dataToExport))
-                {
-                    Text_MessageBar.setForeground(Color.GREEN);
-                    Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
-                }
-                else
-                {
                     Text_MessageBar.setForeground(Color.RED);
-                    Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
-                }
+                    Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful."); 
             } 
         }
         else
         {
             JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
             Text_MessageBar.setForeground(Color.RED);
-            Text_MessageBar.setText("Export to " + typeToImport + " has been successful.");
+            Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
         }
         
     }//GEN-LAST:event_Import_FileActionPerformed
