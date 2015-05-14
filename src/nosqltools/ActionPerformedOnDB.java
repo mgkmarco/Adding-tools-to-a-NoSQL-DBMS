@@ -26,6 +26,7 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
      */
     public ActionPerformedOnDB(String value, DBConnection db_con) {
         initComponents();
+        setLocationRelativeTo(null);
         action = value;
         this.dbcon = db_con;
         actionLabel.setText(action);

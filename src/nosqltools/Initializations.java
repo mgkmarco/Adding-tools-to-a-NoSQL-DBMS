@@ -48,6 +48,7 @@ public class Initializations {
     public static String FILENOTFOUND = "No File was chosen!";
     
     public static String SYSTEMCOLL = "System collections are not shown!";
+    public static String SYSTEMCOLLNOREFRESH = "System collections cannot be refreshed!";
     
     public static String INITSTRING = "";
     

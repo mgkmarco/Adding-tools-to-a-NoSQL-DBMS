@@ -17,6 +17,7 @@ public class ActionOnDB extends javax.swing.JFrame {
      */
     public ActionOnDB(DBConnection dbcon) {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.dbcon = dbcon;
     }
 

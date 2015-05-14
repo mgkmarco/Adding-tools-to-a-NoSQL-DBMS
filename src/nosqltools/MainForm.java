@@ -707,7 +707,7 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     JOptionPane.showMessageDialog(this, Initializations.CONVERRDOC1, Initializations.CONVERR, JOptionPane.ERROR_MESSAGE);
                     Text_MessageBar.setText(Initializations.DOC1EMPTY);
-                    Text_MessageBar.setForeground(Color.YELLOW);
+                    Text_MessageBar.setForeground(Color.ORANGE);
                     left_obj_to_array.setSelected(false);
                 }
                 else
@@ -720,7 +720,7 @@ public class MainForm extends javax.swing.JFrame {
                     }
                     else
                     {
-                        Text_MessageBar.setForeground(Color.YELLOW);
+                        Text_MessageBar.setForeground(Color.ORANGE);
                         Text_MessageBar.setText(Initializations.OBJCONVERTED);
                     }
                     
@@ -784,7 +784,7 @@ public class MainForm extends javax.swing.JFrame {
                     else
                     {
                         Text_MessageBar.setText("Object is already converted to array!");
-                        Text_MessageBar.setForeground(Color.YELLOW);
+                        Text_MessageBar.setForeground(Color.ORANGE);
                     }
                     
                 }
@@ -908,47 +908,55 @@ public class MainForm extends javax.swing.JFrame {
         ExportFileDialog dlg_export = new ExportFileDialog(null, connectionStrings);
         dlg_export.setVisible(true);
         
-        String collectionToExport = dlg_export.collectionToExport();
-        String typeToExport = dlg_export.typeToExport();
-        String locToExport = dlg_export.locToExport();
-        
-        if(locToExport != null)
+        if (dlg_export.isToExport())
         {
-           //Converting JSON to CSV and export it to file is done in the dbcon.export method
-            //Exporting JSON on the other hand, is done here
-            if (typeToExport.equals("CSV") || typeToExport.equals("TSV"))
+            String collectionToExport = dlg_export.collectionToExport();
+            String typeToExport = dlg_export.typeToExport();
+            String locToExport = dlg_export.locToExport();
+
+            if(locToExport != null && !locToExport.trim().equals(""))
             {
-               if (dbcon.export(collectionToExport, typeToExport, locToExport).equals("true"))
-                { 
-                    Text_MessageBar.setForeground(Color.GREEN);
-                    Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+               //Converting JSON to CSV and export it to file is done in the dbcon.export method
+                //Exporting JSON on the other hand, is done here
+                if (typeToExport.equals("CSV") || typeToExport.equals("TSV"))
+                {
+                   if (dbcon.export(collectionToExport, typeToExport, locToExport).equals("true"))
+                    { 
+                        Text_MessageBar.setForeground(Color.GREEN);
+                        Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+                    }
+                    else
+                    {
+                        Text_MessageBar.setForeground(Color.RED);
+                        Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+                    }
                 }
                 else
                 {
-                    Text_MessageBar.setForeground(Color.RED);
-                    Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
-                }
+                    String dataToExport = dbcon.export(collectionToExport, typeToExport, locToExport);
+                    if(util.writeToFile(locToExport, dataToExport))
+                    {
+                        Text_MessageBar.setForeground(Color.GREEN);
+                        Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+                    }
+                    else
+                    {
+                        Text_MessageBar.setForeground(Color.RED);
+                        Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+                    }
+                } 
             }
             else
             {
-                String dataToExport = dbcon.export(collectionToExport, typeToExport, locToExport);
-                if(util.writeToFile(locToExport, dataToExport))
-                {
-                    Text_MessageBar.setForeground(Color.GREEN);
-                    Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
-                }
-                else
-                {
-                    Text_MessageBar.setForeground(Color.RED);
-                    Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
-                }
-            } 
+                JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
+                Text_MessageBar.setForeground(Color.RED);
+                Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+            }
         }
         else
         {
-            JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
-            Text_MessageBar.setForeground(Color.RED);
-            Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+            Text_MessageBar.setForeground(Color.ORANGE);
+            Text_MessageBar.setText("Export action has been aborted");
         }
         
     }//GEN-LAST:event_Export_FileActionPerformed
@@ -957,17 +965,25 @@ public class MainForm extends javax.swing.JFrame {
         if (dbcon.isConnectionSuccess())
         {
             String loc = tp.getPathComponent(indexOfCurrentCollection).toString();
-            String new_data = dbcon.getCollectionData(loc).toString();
-           
-            JsonNode jNode1;
-            try
+            
+            if (dbcon.checkSystemColl(loc))
             {
-                jNode1 = mapper.readTree(new_data);
-                textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
-            } catch (IOException ex) 
+                String new_data = dbcon.getCollectionData(loc).toString();
+                JsonNode jNode1;
+                try
+                {
+                    jNode1 = mapper.readTree(new_data);
+                    textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                } catch (IOException ex) 
+                {
+                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                } 
+            }
+            else
             {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+                Text_MessageBar.setText(Initializations.SYSTEMCOLLNOREFRESH);
+                Text_MessageBar.setForeground(Color.RED);
+            }
         }
     }//GEN-LAST:event_Op_RefreshActionPerformed
 
@@ -1012,7 +1028,7 @@ public class MainForm extends javax.swing.JFrame {
         if (dlg_login.isToLogin())
         {
             Text_MessageBar.setText(Initializations.DBATTEMPTING);
-            Text_MessageBar.setForeground(Color.YELLOW);
+            Text_MessageBar.setForeground(Color.ORANGE);
             user = dlg_login.getUsername();
             pass = dlg_login.getPassword();
             dbname = dlg_login.getDatabase();

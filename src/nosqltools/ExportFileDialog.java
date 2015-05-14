@@ -131,7 +131,12 @@ public class ExportFileDialog extends JDialog {
             locationToExport = fcFile.getText();
             typeToExport = dropType.getSelectedItem().toString();
             collectionToExport = dropColl.getSelectedItem().toString();
-            choice = true;
+            
+           // if (locationToExport == null || locationToExport.trim().equals(""))
+             //   choice = false;
+           // else 
+             choice = true;
+            
             dispose();
             }
         });
