@@ -39,7 +39,7 @@ public class ActionOnDB extends javax.swing.JFrame {
 
         jLabel1.setText("Action to perform:");
 
-        actionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Insert", "Update", "Delete" }));
+        actionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Insert", "Update", "Delete", "Find" }));
 
         nextBtn.setText("Next >>");
         nextBtn.addActionListener(new java.awt.event.ActionListener() {

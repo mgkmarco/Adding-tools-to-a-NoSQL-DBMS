@@ -275,22 +275,28 @@ public class DBConnection
         }     
     }
     
-    public void insertInDatabase(String obj)
+    public boolean insertInDatabase(String obj)
     {
+        boolean flag = true;
         try{
             if(json_util.isArray(obj))
             {
                 JOptionPane.showMessageDialog(null, "JSON Arrays are not allowed - Insert only one JSON object!", "Error", JOptionPane.ERROR_MESSAGE);
             }else{
-                DBObject dbobj = (DBObject)JSON.parse(obj);
-                collection.insert(dbobj);
-                JOptionPane.showMessageDialog(null, "JSON Object " + dbobj +" has been added to Collection!", "Inserted Successfully", JOptionPane.INFORMATION_MESSAGE);
+                if(!obj.isEmpty())
+                {
+                    flag = false;
+                    DBObject dbobj = (DBObject)JSON.parse(obj);
+                    collection.insert(dbobj);
+                    JOptionPane.showMessageDialog(null, "JSON Object " + dbobj +" has been added to Collection!", "Inserted Successfully", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         }
         catch(MongoException me)
         {
              JOptionPane.showMessageDialog(null, me.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+        return flag;
     }
     
     public boolean updateDatabase(String obj1, String obj2)
@@ -367,6 +373,52 @@ public class DBConnection
                         count-- ;
                     }
                     JOptionPane.showMessageDialog(null, "JSON Object " + dbobj +" has been removed from Collection!", "Deleted Successfully", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
+        catch(MongoException me)
+        {
+             JOptionPane.showMessageDialog(null, me.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+         return flag;
+    }
+    
+    public boolean findFromDatabase(String obj)
+    {
+        boolean flag = false;
+        String result = "";
+         try{
+            if(json_util.isArray(obj))
+            {
+                JOptionPane.showMessageDialog(null, "JSON Arrays are not allowed - Change details for only one JSON object!", "Error", JOptionPane.ERROR_MESSAGE);
+            }else{
+                
+                DBObject dbobj = (DBObject)JSON.parse(obj);
+                
+                DBCursor cursor = collection.find(dbobj);
+                int count = cursor.count();
+                if(cursor.count() == 0)
+                {
+                    flag = true;
+                    JOptionPane.showMessageDialog(null, "JSON object " + dbobj + " does not exist in collection!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    while(count != 0)
+                    {
+                        while(cursor.hasNext()) {
+                            System.out.println(cursor.next());
+                        }
+
+                        if(count != 0)
+                        {
+                            result += dbobj + "\n";
+                        }
+                        count-- ;
+                    }
+                    ResultForm results = new ResultForm(result, cursor.count());
+                    results.setVisible(true);
                 }
             }
         }

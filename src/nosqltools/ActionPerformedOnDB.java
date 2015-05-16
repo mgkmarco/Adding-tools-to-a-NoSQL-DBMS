@@ -37,6 +37,12 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
             label1.setText("Object in database to update: ");
             label2.setText("Update:");
         }
+        else if ("Find".equals(action))
+        {
+            label1.setText("Find object in Database:");           
+            label2.setVisible(false);
+            textArea2.setVisible(false);
+        }
         else{
             label2.setVisible(false);
             textArea2.setVisible(false);
@@ -164,8 +170,10 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
             parseText(textArea1.getText());
             switch (action) {
                 case "Insert":
-                    dbcon.insertInDatabase(textArea1.getText());
-                    dispose();
+                    if(!dbcon.insertInDatabase(textArea1.getText()))
+                        dispose();
+                    else
+                        textArea1.setText("");;
                     break;
                 case "Update":
                     parseText(textArea2.getText());
@@ -176,6 +184,12 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
                     break;
                 case "Delete":
                     if(!dbcon.deleteFromDatabase(textArea1.getText()))
+                        dispose();
+                    else
+                        textArea1.setText("");
+                    break;
+                case "Find":
+                    if(!dbcon.findFromDatabase(textArea1.getText()))
                         dispose();
                     else
                         textArea1.setText("");
