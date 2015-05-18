@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -85,7 +86,15 @@ public class ImportFileDialog extends JDialog {
                 // Case 1: the user selects file and clicks on open button
                 if (returnVal == JFileChooser.APPROVE_OPTION) 
                 {
-                    fcFile.setText(fc_Import.getSelectedFile().getPath());
+                    String filename = fc_Import.getSelectedFile().getName();
+                    if ((filename.substring(filename.lastIndexOf("."), filename.length())).equals(".csv"))
+                    {
+                        fcFile.setText(fc_Import.getSelectedFile().getPath());
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(fc_Import, Initializations.FILECSVIMPORT , Initializations.FILEERROR , JOptionPane.ERROR_MESSAGE);
+                    }
                 } 
                 // Case 2: the user clicks on cancel
                 else 

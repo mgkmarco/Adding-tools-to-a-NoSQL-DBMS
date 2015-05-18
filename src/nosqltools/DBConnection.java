@@ -5,6 +5,7 @@
  */
 package nosqltools;
 
+import com.fasterxml.jackson.databind.MappingIterator;
 import com.jsontocsv.parser.JsonFlattener;
 import com.jsontocsv.writer.CSVWriter;
 import com.mongodb.BasicDBList;
@@ -19,13 +20,10 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoException;
 import com.mongodb.util.JSON;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -41,6 +39,9 @@ import javax.swing.tree.DefaultTreeModel;
 import net.sf.json.CDL;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONTokener;
+import org.json.simple.JSONValue;
 
 /**
  *
@@ -126,18 +127,20 @@ public class DBConnection
     {
         //StringBuilder sb = new StringBuilder();
         CDL cdl = new CDL();
-        
+               
         switch (import_type)
         {
-            case "CSV": 
+            case "CSV":                
                 try
                 {
                     String content = new String(Files.readAllBytes(Paths.get(import_location)));
                     try
                     {
-                        //JSONArray array = cdl.toJSONArray(csv.toString());
+ 
                         JSONArray array = cdl.toJSONArray(content);
-                        return array.toString(array.length());
+
+                        return array.toString();
+              
                     }
                     catch (JSONException e)
                     {

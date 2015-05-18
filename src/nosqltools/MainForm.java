@@ -902,7 +902,7 @@ public class MainForm extends javax.swing.JFrame {
         }
         else
         {
-            JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.IMPORTERROR , JOptionPane.ERROR_MESSAGE);
             Text_MessageBar.setForeground(Color.RED);
             Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
         }

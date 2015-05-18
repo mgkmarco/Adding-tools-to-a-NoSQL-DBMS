@@ -29,7 +29,6 @@ public class Initializations {
     public static String JSONSAVESUCCESS = "JSON File has been saved successfully";
     public static String JSONINCORRECTFORMAT = "Incorrect JSON format";
     public static String VALIDATIONERROR = "Validation Error";
-    public static String EXPORTERROR = "Export Error";
     public static String ERRORLINE = "Error in line: ";
     public static String COMPARESTART = "...compare is starting";
     public static String COMPAREFAIL = "Compare failed";
@@ -46,6 +45,10 @@ public class Initializations {
     public static String IMPFILE = "Import File";
     public static String EXPFILE = "Export File";
     public static String FILENOTFOUND = "No File was chosen!";
+    public static String FILECSVIMPORT = "Wrong file type!";
+    public static String FILEERROR = "File Error";
+    public static String EXPORTERROR = "Export Error";
+    public static String IMPORTERROR = "Import Error";
     
     public static String SYSTEMCOLL = "System collections are not shown!";
     public static String SYSTEMCOLLNOREFRESH = "System collections cannot be refreshed!";
