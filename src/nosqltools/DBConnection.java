@@ -317,7 +317,7 @@ public class DBConnection
                 if(cursor.count() == 0)
                 {
                     flag = true;
-                    JOptionPane.showMessageDialog(null, "JSON object " + dbobj2 + " does not exist in collection!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "JSON object " + dbobj1 + " does not exist in collection!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 else{
                     while(count != 0)

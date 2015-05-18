@@ -23,7 +23,7 @@ public class ResultForm extends javax.swing.JFrame {
         count = noOfValues;
         resultTextArea.setText(count + " objects have been found: \n\n" + result);
         resultTextArea.setEditable(false);
-        setLocationRelativeTo(null);  // *** this will center your app ***
+        setLocationRelativeTo(null);  // to center your app ***
   
     }
 
