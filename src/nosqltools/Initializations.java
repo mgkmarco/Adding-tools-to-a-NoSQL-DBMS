@@ -28,12 +28,24 @@ public class Initializations {
     public static String JSONFILESUCCESS = "JSON File has been loaded successfully";
     public static String JSONSAVESUCCESS = "JSON File has been saved successfully";
     public static String JSONINCORRECTFORMAT = "Incorrect JSON format";
+    public static String NOTEXT = "No text found!";
     public static String VALIDATIONERROR = "Validation Error";
+<<<<<<< HEAD
+=======
+    public static String VALIDATIONSUCCESS = "Validation Successful";
+    public static String VALIDATIONTEXTAREA1 = " in first object";
+    public static String VALIDATIONTEXTAREA2 = " in second object";
+    public static String VALIDATEEMPTY = "Empty object";
+    public static String NOVALIDATIONPOSSIBLE = "No objects are visible for Validation!";
+    public static String EXPORTERROR = "Export Error";
+>>>>>>> origin/master
     public static String ERRORLINE = "Error in line: ";
     public static String COMPARESTART = "...compare is starting";
+    public static String COMPARELOADED = "Compare loaded!";
     public static String COMPAREFAIL = "Compare failed";
     public static String COMPARESUCCESS = "Compare successful";
     public static String COMPOBJARRERR = "Compare between an object and an array is not possible!";
+    public static String COMPAREEMPTY = "Compare not possible on empty objects!";
     public static String SUMMARY = "Summary: ";
     public static String LEAFICON = "Leaf icon file specified does not exist";
     public static String CONVERRDOC1 = "Object cannot be converted to array because Document 1 is empty!";

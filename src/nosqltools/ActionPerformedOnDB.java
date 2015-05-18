@@ -31,7 +31,7 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
         this.dbcon = db_con;
         actionLabel.setText(action);
         label1.setText(action);
-        databaseName.setText(dbcon.db.getName());
+        databaseName.setText(dbcon.collection.getName());
         if("Update".equals(action))
         {
             label1.setText("Object in database to update: ");
@@ -123,7 +123,7 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
 
         actionLabel.setText("jLabel2");
 
-        jLabel4.setText("Database:");
+        jLabel4.setText("Collection:");
 
         databaseName.setText("jLabel5");
 
@@ -167,26 +167,20 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
     private void OKBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKBtnActionPerformed
         if(action != null)
         {
-            parseText(textArea1.getText());
+            if(parseText(textArea1.getText()))
             switch (action) {
                 case "Insert":
                     if(!dbcon.insertInDatabase(textArea1.getText()))
                         dispose();
-                    else
-                        textArea1.setText("");;
                     break;
                 case "Update":
                     parseText(textArea2.getText());
                     if(!dbcon.updateDatabase(textArea1.getText(), textArea2.getText()))
                         dispose();
-                    else
-                        textArea1.setText("");
                     break;
                 case "Delete":
                     if(!dbcon.deleteFromDatabase(textArea1.getText()))
                         dispose();
-                    else
-                        textArea1.setText("");
                     break;
                 case "Find":
                     if(!dbcon.findFromDatabase(textArea1.getText()))
@@ -211,8 +205,9 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_cancelBtnActionPerformed
 
-    public void parseText(String x)
+    public boolean parseText(String x)
     {
+        boolean flag = true;
         JSONParser parser = new JSONParser();
         try 
         {
@@ -220,12 +215,14 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
         }
         catch(org.json.simple.parser.ParseException pe)
         {
+            flag = false;
             if(x.isEmpty())
                 JOptionPane.showMessageDialog(null, "There are no JSON Objects to " + action + "!", "Error", JOptionPane.ERROR_MESSAGE);
             else
-                JOptionPane.showMessageDialog(null, "Incorrect JSON format - " + Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), x) + "!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Incorrect JSON format - " + Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), x) + " " + pe + "!", "Error", JOptionPane.ERROR_MESSAGE);
         }
             
+        return flag;
     }
     /**
      * @param args the command line arguments
