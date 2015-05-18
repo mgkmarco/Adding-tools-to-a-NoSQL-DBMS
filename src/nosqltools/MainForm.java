@@ -936,12 +936,12 @@ public class MainForm extends javax.swing.JFrame {
             }
         }else
         {
-<<<<<<< HEAD
+
             JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.IMPORTERROR , JOptionPane.ERROR_MESSAGE);
-=======
+
             JOptionPane.showMessageDialog(null, Initializations.NODBCONNECTION, "Error", JOptionPane.ERROR_MESSAGE);
             Text_MessageBar.setText(Initializations.NODBCONNECTION);
->>>>>>> origin/master
+
             Text_MessageBar.setForeground(Color.RED);
         }
     }//GEN-LAST:event_Import_FileActionPerformed

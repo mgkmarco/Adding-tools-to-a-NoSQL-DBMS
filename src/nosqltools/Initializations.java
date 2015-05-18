@@ -30,15 +30,13 @@ public class Initializations {
     public static String JSONINCORRECTFORMAT = "Incorrect JSON format";
     public static String NOTEXT = "No text found!";
     public static String VALIDATIONERROR = "Validation Error";
-<<<<<<< HEAD
-=======
+
     public static String VALIDATIONSUCCESS = "Validation Successful";
     public static String VALIDATIONTEXTAREA1 = " in first object";
     public static String VALIDATIONTEXTAREA2 = " in second object";
     public static String VALIDATEEMPTY = "Empty object";
     public static String NOVALIDATIONPOSSIBLE = "No objects are visible for Validation!";
-    public static String EXPORTERROR = "Export Error";
->>>>>>> origin/master
+
     public static String ERRORLINE = "Error in line: ";
     public static String COMPARESTART = "...compare is starting";
     public static String COMPARELOADED = "Compare loaded!";
