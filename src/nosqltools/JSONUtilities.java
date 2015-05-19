@@ -114,20 +114,30 @@ public class JSONUtilities
         ObjectMapper mapper = new ObjectMapper();
         try 
         {
-            //use the object mapper to read the json string and create a tree
-            JSONParsedData = mapper.readTree(json_data);
-            return true;
+            if (!json_data.isEmpty())
+            {
+                //use the object mapper to read the json string and create a tree
+                JSONParsedData = mapper.readTree(json_data);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         } 
         catch (JsonParseException | JsonGenerationException | JsonMappingException e) 
         {
-            e.printStackTrace();
+            //e.printStackTrace();
+            return false;
         } 
         catch (IOException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
+            return false;
         }
            
-        return false;
+        //return false;
     }
     
     public String[] getFields() 

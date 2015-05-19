@@ -667,6 +667,8 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Compare.setVisible(true);
         Panel_Compare_Upper.setVisible(true);
         Panel_Connect.setVisible(false);
+        
+        Compare_ResultText.setEditable(false);
 
     }//GEN-LAST:event_Op_CompareActionPerformed
 
@@ -674,7 +676,7 @@ public class MainForm extends javax.swing.JFrame {
         if(!(textArea1Comp.getText().isEmpty() || textArea2Comp.getText().isEmpty()))
         {   Compare_ResultText.setText("");  
             //validate both text areas 
-            if (json_util.isValid(textArea1Comp.getText()) && json_util.isValid(textArea2Comp.getText())) 
+            if (json_util.isDataParsed(textArea1Comp.getText()) && json_util.isDataParsed(textArea2Comp.getText())) 
             {
                 Text_MessageBar.setForeground(Color.GREEN);
                 Text_MessageBar.setText(Initializations.JSONFILESUCCESS + Initializations.COMPARESTART);
@@ -727,7 +729,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Compare_ButtonActionPerformed
 
     private void left_obj_to_arrayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_left_obj_to_arrayActionPerformed
-        if (left_obj_to_array.isSelected())
+        if (left_obj_to_array.isSelected()&& (json_util.isDataParsed(textArea1Comp.getText())))
         {
             try
             {
@@ -790,7 +792,7 @@ public class MainForm extends javax.swing.JFrame {
     }
     
     private void right_obj_to_arrayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_right_obj_to_arrayActionPerformed
-        if (right_obj_to_array.isSelected())
+        if (right_obj_to_array.isSelected()&& (json_util.isDataParsed(textArea1Comp.getText())))
         {
             try
             {
