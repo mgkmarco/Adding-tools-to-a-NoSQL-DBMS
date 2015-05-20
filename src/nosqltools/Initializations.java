@@ -19,6 +19,8 @@ public class Initializations {
     public static String DBACTIONSSUCCESS = "Database Actions have been successfully loaded!";
     public static String DBACTIONNOCOLLECTION = "No collection has been selected!";
     public static String NODBCONNECTION = "There is no Database Connection yet!";
+    public static String MONGOSERVERERROR = "Mongo Server is down!";
+    public static String WAITINGFORCONNECTION = "Waiting for connection...";
     
     public static String NOFILECHOSEN = "No file was chosen";
     public static String ERRROR = "Error";
@@ -27,8 +29,9 @@ public class Initializations {
     
     public static String JSONFILESUCCESS = "JSON File has been loaded successfully";
     public static String JSONSAVESUCCESS = "JSON File has been saved successfully";
+    public static String JSONSAVEERROR = "JSON File has not been saved -";
     public static String JSONINCORRECTFORMAT = "Incorrect JSON format";
-    public static String NOTEXT = "No text found!";
+    public static String NOTEXT = "Nothing to display!";
     public static String VALIDATIONERROR = "Validation Error";
 
     public static String VALIDATIONSUCCESS = "Validation Successful";

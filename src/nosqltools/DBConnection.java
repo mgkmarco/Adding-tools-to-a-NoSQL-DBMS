@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.jsontocsv.parser.JsonFlattener;
 import com.jsontocsv.writer.CSVWriter;
 import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCommandException;
@@ -59,6 +60,9 @@ public class DBConnection
     {
         try
         {
+            if ("".equals(username.trim()) || "".equals(password.trim()) || "".equals(database.trim()))
+                return false;
+            
             MongoCredential credential = MongoCredential.createCredential(username, database, password.toCharArray());
           
             //if no server address has been specified, use localhost
@@ -68,6 +72,7 @@ public class DBConnection
                 mongoClient = new MongoClient(new ServerAddress(serveraddr, port), Arrays.asList(credential));
                         
             db = mongoClient.getDB(database);
+             System.out.print("connection" + checkDatabaseConnection());
            
             boolean auth;
             try {
@@ -84,12 +89,23 @@ public class DBConnection
         {
             return false;
         }
-        
     }
     
     public boolean isConnectionSuccess()
     {
         return success;
+    }
+    
+    public boolean checkDatabaseConnection()
+    {
+        
+        DBObject ping = new BasicDBObject("ping", "1");
+        try {
+              db.command(ping);
+              return true;
+        } catch (MongoException e) {
+            return false;
+        }
     }
     
     public DefaultTreeModel buildDBTree () 
@@ -183,10 +199,6 @@ public class DBConnection
        
              return "false";
             
-            case "TSV":
-          
-             return "false";
-                
             case "JSON":
                 return sb.toString();
                

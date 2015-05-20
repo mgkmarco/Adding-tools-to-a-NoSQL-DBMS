@@ -64,6 +64,9 @@ public class MainForm extends javax.swing.JFrame {
     final JFileChooser fc = new JFileChooser();
     String[] ext_array = new String[]{Initializations.TXT, Initializations.JSON};
     String ext = util.formatExtentsions(ext_array);
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (" + ext + ")", ext_array);
+   
+
     
     /**
      * Creates new form MainForm
@@ -77,7 +80,8 @@ public class MainForm extends javax.swing.JFrame {
         this.setIconImage(img);
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
+        fc.setFileFilter(filter);
+         
         textArea = new RSyntaxTextArea(20, 60);
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
         textArea.setCodeFoldingEnabled(true);
@@ -514,6 +518,12 @@ public class MainForm extends javax.swing.JFrame {
                 jTreeHierarchicalJson.setModel(json_util.makeJtreeModel("Collection"));
                 //setImageIcon();
             }
+            else 
+            {
+                Text_MessageBar.setText(Initializations.JSONINCORRECTFORMAT);
+                Text_MessageBar.setForeground(Color.RED);
+                JOptionPane.showMessageDialog(null, Initializations.JSONINCORRECTFORMAT, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }else
         {
             Text_MessageBar.setText(Initializations.NOTEXT);
@@ -528,17 +538,24 @@ public class MainForm extends javax.swing.JFrame {
             Panel_Text.setVisible(false);
         
             Panel_Hierarchical.setVisible(false);
-            Panel_Table.setVisible(true);
+        
             Panel_Compare.setVisible(false);
             Panel_Compare_Upper.setVisible(false);
             Panel_Connect.setVisible(false);
 
-            if (json_util.isValid(textArea.getText()))
+            if (json_util.isDataParsed(textArea.getText()))
             {
+                Panel_Table.setVisible(true);
                 String[] json_field_names = json_util.getFields();
                 String[][] json_row_data = json_util.getRows(json_field_names);
                 DefaultTableModel model = (DefaultTableModel) Table_JSON.getModel();
                 Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
+            }
+            else
+            {
+                Text_MessageBar.setText(Initializations.JSONINCORRECTFORMAT);
+                Text_MessageBar.setForeground(Color.RED);
+                JOptionPane.showMessageDialog(null, Initializations.JSONINCORRECTFORMAT, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }else
         {
@@ -552,8 +569,7 @@ public class MainForm extends javax.swing.JFrame {
         file = null;
         sb.setLength(0);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (" + ext + ")", ext_array);
-        fc.setFileFilter(filter);
+
 
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) 
@@ -572,27 +588,6 @@ public class MainForm extends javax.swing.JFrame {
             textArea.setText(Initializations.INITSTRING);
             textArea.setText(sb.toString());
             validateDataPanel_text(sb);
-            /*
-            if (json_util.isValid(sb.toString())) 
-            {
-                json_util.isDataParsed(textArea.getText());
-                Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
-            } 
-            else 
-            {
-                sb.setLength(0);
-                JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT , Initializations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
-           
-                try
-                {
-                    Object obj = parser.parse(sb.toString());
-                }
-                catch(org.json.simple.parser.ParseException pe)
-                {
-                   Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
-                }
-            }
-            */
         }
     }//GEN-LAST:event_Import_JSONActionPerformed
 
@@ -613,25 +608,32 @@ public class MainForm extends javax.swing.JFrame {
                 //sb.append(util.readFromFile(file));
 
                 parser.parse(textArea.getText());
-            try
-            {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(fc.getSelectedFile()+".json"));
-                writer.write(textArea.getText());
-                writer.close();
-                Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
-                Text_MessageBar.setForeground(Color.GREEN);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-            }
-                
+                if(json_util.isDataParsed(textArea.getText()))
+                {
+                    try
+                    {
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fc.getSelectedFile()+".json"));
+                        writer.write(textArea.getText());
+                        writer.close();
+                        Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
+                        Text_MessageBar.setForeground(Color.GREEN);
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }else
+                {
+                    Text_MessageBar.setForeground(Color.RED);
+                    Text_MessageBar.setText(Initializations.VALIDATIONERROR);
+                    JOptionPane.showMessageDialog(null, Initializations.JSONSAVEERROR + Initializations.VALIDATIONERROR, "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
         catch(org.json.simple.parser.ParseException pe)
         {
            Text_MessageBar.setForeground(Color.RED);
-           Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+           Text_MessageBar.setText(Initializations.JSONSAVEERROR + Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
         }
     }//GEN-LAST:event_Save_FileActionPerformed
 
@@ -770,9 +772,17 @@ public class MainForm extends javax.swing.JFrame {
         if (json_util.isValid(sb.toString())) 
             {
               //  json_util.isDataParsed(textArea.getText());
-                json_util.isDataParsed(sb.toString());
-                Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
-                Text_MessageBar.setForeground(Color.GREEN);
+                if(json_util.isDataParsed(sb.toString()))
+                {
+                    Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
+                    Text_MessageBar.setForeground(Color.GREEN);
+                }
+                else
+                {
+                    Text_MessageBar.setText(Initializations.JSONINCORRECTFORMAT);
+                    Text_MessageBar.setForeground(Color.ORANGE);
+                    JOptionPane.showMessageDialog(null, Initializations.JSONINCORRECTFORMAT, "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } 
             else 
             {
@@ -786,7 +796,7 @@ public class MainForm extends javax.swing.JFrame {
                 catch(org.json.simple.parser.ParseException pe)
                 {
                    Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
-                   Text_MessageBar.setForeground(Color.RED);
+                   Text_MessageBar.setForeground(Color.ORANGE);
                 }
             }
     }
@@ -828,118 +838,139 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_right_obj_to_arrayActionPerformed
 
     private void connect_DBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connect_DBActionPerformed
-        
+
         Panel_Text.setVisible(false);
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(false);
         Panel_Compare_Upper.setVisible(false);
         Panel_Connect.setVisible(true);
-            
+        
+        Text_MessageBar.setText(Initializations.WAITINGFORCONNECTION);
+        Text_MessageBar.setForeground(Color.ORANGE);
         if (dbcon.isConnectionSuccess())
         {
-            
-            int result = JOptionPane.showConfirmDialog(null,"A connection to MongoDB"
-                    + "already exists. Are you sure you want to disconnect and open "
-                    + "a different connection?", "Confirm", JOptionPane.YES_NO_OPTION);
-            
-            if (result == JOptionPane.YES_OPTION)
+            if(dbcon.checkDatabaseConnection())
             {
-                dbcon.closeConnection();
-                connect();
+                int result = JOptionPane.showConfirmDialog(null,"A connection to MongoDB"
+                        + "already exists. Are you sure you want to disconnect and open "
+                        + "a different connection?", "Confirm", JOptionPane.YES_NO_OPTION);
+
+                if (result == JOptionPane.YES_OPTION)
+                {
+                    dbcon.closeConnection();
+                    connect();
+                }
+            }else
+            {
+                Text_MessageBar.setText(Initializations.MONGOSERVERERROR);
+                Text_MessageBar.setForeground(Color.RED);
+                JOptionPane.showMessageDialog(null, Initializations.MONGOSERVERERROR, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         else
         {
             connect();
-  }     
+        }
+       
+            
     }//GEN-LAST:event_connect_DBActionPerformed
 
     private void Import_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_FileActionPerformed
+        Text_MessageBar.setText(Initializations.WAITINGFORCONNECTION);
+        Text_MessageBar.setForeground(Color.ORANGE);
         if(dbcon.isConnectionSuccess())
-        {                
-            List <String> connectionStrings = dbcon.getAllCollectionsLessSystem();
-            connectionStrings.add(0, "none");
-            ImportFileDialog dlg_import = new ImportFileDialog(null, connectionStrings);
-            dlg_import.setVisible(true);
-
-            String collectionToImport = dlg_import.collectionToImport();
-            String typeToImport= dlg_import.typeToImport();
-            String locToImport = dlg_import.locToImport();
-
-            StringBuilder sb = new StringBuilder();
-
-            if(locToImport != null)
+        { 
+            if(dbcon.checkDatabaseConnection())
             {
-               //Converting JSON to CSV and export it to file is done in the dbcon.export method
-                //Exporting JSON on the other hand, is done here
-                if (typeToImport.equals("CSV"))
-                {    
-                    try {
-                        if (collectionToImport.equals("none"))
-                        {
-                            Panel_Text.setVisible(true);
-                            JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
-                            textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
-                            Text_MessageBar.setForeground(Color.GREEN);
-                            Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
-                        }
-                        else if (connectionStrings.contains(collectionToImport))
-                        {
+                List <String> connectionStrings = dbcon.getAllCollectionsLessSystem();
+                connectionStrings.add(0, "none");
+                ImportFileDialog dlg_import = new ImportFileDialog(null, connectionStrings);
+                dlg_import.setVisible(true);
 
-                            //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
-                            sb = dbcon.getCollectionData(collectionToImport);
+                String collectionToImport = dlg_import.collectionToImport();
+                String typeToImport= dlg_import.typeToImport();
+                String locToImport = dlg_import.locToImport();
 
-                            if(sb != null)
+                StringBuilder sb = new StringBuilder();
+
+                if(locToImport == null)
+                {
+                   //Converting JSON to CSV and export it to file is done in the dbcon.export method
+                    //Exporting JSON on the other hand, is done here
+                    if (typeToImport.equals("CSV"))
+                    {    
+                        try {
+                            if (collectionToImport.equals("none"))
                             {
                                 Panel_Text.setVisible(true);
-
-                                JsonNode jNode1;
-                                try
-                                {
-                                    jNode1 = mapper.readTree(sb.toString());
-                                    textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
-                                    JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
-                                    textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
-                                } catch (IOException ex) 
-                                {
-                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                                } 
-
-
-                                Text_MessageBar.setText(Initializations.INITSTRING);
-                               // textArea.setText(sb.toString());
-                                validateDataPanel_text(sb);
+                                JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
+                                textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
+                                Text_MessageBar.setForeground(Color.GREEN);
+                                Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
                             }
-                            else
+                            else if (connectionStrings.contains(collectionToImport))
                             {
-                                Panel_Text.setVisible(false);
-                                Text_MessageBar.setText(Initializations.SYSTEMCOLL);
-                                Text_MessageBar.setForeground(Color.RED);
-                            }    
 
+                                //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
+                                sb = dbcon.getCollectionData(collectionToImport);
+
+                                if(sb != null)
+                                {
+                                    Panel_Text.setVisible(true);
+
+                                    JsonNode jNode1;
+                                    try
+                                    {
+                                        jNode1 = mapper.readTree(sb.toString());
+                                        textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                                        JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
+                                        textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
+                                    } catch (IOException ex) 
+                                    {
+                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                    } 
+
+
+                                    Text_MessageBar.setText(Initializations.INITSTRING);
+                                   // textArea.setText(sb.toString());
+                                    validateDataPanel_text(sb);
+                                }
+                                else
+                                {
+                                    Panel_Text.setVisible(false);
+                                    Text_MessageBar.setText(Initializations.SYSTEMCOLL);
+                                    Text_MessageBar.setForeground(Color.RED);
+                                }    
+
+                            }
+
+                        } catch (IOException ex) {
+                            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
                         }
-
-                    } catch (IOException ex) {
-                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    else
+                    {
+                            Text_MessageBar.setForeground(Color.RED);
+                            Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful."); 
+                    } 
                 }
                 else
                 {
-                        Text_MessageBar.setForeground(Color.RED);
-                        Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful."); 
-                } 
-            }
-            else
+                    JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.IMPORTERROR , JOptionPane.ERROR_MESSAGE);
+                    Text_MessageBar.setForeground(Color.RED);
+                    Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
+                }
+            }else
             {
-                JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, Initializations.MONGOSERVERERROR, "Error", JOptionPane.ERROR_MESSAGE);
+                Text_MessageBar.setText(Initializations.MONGOSERVERERROR);
                 Text_MessageBar.setForeground(Color.RED);
-                Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
             }
         }else
         {
 
-            JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.IMPORTERROR , JOptionPane.ERROR_MESSAGE);
+           // JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.IMPORTERROR , JOptionPane.ERROR_MESSAGE);
 
             JOptionPane.showMessageDialog(null, Initializations.NODBCONNECTION, "Error", JOptionPane.ERROR_MESSAGE);
             Text_MessageBar.setText(Initializations.NODBCONNECTION);
@@ -949,30 +980,48 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Import_FileActionPerformed
 
     private void Save_MongoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Save_MongoActionPerformed
+        Text_MessageBar.setText(Initializations.WAITINGFORCONNECTION);
+        Text_MessageBar.setForeground(Color.ORANGE);
         if(dbcon.isConnectionSuccess())
-            {      
-            try 
-            {
-                file = null;
-                sb.setLength(0);
-
-                if (dbcon.isConnectionSuccess() && textArea.getText()!=null) 
+        {              
+            if(dbcon.checkDatabaseConnection()){
+            
+                if(indexOfCurrentCollection != 0)
                 {
-                    Save_Mongo.setEnabled(true);
+                    try 
+                    {
+                        file = null;
+                        sb.setLength(0);
 
-                    parser.parse(textArea.getText());
+                        if (dbcon.isConnectionSuccess() && textArea.getText()!=null) 
+                        {
+                            Save_Mongo.setEnabled(true);
 
-                    String json = textArea.getText();
-                    dbcon.saveColl(json);
+                            parser.parse(textArea.getText());
 
-                    Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
-                    Text_MessageBar.setForeground(Color.GREEN);           
-                }
-            }
-            catch(org.json.simple.parser.ParseException pe)
+                            String json = textArea.getText();
+                            dbcon.saveColl(json);
+
+                            Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
+                            Text_MessageBar.setForeground(Color.GREEN);           
+                        }
+                    }
+                    catch(org.json.simple.parser.ParseException pe)
+                    {
+                       Text_MessageBar.setForeground(Color.RED);
+                       Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                    }
+                }else
+                {
+                    Text_MessageBar.setText(Initializations.DBACTIONNOCOLLECTION);
+                    Text_MessageBar.setForeground(Color.RED);
+                    JOptionPane.showMessageDialog(null, Initializations.DBACTIONNOCOLLECTION, "Error", JOptionPane.ERROR_MESSAGE);
+                } 
+            }else
             {
-               Text_MessageBar.setForeground(Color.RED);
-               Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
+                JOptionPane.showMessageDialog(null, Initializations.MONGOSERVERERROR, "Error", JOptionPane.ERROR_MESSAGE);
+                Text_MessageBar.setText(Initializations.MONGOSERVERERROR);
+                Text_MessageBar.setForeground(Color.RED);
             }
         }else{
             JOptionPane.showMessageDialog(null, Initializations.NODBCONNECTION, "Error", JOptionPane.ERROR_MESSAGE);
@@ -982,61 +1031,71 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Save_MongoActionPerformed
 
     private void Export_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Export_FileActionPerformed
+    Text_MessageBar.setText(Initializations.WAITINGFORCONNECTION);
+    Text_MessageBar.setForeground(Color.ORANGE);
     if(dbcon.isConnectionSuccess())
-    {        
-        List <String> connectionStrings = dbcon.getAllCollectionsLessSystem();
-        ExportFileDialog dlg_export = new ExportFileDialog(null, connectionStrings);
-        dlg_export.setVisible(true);
-        
-        if (dlg_export.isToExport())
+    {  
+        if(dbcon.checkDatabaseConnection())
         {
-            String collectionToExport = dlg_export.collectionToExport();
-            String typeToExport = dlg_export.typeToExport();
-            String locToExport = dlg_export.locToExport();
+            List <String> connectionStrings = dbcon.getAllCollectionsLessSystem();
+            ExportFileDialog dlg_export = new ExportFileDialog(null, connectionStrings);
+            dlg_export.setVisible(true);
 
-            if(locToExport != null && !locToExport.trim().equals(""))
+            if (dlg_export.isToExport())
             {
-               //Converting JSON to CSV and export it to file is done in the dbcon.export method
-                //Exporting JSON on the other hand, is done here
-                if (typeToExport.equals("CSV") || typeToExport.equals("TSV"))
+                String collectionToExport = dlg_export.collectionToExport();
+                String typeToExport = dlg_export.typeToExport();
+                String locToExport = dlg_export.locToExport();
+
+                if(locToExport != null && !locToExport.trim().equals(""))
                 {
-                   if (dbcon.export(collectionToExport, typeToExport, locToExport).equals("true"))
-                    { 
-                        Text_MessageBar.setForeground(Color.GREEN);
-                        Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+                   //Converting JSON to CSV and export it to file is done in the dbcon.export method
+                    //Exporting JSON on the other hand, is done here
+                    if (typeToExport.equals("CSV") || typeToExport.equals("TSV"))
+                    {
+                       if (dbcon.export(collectionToExport, typeToExport, locToExport).equals("true"))
+                        { 
+                            Text_MessageBar.setForeground(Color.GREEN);
+                            Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+                        }
+                        else
+                        {
+                            Text_MessageBar.setForeground(Color.RED);
+                            Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+                        }
                     }
                     else
                     {
-                        Text_MessageBar.setForeground(Color.RED);
-                        Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
-                    }
+                        String dataToExport = dbcon.export(collectionToExport, typeToExport, locToExport);
+                        if(util.writeToFile(locToExport, dataToExport))
+                        {
+                            Text_MessageBar.setForeground(Color.GREEN);
+                            Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
+                        }
+                        else
+                        {
+                            Text_MessageBar.setForeground(Color.RED);
+                            Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+                        }
+                    } 
                 }
                 else
                 {
-                    String dataToExport = dbcon.export(collectionToExport, typeToExport, locToExport);
-                    if(util.writeToFile(locToExport, dataToExport))
-                    {
-                        Text_MessageBar.setForeground(Color.GREEN);
-                        Text_MessageBar.setText("Export to " + typeToExport + " has been successful.");
-                    }
-                    else
-                    {
-                        Text_MessageBar.setForeground(Color.RED);
-                        Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
-                    }
-                } 
+                    JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
+                    Text_MessageBar.setForeground(Color.RED);
+                    Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+                }
             }
             else
             {
-                JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.EXPORTERROR , JOptionPane.ERROR_MESSAGE);
-                Text_MessageBar.setForeground(Color.RED);
-                Text_MessageBar.setText("Export to " + typeToExport + " has been unsuccessful.");
+                Text_MessageBar.setForeground(Color.ORANGE);
+                Text_MessageBar.setText("Export action has been aborted");
             }
-        }
-        else
+        }else
         {
-            Text_MessageBar.setForeground(Color.ORANGE);
-            Text_MessageBar.setText("Export action has been aborted");
+            JOptionPane.showMessageDialog(null, Initializations.MONGOSERVERERROR, "Error", JOptionPane.ERROR_MESSAGE);
+            Text_MessageBar.setText(Initializations.MONGOSERVERERROR);
+            Text_MessageBar.setForeground(Color.RED);
         }
     }else
     {
@@ -1047,32 +1106,42 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Export_FileActionPerformed
 
     private void Op_RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Op_RefreshActionPerformed
+        Text_MessageBar.setText(Initializations.WAITINGFORCONNECTION);
+        Text_MessageBar.setForeground(Color.ORANGE);
         if (dbcon.isConnectionSuccess())
         {
-            if(indexOfCurrentCollection != 0)
+            if(dbcon.checkDatabaseConnection())
             {
-              
-                String loc = tp.getPathComponent(indexOfCurrentCollection).toString();
-            
-                if (dbcon.checkSystemColl(loc))
+                if(indexOfCurrentCollection != 0)
                 {
-                    String new_data = dbcon.getCollectionData(loc).toString();
-                    JsonNode jNode1;
-                    try
+
+                    String loc = tp.getPathComponent(indexOfCurrentCollection).toString();
+
+                    if (dbcon.checkSystemColl(loc))
                     {
-                        jNode1 = mapper.readTree(new_data);
-                        textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
-                    } catch (IOException ex) 
+                        String new_data = dbcon.getCollectionData(loc).toString();
+                        JsonNode jNode1;
+                        try
+                        {
+                            jNode1 = mapper.readTree(new_data);
+                            textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                        } catch (IOException ex) 
+                        {
+                            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                        } 
+                    }
+                }else
                     {
-                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                        Text_MessageBar.setText(Initializations.DBACTIONNOCOLLECTION);
+                        Text_MessageBar.setForeground(Color.RED);
+                        JOptionPane.showMessageDialog(null, Initializations.DBACTIONNOCOLLECTION, "Error", JOptionPane.ERROR_MESSAGE);
                     } 
-                }
             }else
-                {
-                    Text_MessageBar.setText(Initializations.DBACTIONNOCOLLECTION);
-                    Text_MessageBar.setForeground(Color.RED);
-                    JOptionPane.showMessageDialog(null, Initializations.DBACTIONNOCOLLECTION, "Error", JOptionPane.ERROR_MESSAGE);
-                } 
+            {
+                JOptionPane.showMessageDialog(null, Initializations.MONGOSERVERERROR, "Error", JOptionPane.ERROR_MESSAGE);
+                Text_MessageBar.setText(Initializations.MONGOSERVERERROR);
+                Text_MessageBar.setForeground(Color.RED);
+            }
         }else
             {
                 Text_MessageBar.setText(Initializations.SYSTEMCOLLNOREFRESH);
@@ -1087,21 +1156,31 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_file_closeActionPerformed
 
     private void Op_DBActionsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Op_DBActionsActionPerformed
+        Text_MessageBar.setText(Initializations.WAITINGFORCONNECTION);
+        Text_MessageBar.setForeground(Color.ORANGE);
         if(dbcon.isConnectionSuccess())
         {
-            if(indexOfCurrentCollection != 0)
+            if(dbcon.checkDatabaseConnection())
             {
-                ActionOnDB dbAction = new ActionOnDB(dbcon);
-                Text_MessageBar.setText(Initializations.DBACTIONSSUCCESS);
-                Text_MessageBar.setForeground(Color.GREEN);
-                dbAction.setVisible(true);
-            }
-            else
+                if(indexOfCurrentCollection != 0)
+                {
+                    ActionOnDB dbAction = new ActionOnDB(dbcon);
+                    Text_MessageBar.setText(Initializations.DBACTIONSSUCCESS);
+                    Text_MessageBar.setForeground(Color.GREEN);
+                    dbAction.setVisible(true);
+                }
+                else
+                {
+                    Text_MessageBar.setText(Initializations.DBACTIONNOCOLLECTION);
+                    Text_MessageBar.setForeground(Color.RED);
+                    JOptionPane.showMessageDialog(null, Initializations.DBACTIONNOCOLLECTION, "Error", JOptionPane.ERROR_MESSAGE);
+                }  
+            }else
             {
-                Text_MessageBar.setText(Initializations.DBACTIONNOCOLLECTION);
+                JOptionPane.showMessageDialog(null, Initializations.MONGOSERVERERROR, "Error", JOptionPane.ERROR_MESSAGE);
+                Text_MessageBar.setText(Initializations.MONGOSERVERERROR);
                 Text_MessageBar.setForeground(Color.RED);
-                JOptionPane.showMessageDialog(null, Initializations.DBACTIONNOCOLLECTION, "Error", JOptionPane.ERROR_MESSAGE);
-            }   
+            }
         }else{
             JOptionPane.showMessageDialog(null, Initializations.NODBCONNECTION, "Error", JOptionPane.ERROR_MESSAGE);
             Text_MessageBar.setText(Initializations.NODBCONNECTION);
@@ -1141,6 +1220,7 @@ public class MainForm extends javax.swing.JFrame {
                         Text_MessageBar.setForeground(Color.ORANGE);
                     }
                     else{
+                        text = textArea1Comp.getText(); 
                         object = "" + Initializations.VALIDATIONTEXTAREA1;
                         text = textArea1Comp.getText();
                         parser.parse(textArea1Comp.getText());
@@ -1152,22 +1232,28 @@ public class MainForm extends javax.swing.JFrame {
                     }
                     else
                     {
+                        text = textArea2Comp.getText();
                         object = "" + Initializations.VALIDATIONTEXTAREA2;
                         text = textArea2Comp.getText();
                         parser.parse(textArea2Comp.getText());
                     }
-                }
-            }else
-                {
-                    Text_MessageBar.setText(Initializations.VALIDATIONSUCCESS);
-                    Text_MessageBar.setForeground(Color.GREEN);
-                    JOptionPane.showMessageDialog(null, Initializations.VALIDATIONSUCCESS, "Success", JOptionPane.INFORMATION_MESSAGE);
-                }
-           
+                }    
+            }
         }catch(org.json.simple.parser.ParseException pe)
         {
             Text_MessageBar.setText(Initializations.VALIDATIONERROR + object + " - " + Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), text) + " - " + pe );
             Text_MessageBar.setForeground(Color.RED); 
+        }
+        
+        if(json_util.isDataParsed(text)){
+            Text_MessageBar.setText(Initializations.VALIDATIONSUCCESS);
+            Text_MessageBar.setForeground(Color.GREEN);
+            JOptionPane.showMessageDialog(null, Initializations.VALIDATIONSUCCESS, "Success", JOptionPane.INFORMATION_MESSAGE);
+        }else
+        {
+            Text_MessageBar.setText(Initializations.VALIDATIONERROR);
+            Text_MessageBar.setForeground(Color.RED);
+            JOptionPane.showMessageDialog(null, Initializations.VALIDATIONERROR, "Success", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_Op_ValidateActionPerformed
    
