@@ -888,37 +888,8 @@ public class MainForm extends javax.swing.JFrame {
                     String typeToImport= dlg_import.typeToImport();
                     String locToImport = dlg_import.locToImport();
 
-<<<<<<< HEAD
-                    StringBuilder sb = new StringBuilder();
-=======
-                String collectionToImport = dlg_import.collectionToImport();
-                String typeToImport= dlg_import.typeToImport();
-                String locToImport = dlg_import.locToImport();
-
                 StringBuilder sb = new StringBuilder();
-
-                if(locToImport == null)
-                {
-                   //Converting JSON to CSV and export it to file is done in the dbcon.export method
-                    //Exporting JSON on the other hand, is done here
-                    if ("CSV".equals(typeToImport))
-                    {    
-                        try {
-                            if (collectionToImport.equals("none"))
-                            {
-                                Panel_Text.setVisible(true);
-                                JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
-                                textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
-                                Text_MessageBar.setForeground(Color.GREEN);
-                                Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
-                            }
-                            else if (connectionStrings.contains(collectionToImport))
-                            {
-
-                                //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
-                                sb = dbcon.getCollectionData(collectionToImport);
->>>>>>> origin/master
-
+             
                     if(locToImport == null)
                     {
                        //Converting JSON to CSV and export it to file is done in the dbcon.export method
@@ -987,6 +958,8 @@ public class MainForm extends javax.swing.JFrame {
                         Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
                     }
                 }
+                            
+                
                 else
                 {
                     Text_MessageBar.setForeground(Color.ORANGE);
