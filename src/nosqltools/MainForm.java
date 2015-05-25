@@ -928,7 +928,7 @@ public class MainForm extends javax.swing.JFrame {
 
                 StringBuilder sb = new StringBuilder();
 
-                if(locToImport == null)
+                if(locToImport != null && !locToImport.isEmpty())
                 {
                    //Converting JSON to CSV and export it to file is done in the dbcon.export method
                     //Exporting JSON on the other hand, is done here
