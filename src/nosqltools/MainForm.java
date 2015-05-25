@@ -61,7 +61,8 @@ public class MainForm extends javax.swing.JFrame {
 
     
     /**
-     * Creates new form MainForm
+     * Creates new form MainForm and sets the necessary properties for the main
+     * form
      */
     public MainForm() {  
         Image img = null;
@@ -483,6 +484,11 @@ public class MainForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * This method is an event listener which sets the UI necessary when the 
+     * View Text option is done 
+     * @param evt 
+     */
     private void View_TextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_TextActionPerformed
         Panel_Text.setVisible(true);
         Panel_Hierarchical.setVisible(false);
@@ -492,6 +498,11 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Connect.setVisible(false);
     }//GEN-LAST:event_View_TextActionPerformed
 
+    /**
+     *  The View_HierarchicalActionPerformed method is an event handler which
+     * sets the UI for the Hierarchical if the Text View is not empty   
+     * @param evt 
+     */
     private void View_HierarchicalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_HierarchicalActionPerformed
         if(!textArea.getText().isEmpty())        
         {
@@ -504,19 +515,19 @@ public class MainForm extends javax.swing.JFrame {
 
             jTreeHierarchicalJson.setVisible(true);
             jTreeHierarchicalJson.setModel(null);
-
+            
+            //parse the text within the text view and set model if JSON object is correct
             if (!textArea.getText().trim().equals("") && json_util.isDataParsed(textArea.getText()))
             {
                 jTreeHierarchicalJson.setModel(json_util.makeJtreeModel("Collection"));
-                //setImageIcon();
             }
-            else 
+            else //parsing error
             {
                 Text_MessageBar.setText(Initializations.JSONINCORRECTFORMAT);
                 Text_MessageBar.setForeground(Color.RED);
                 JOptionPane.showMessageDialog(null, Initializations.JSONINCORRECTFORMAT, "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }else
+        }else //case when no text is found
         {
             Text_MessageBar.setText(Initializations.NOTEXT);
             Text_MessageBar.setForeground(Color.RED);
@@ -524,6 +535,11 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_View_HierarchicalActionPerformed
 
+    /**
+     * The View_TableActionPerformed is an event handler which sets the Table View
+     * if text is found within the Text View and if correct JSON objects are found
+     * @param evt 
+     */
     private void View_TableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_TableActionPerformed
         if(!textArea.getText().isEmpty())        
         {
@@ -535,6 +551,7 @@ public class MainForm extends javax.swing.JFrame {
             Panel_Compare_Upper.setVisible(false);
             Panel_Connect.setVisible(false);
 
+            //parsing
             if (json_util.isDataParsed(textArea.getText()))
             {
                 Panel_Table.setVisible(true);
@@ -543,13 +560,13 @@ public class MainForm extends javax.swing.JFrame {
                 DefaultTableModel model = (DefaultTableModel) Table_JSON.getModel();
                 Table_JSON.setModel(new DefaultTableModel(json_row_data, json_field_names));
             }
-            else
+            else //case for incorrect JSON format
             {
                 Text_MessageBar.setText(Initializations.JSONINCORRECTFORMAT);
                 Text_MessageBar.setForeground(Color.RED);
                 JOptionPane.showMessageDialog(null, Initializations.JSONINCORRECTFORMAT, "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }else
+        }else //case for no JSON objects found
         {
             Text_MessageBar.setText(Initializations.NOTEXT);
             Text_MessageBar.setForeground(Color.RED);
@@ -557,11 +574,14 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_View_TableActionPerformed
 
+    /**
+     * This method is an event handler which is used to import a JSON or text file
+     * chosen by the user and determines its correctness
+     * @param evt 
+     */
     private void Import_JSONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_JSONActionPerformed
         file = null;
         sb.setLength(0);
-
-
 
         int returnVal = fc.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) 
@@ -579,27 +599,34 @@ public class MainForm extends javax.swing.JFrame {
 
             textArea.setText(Initializations.INITSTRING);
             textArea.setText(sb.toString());
+            //validation
             validateDataPanel_text(sb);
         }
     }//GEN-LAST:event_Import_JSONActionPerformed
 
+    /**
+     * This event handler is used to save the JSON objects to the file chosen
+     * @param evt 
+     */
     private void Save_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Save_FileActionPerformed
         try 
         {
             file = null;
             sb.setLength(0);
 
+            //choosable file extensions 
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (" + ext + ")", ext_array);
             fc.setFileFilter(filter);
 
+            //save is OK
             int returnVal = fc.showSaveDialog(this);
             if (returnVal == JFileChooser.APPROVE_OPTION) 
             {
                 Save_File.setEnabled(true);
                 file = fc.getSelectedFile();
-                //sb.append(util.readFromFile(file));
-
+               
                 parser.parse(textArea.getText());
+                //parse data
                 if(json_util.isDataParsed(textArea.getText()))
                 {
                     try
@@ -614,7 +641,7 @@ public class MainForm extends javax.swing.JFrame {
                     } catch (IOException ex) {
                         Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                }else
+                }else //case for saving error
                 {
                     Text_MessageBar.setForeground(Color.RED);
                     Text_MessageBar.setText(Initializations.VALIDATIONERROR);
@@ -622,7 +649,7 @@ public class MainForm extends javax.swing.JFrame {
                 }
             }
         }
-        catch(org.json.simple.parser.ParseException pe)
+        catch(org.json.simple.parser.ParseException pe) //case for incorrect JSON object
         {
            Text_MessageBar.setForeground(Color.RED);
            Text_MessageBar.setText(Initializations.JSONSAVEERROR + Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
@@ -633,9 +660,15 @@ public class MainForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_Text_MessageBarActionPerformed
 
+    /**
+     * This event handler is used to load the Compare operation and prepare for 
+     * the necessary UI
+     * @param evt 
+     */
     private void Op_CompareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Op_CompareActionPerformed
         Text_MessageBar.setText(Initializations.COMPARELOADED);
         Text_MessageBar.setForeground(Color.GREEN);
+        //create a rsyntaxTextArea
         textArea1Comp = new RSyntaxTextArea();
         textArea1Comp.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
         textArea1Comp.setCodeFoldingEnabled(true);
@@ -666,7 +699,13 @@ public class MainForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_Op_CompareActionPerformed
 
+    /**
+     * This event handler will do comparison between the two JSON objects or JSON
+     * Arrays inserted into the text.
+     * @param evt 
+     */
     private void Compare_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Compare_ButtonActionPerformed
+        //check if empty
         if(!(textArea1Comp.getText().isEmpty() || textArea2Comp.getText().isEmpty()))
         {   Compare_ResultText.setText("");  
             //validate both text areas 
@@ -677,12 +716,15 @@ public class MainForm extends javax.swing.JFrame {
                 //call compare_result method found in JSONUtilitites
                 try
                 {
+                    //Json Node created from document 1
                     JsonNode jNode1 = mapper.readTree(textArea1Comp.getText());
                     textArea1Comp.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
-
+                    
+                    //JsonNode created for document 2
                     JsonNode jNode2 = mapper.readTree(textArea2Comp.getText()); 
                     textArea2Comp.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode2));
 
+                    //compares the two Json Nodes and outputs the results
                     JsonNode jNodeCompRes = json_util.compareResult(jNode1, jNode2);
 
                     if (jNodeCompRes == null)
@@ -879,7 +921,7 @@ public class MainForm extends javax.swing.JFrame {
                 connectionStrings.add(0, "none");
                 ImportFileDialog dlg_import = new ImportFileDialog(null, connectionStrings);
                 dlg_import.setVisible(true);
-
+                
                 String collectionToImport = dlg_import.collectionToImport();
                 String typeToImport= dlg_import.typeToImport();
                 String locToImport = dlg_import.locToImport();
