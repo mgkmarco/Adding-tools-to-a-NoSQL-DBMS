@@ -23,26 +23,28 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/**
- *
- * @author natasha nikolic
- */
+//this class is used for displaying the dialog window for the import file from csv
 public class ImportFileDialog extends JDialog {
     
+    //these attributes are used for the file chooser
     private JLabel lbFile;
     private JTextField fcFile;
     private JFileChooser fc_Import;
     private JButton btnBrowse;
     
+    //these attributes are used for the collection, and file type drop down
     private JLabel lbCollection;
     private JLabel lbFileType;
     private JComboBox dropColl;
     private final JComboBox dropType;
     private List<String> coll;
     
+    //additional attributes that will be used for the dialog box
     private JButton btnOk;
     private JButton btnCancel;
     private boolean choice = false;
+    
+    //strings that are used by the main form to indicate which collection, location it will be imported.
     private String collectionToImport = null;
     private String locationToImport = null;
     private String typeToImport = null;
@@ -56,18 +58,21 @@ public class ImportFileDialog extends JDialog {
 
         cs.fill = GridBagConstraints.HORIZONTAL;
 
+        //Label for the input file
         lbFile = new JLabel("Input File: ");
         cs.gridx = 0;
         cs.gridy = 0;
         cs.gridwidth = 1;
         panel.add(lbFile, cs);
 
+        //the text field which holds the file location as a string
         fcFile = new JTextField(20);
         cs.gridx = 1;
         cs.gridy = 0;
         cs.gridwidth = 2;
         panel.add(fcFile, cs);
         
+        //the browse button that loads the JFileChooser
         btnBrowse = new JButton("Browse");
         panel.add(btnBrowse);
         
@@ -106,34 +111,42 @@ public class ImportFileDialog extends JDialog {
             }
         });
 
+        //the collection label
         lbCollection = new JLabel("Collection: ");
         cs.gridx = 0;
         cs.gridy = 1;
         cs.gridwidth = 1;
         panel.add(lbCollection, cs);
 
+        //the drop down that loads the collections list
         dropColl = new JComboBox(coll.toArray());
         cs.gridx = 1;
         cs.gridy = 1;
         cs.gridwidth = 2;
         panel.add(dropColl, cs);  
         
+        //import file label
         lbFileType = new JLabel("Import from: ");
         cs.gridx = 0;
         cs.gridy = 2;
         cs.gridwidth = 1;
         panel.add(lbFileType, cs);
         
+        //the frop down that shows the types of files that can be imported.
+        //Note: currently we only allow CSV files to be imported.
         dropType = new JComboBox(populateFileTypes().toArray());
         cs.gridx = 1;
         cs.gridy = 2;
         cs.gridwidth = 2;
         panel.add(dropType, cs); 
 
+        //the button import
         btnOk = new JButton("Import");
 
         btnOk.addActionListener(new ActionListener() {
 
+            //the action listener will set the location, type and collection upon clicking the import button
+            @Override
             public void actionPerformed(ActionEvent e) {   
             locationToImport = fcFile.getText();
             typeToImport = dropType.getSelectedItem().toString();
@@ -146,6 +159,8 @@ public class ImportFileDialog extends JDialog {
         btnCancel = new JButton("Cancel");
         btnCancel.addActionListener(new ActionListener() {
 
+            //the action listener that will be performed when the cancel button is clicked. 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 choice = false;
                 dispose();
@@ -164,25 +179,30 @@ public class ImportFileDialog extends JDialog {
         setLocationRelativeTo(parent);
     }
     
+    //method that will return the name of the collection that the data will be loaded to
     public String collectionToImport()
     {
         return collectionToImport;
     }
     
-     public String locToImport()
+    //method that will return the name of the location that the CSV file is stored.
+    public String locToImport()
     {
         return locationToImport;
     }
      
-     public String typeToImport()
+    //method that will return the type of file that is going to be imported.
+    public String typeToImport()
     {
         return typeToImport;
     }
     
+    //method that will return false if the user closes the dialog box
     public boolean isToImport() {
         return choice;
     }
     
+    //this method populare the drop down list and retruns the list of strings.
     private List<String> populateFileTypes() {
        List <String> types = new ArrayList <String>();
        types.add("CSV");
