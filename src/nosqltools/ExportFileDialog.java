@@ -23,11 +23,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- *
- * @author natasha nikolic
+ * This class contains the design of the Export JDialog and is used to
+ * contain data related to the user's export operations and choices
  */
 public class ExportFileDialog extends JDialog {
     
+    //Creating the components
     private final JLabel lbFile;
     private JTextField fcFile;
     private JFileChooser fc_Export;
@@ -46,6 +47,11 @@ public class ExportFileDialog extends JDialog {
     private String locationToExport = null;
     private String typeToExport = null;
     
+    /**
+     * Constructor for the export file dialog
+     * @param parent The JFrame it is attached to
+     * @param collections The list of collection names available in the DB
+     */
     public ExportFileDialog(Frame parent, List<String> collections) {
         super(parent, Initializations.EXPFILE, true);
         
@@ -71,7 +77,6 @@ public class ExportFileDialog extends JDialog {
         panel.add(btnBrowse);
         
         btnBrowse.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {       
                 /* reference: http://cyounes.com/blog/tutorials/how-to-use-jfilechooser-properly/*/
@@ -126,8 +131,14 @@ public class ExportFileDialog extends JDialog {
 
         btnOk.addActionListener(new ActionListener() {
 
+            /**
+             * Actions to be carried out when the user clicks OK on the dialog box
+             * @param e The event
+             */
             @Override
             public void actionPerformed(ActionEvent e) {   
+            
+            //Store all data specified by user on the dialog box
             locationToExport = fcFile.getText();
             typeToExport = dropType.getSelectedItem().toString();
             collectionToExport = dropColl.getSelectedItem().toString();
@@ -135,8 +146,9 @@ public class ExportFileDialog extends JDialog {
            // if (locationToExport == null || locationToExport.trim().equals(""))
              //   choice = false;
            // else 
-             choice = true;
             
+            //Dispose the window and set choice to true
+            choice = true;
             dispose();
             }
         });
@@ -144,8 +156,13 @@ public class ExportFileDialog extends JDialog {
         btnCancel = new JButton("Cancel");
         btnCancel.addActionListener(new ActionListener() {
 
+            /**
+             * Actions to carry out when the user clicks cancel
+             * @param e The event
+             */
             @Override
             public void actionPerformed(ActionEvent e) {
+                //Dispose the window and set choice to false
                 choice = false;
                 dispose();
             }
@@ -163,25 +180,40 @@ public class ExportFileDialog extends JDialog {
         setLocationRelativeTo(parent);
     }
     
+    /**
+     * @return The name of the chosen collection to export
+     */
     public String collectionToExport()
     {
         return collectionToExport;
     }
     
+    /** 
+     * @return The file location to export to on local storage
+     */
     public String locToExport()
     {
         return locationToExport;
     }
     
+    /**
+     * @return The type to export the collection to (JSON or CSV)
+     */
     public String typeToExport()
     {
         return typeToExport;
     }
     
+    /**
+     * @return The user's choice, whether export will proceed or was cancelled
+     */
     public boolean isToExport() {
         return choice;
     }
 
+    /**
+     * Populates and returns array list with the types to format to
+     */
     private List<String> populateFileTypes() {
        List <String> types = new ArrayList <String>();
        types.add("JSON");

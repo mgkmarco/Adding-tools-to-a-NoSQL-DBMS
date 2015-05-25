@@ -7,8 +7,8 @@
 package nosqltools;
 
 /**
- *
- * @author natasha nikolic
+ * This class used for internationalisation (i18n) of strings.
+ * @author RebeccaKai
  */
 public class Initializations {
     

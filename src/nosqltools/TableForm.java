@@ -8,14 +8,10 @@ package nosqltools;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import org.jdesktop.swingx.JXTable;
 
@@ -25,15 +21,7 @@ import org.jdesktop.swingx.JXTable;
  */
 public class TableForm extends JFrame{
    JSONUtilities json_util = new JSONUtilities();
-   /* public static void main(String[] args) {
-
-          SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-          new TableForm().setVisible(true);
-        }
-    });
-
-     }*/
+   
     public TableForm(String x)
     {
         setTitle("Nested JSON Array");

@@ -18,11 +18,15 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
 
 /**
- *
- * @author RebeccaKai
+ * This class offers a number of different utility methods which are used throughout the application
  */
 public class Utilities {
     
+    /**
+     * Given an array of extentions (as strings), they are formated into one CSV string
+     * @param ext_array an array of extentions as strings
+     * @return CSV formatted string of extentions
+     */
     public String formatExtentsions(String [] ext_array)
     {
         String extensions = "";
@@ -36,6 +40,11 @@ public class Utilities {
          return extensions;
     }
     
+    /**
+     * Given a file, the method will open an input stream and read from the file
+     * @param file The file to read from
+     * @return The contents of the file
+     */
     public String readFromFile (File file)
     {
         FileInputStream is = null;
@@ -49,6 +58,7 @@ public class Utilities {
                 int i;
                 char c;
                 
+                //While the end of the file is not met, add every character to a string builder
                 while((i = isr.read()) != -1)
                 {
                     c = (char) i;
@@ -65,6 +75,7 @@ public class Utilities {
             } 
             finally 
             {
+                //Close the stream
                 try 
                 {
                     is.close();
@@ -75,10 +86,13 @@ public class Utilities {
                 }
             }  
             
+            //Return the contents of the String Builder
             return sb.toString();
         } 
     
-    //this method will change text area in view text and compare screens
+    /**
+     * This method will change text area theme colours in view text and compare screens
+     */
     public void changeTextAreaTheme(RSyntaxTextArea textArea)
     {
         try
@@ -92,7 +106,14 @@ public class Utilities {
             ioe.printStackTrace();
         } 
     }
-      
+    
+    /**
+     * Given a location on local storage and the data to write to the file,
+     * the method will open an output stream and write to the file at the location 
+     * @param locToExport The location to write to
+     * @param dataToExport The data to write to file
+     * @return 
+     */
     public boolean writeToFile(String locToExport, String dataToExport)
     {
         FileOutputStream fop = null;
@@ -102,7 +123,7 @@ public class Utilities {
                 file = new File(locToExport);
                 fop = new FileOutputStream(file);
 
-                // if file doesnt exists, then create it
+                // if file doesn't exist, then create it
                 if (!file.exists()) {
                         file.createNewFile();
                 }
@@ -110,6 +131,7 @@ public class Utilities {
                 // get the content in bytes
                 byte[] contentInBytes = dataToExport.getBytes();
 
+                //Write to file
                 fop.write(contentInBytes);
                 fop.flush();
                 fop.close();
