@@ -5,18 +5,34 @@
  */
 package nosqltools;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
 /**
- *
- * @author Josianne Formosa
+ * This class extends a JFrame to bring up a frame which allows the user to choose a DB action
  */
 public class ActionOnDB extends javax.swing.JFrame {
 
     private static DBConnection dbcon = null;
+   
     /**
      * Creates new form ActionOnDB
      */
     public ActionOnDB(DBConnection dbcon) {
         initComponents();
+        
+        //Sets the image icon to the JFrame
+        Image img = null;
+        try {
+            img = ImageIO.read(new File("resources/mongoicon.png"));
+        } catch (IOException e) {
+        }
+        this.setIconImage(img);
+        
+        //Set title of the window and location relative to null so that window will be centred
+        this.setTitle("Actions on Database");
         this.setLocationRelativeTo(null);
         this.dbcon = dbcon;
     }
@@ -92,10 +108,19 @@ public class ActionOnDB extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * When the 'Back' button is pressed, the window will be disposed
+     * @param evt 
+     */
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
         dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
+    /**
+     * When the 'Next' button is pressed, the window will be disposed and another JFrame is instantiated
+     * and set visible
+     * @param evt 
+     */
     private void nextBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextBtnActionPerformed
         if(actionComboBox.getSelectedItem().toString() != null)
         {   

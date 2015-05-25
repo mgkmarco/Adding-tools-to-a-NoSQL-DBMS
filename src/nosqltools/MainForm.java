@@ -5,13 +5,11 @@
  */
 package nosqltools;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -19,10 +17,8 @@ import javax.swing.tree.TreePath;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -40,10 +36,6 @@ import org.fife.ui.rsyntaxtextarea.*;
 import org.json.simple.parser.JSONParser;
 
 
-/**
- *
- * @author RebeccaKai
- */
 public class MainForm extends javax.swing.JFrame {
 
     private final JSONUtilities json_util = new JSONUtilities();
@@ -896,7 +888,36 @@ public class MainForm extends javax.swing.JFrame {
                     String typeToImport= dlg_import.typeToImport();
                     String locToImport = dlg_import.locToImport();
 
+<<<<<<< HEAD
                     StringBuilder sb = new StringBuilder();
+=======
+                String collectionToImport = dlg_import.collectionToImport();
+                String typeToImport= dlg_import.typeToImport();
+                String locToImport = dlg_import.locToImport();
+
+                StringBuilder sb = new StringBuilder();
+
+                if(locToImport == null)
+                {
+                   //Converting JSON to CSV and export it to file is done in the dbcon.export method
+                    //Exporting JSON on the other hand, is done here
+                    if ("CSV".equals(typeToImport))
+                    {    
+                        try {
+                            if (collectionToImport.equals("none"))
+                            {
+                                Panel_Text.setVisible(true);
+                                JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
+                                textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
+                                Text_MessageBar.setForeground(Color.GREEN);
+                                Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
+                            }
+                            else if (connectionStrings.contains(collectionToImport))
+                            {
+
+                                //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
+                                sb = dbcon.getCollectionData(collectionToImport);
+>>>>>>> origin/master
 
                     if(locToImport == null)
                     {

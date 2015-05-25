@@ -7,7 +7,11 @@ package nosqltools;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import org.json.simple.parser.JSONParser;
 
@@ -26,12 +30,22 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
      */
     public ActionPerformedOnDB(String value, DBConnection db_con) {
         initComponents();
+        
+        Image img = null;
+        try {
+            img = ImageIO.read(new File("resources/mongoicon.png"));
+        } catch (IOException e) {
+        }
+        this.setIconImage(img);
+        
         setLocationRelativeTo(null);
         action = value;
         this.dbcon = db_con;
         actionLabel.setText(action);
         label1.setText(action);
         databaseName.setText(dbcon.collection.getName());
+        this.setTitle(action + " Operation");
+        
         if("Update".equals(action))
         {
             label1.setText("Object in database to update: ");
@@ -131,7 +145,7 @@ public class ActionPerformedOnDB extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(168, 168, 168)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
