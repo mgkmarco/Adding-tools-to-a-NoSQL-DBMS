@@ -320,6 +320,10 @@ public class JSONUtilities
                     //stores the value of the operation
                     value = ": " + opNode.get("value").toString();
                 }
+                else
+                {
+                    value = " ";
+                }
                 
                 res.add(opType + " operation -> "+ path + value);
         }

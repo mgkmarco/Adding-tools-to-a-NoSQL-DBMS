@@ -27,8 +27,8 @@ public class Initializations {
     public static String TXT = "txt";
     public static String JSON = "json";
     
-    public static String JSONFILESUCCESS = "JSON File has been loaded successfully";
-    public static String JSONSAVESUCCESS = "JSON File has been saved successfully";
+    public static String JSONFILESUCCESS = "File has been loaded successfully";
+    public static String JSONSAVESUCCESS = "File has been saved successfully";
     public static String JSONSAVEERROR = "JSON File has not been saved -";
     public static String JSONINCORRECTFORMAT = "Incorrect JSON format";
     public static String NOTEXT = "Nothing to display!";
