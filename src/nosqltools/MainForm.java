@@ -924,41 +924,29 @@ public class MainForm extends javax.swing.JFrame {
                 ImportFileDialog dlg_import = new ImportFileDialog(null, connectionStrings);
                 dlg_import.setVisible(true);
                 
-                String collectionToImport = dlg_import.collectionToImport();
-                String typeToImport= dlg_import.typeToImport();
-                String locToImport = dlg_import.locToImport();
-
-                StringBuilder sb = new StringBuilder();
-
-                if(locToImport != null && !locToImport.isEmpty())
+                if (dlg_import.isToImport())
                 {
-                   //Converting JSON to CSV and export it to file is done in the dbcon.export method
-                    //Exporting JSON on the other hand, is done here
-                    if ("CSV".equals(typeToImport))
-                    {    
-                        try {
-                            if (collectionToImport.equals("none"))
-                            {
-                                Panel_Text.setVisible(true);
-                                JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
-                                textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
-                                Text_MessageBar.setForeground(Color.GREEN);
-                                Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
-                            }
-                            else if (connectionStrings.contains(collectionToImport))
-                            {
+                    String collectionToImport = dlg_import.collectionToImport();
+                    String typeToImport= dlg_import.typeToImport();
+                    String locToImport = dlg_import.locToImport();
 
-                                //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
-                                sb = dbcon.getCollectionData(collectionToImport);
+                    StringBuilder sb = new StringBuilder();
 
-                                if(sb != null)
+                    if(locToImport != null && !locToImport.isEmpty())
+                    {
+                       //Converting JSON to CSV and export it to file is done in the dbcon.export method
+                        //Exporting JSON on the other hand, is done here
+                        if ("CSV".equals(typeToImport))
+                        {    
+                            try {
+                                if (collectionToImport.equals("none"))
                                 {
                                     Panel_Text.setVisible(true);
                                     JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
                                     textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));
                                     Text_MessageBar.setForeground(Color.GREEN);
                                     Text_MessageBar.setText("Import to " + typeToImport + " has been successful.");
-                                }
+                                }     
                                 else if (connectionStrings.contains(collectionToImport))
                                 {
 
@@ -995,24 +983,27 @@ public class MainForm extends javax.swing.JFrame {
 
                                 }
 
-                            } catch (IOException ex) {
-                                Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                } 
+                                catch (IOException ex) 
+                                {
+                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             }
-                        }
                         else
                         {
                                 Text_MessageBar.setForeground(Color.RED);
                                 Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful."); 
                         } 
-                    }
+                  }
                     else
-                    {
-                        JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.IMPORTERROR , JOptionPane.ERROR_MESSAGE);
-                        Text_MessageBar.setForeground(Color.RED);
-                        Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
-                    }
-                }
+                        {
+                            JOptionPane.showMessageDialog(this, Initializations.FILENOTFOUND , Initializations.IMPORTERROR , JOptionPane.ERROR_MESSAGE);
+                            Text_MessageBar.setForeground(Color.RED);
+                            Text_MessageBar.setText("Import to " + typeToImport + " has been unsuccessful.");
+                        }
                             
+                        }
+                        
                 
                 else
                 {
