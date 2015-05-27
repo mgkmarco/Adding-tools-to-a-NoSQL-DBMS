@@ -16,8 +16,8 @@ import javax.swing.table.JTableHeader;
 import org.jdesktop.swingx.JXTable;
 
 /**
- *
- * @author Josianne Formosa
+ * The frame which is used when a need to display nested JSON arrays in separate 
+ * windows arises.
  */
 public class TableForm extends JFrame{
    JSONUtilities json_util = new JSONUtilities();
@@ -31,12 +31,12 @@ public class TableForm extends JFrame{
         add(pan.panel);
         pack();
         setVisible(true);
-       // setExtendedState(this.getExtendedState() | JFrame.NORMAL);
         
     }
     
      class panel {
 
+      //The components to be used for this panel
       private final JButton btn1 = new JButton("Back");
       private JTextArea txt1 = new JTextArea();
       private JXTable jxTable = null;
@@ -50,6 +50,13 @@ public class TableForm extends JFrame{
            panel.add(txt1, BorderLayout.NORTH);
            txt1.setEditable(false);
            createJXTable();
+           
+           /**
+            * An on-click listener for the table which brings up a message dialog
+            * with the value of the cell clicked (highly useful for nested JSON arrays)
+            * and brings up a confirmation dialog if the user wants to view the nested JSON
+            * in a separate table 
+            */
             jxTable.addMouseListener(new java.awt.event.MouseAdapter(){
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -88,7 +95,10 @@ public class TableForm extends JFrame{
            panel.add(btn1, BorderLayout.PAGE_END);
         }
   
-        
+      /**
+       * Creates the initial table and populates it with the data from the text field obtained
+       * in the methods getFields() and getRows()
+       */ 
       private void createJXTable()
       {
           String[] json_field_names = null;
@@ -98,12 +108,10 @@ public class TableForm extends JFrame{
           {
               json_field_names = json_util.getFields();
               String[][] json_row_data = json_util.getRows(json_field_names);
-           //   DefaultTableModel model = (DefaultTableModel) jxTable.getModel();
               jxTable = new JXTable(json_row_data, json_field_names);
-           //   jxTable.setModel(new DefaultTableModel(json_row_data, json_field_names));
            
           }
-      }
+        }
      }
    
 }

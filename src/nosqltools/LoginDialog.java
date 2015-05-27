@@ -11,8 +11,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -27,8 +25,8 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 /**
- *
- * @author RebeccaKai
+ * This class is used to bring up the dialog box which is used to receive the login parameters
+ * when attempting to connect to the Mongo DB server.
  */
 public class LoginDialog extends JDialog {
     private final JTextField tfUsername;
@@ -46,6 +44,10 @@ public class LoginDialog extends JDialog {
     private boolean succeeded;
     private boolean choice = false;
 
+    /**
+     * Login Dialog Constructor
+     * @param parent The Frame to which the JDialog will attach to
+     */
     public LoginDialog(Frame parent) {
         super(parent, Initializations.DBCONNECT2MONGO, true);
        
@@ -54,6 +56,7 @@ public class LoginDialog extends JDialog {
 
         cs.fill = GridBagConstraints.HORIZONTAL;
 
+        //The components used in the dialog box
         lbUsername = new JLabel("Username: ");
         cs.gridx = 0;
         cs.gridy = 0;
@@ -121,16 +124,23 @@ public class LoginDialog extends JDialog {
         
         btnLogin.addActionListener(new ActionListener() {
 
+            /**
+             * An event handler for the Login Button
+             * @param e the on-click event
+             */
             public void actionPerformed(ActionEvent e) { 
                 
+                //XOR: if both server IP address and port are not empty or one of them is empty
                 if ((tfServerAddress.getText().trim().equals("") || tfPort.getText().trim().equals(""))  && !
                         ( tfServerAddress.getText().equals("") && tfPort.getText().trim().equals("")))
                 {
+                    //Login cannot go on; incorrect params
                     choice = false;
                     dispose();
                 }
                 else
                 {
+                    //Login can go on
                     choice = true;
                     dispose();
                 }
@@ -140,6 +150,10 @@ public class LoginDialog extends JDialog {
         btnCancel = new JButton("Cancel");
         btnCancel.addActionListener(new ActionListener() {
 
+            /**
+             * When the cancel  button is clicked, dispose the window and do nothing
+             * @param e The on-click event
+             */
             public void actionPerformed(ActionEvent e) {
                 choice = false;
                 dispose();
@@ -147,6 +161,7 @@ public class LoginDialog extends JDialog {
         });
      
         JPanel bp = new JPanel();
+        //Adds the buttons to the panel
         bp.add(btnLogin);
         bp.add(btnCancel);
 
@@ -159,23 +174,37 @@ public class LoginDialog extends JDialog {
     }
     
     
-
+    /**
+     * @return The text in the Username text field
+     */
     public String getUsername() {
         return tfUsername.getText().trim();
     }
     
+    /**
+     * @return The text in the Database name text field
+     */
      public String getDatabase() {
         return tfDatabase.getText().trim();
     }
 
+    /**
+    * @return The text in the Password text field
+    */
     public String getPassword() {
         return new String(pfPassword.getPassword());
     }
     
+    /**
+     * @return The text in the Server Address text field
+     */
      public String getServerAddr() {
         return tfServerAddress.getText().trim();
     }
-    
+     
+     /**
+     * @return The port number entered by the user
+     */
      public int getPort() {
          
         try 
@@ -189,6 +218,9 @@ public class LoginDialog extends JDialog {
         }
     }
 
+     /**
+      * @return if the connection should be attempted or not
+      */
      public boolean isToLogin() {
         return choice;
     }
@@ -207,6 +239,7 @@ public class LoginDialog extends JDialog {
           } 
         } ;
         
+        //When the 'Esc' key is pressed on the keyboard, the window is destroyed
         InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         inputMap.put(stroke, "ESCAPE");
         rootPane.getActionMap().put("ESCAPE", actionListener);

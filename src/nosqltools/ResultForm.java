@@ -6,10 +6,6 @@ package nosqltools;
  * and open the template in the editor.
  */
 
-/**
- *
- * @author Josianne Formosa
- */
 public class ResultForm extends javax.swing.JFrame {
 
     private static String result;
@@ -23,7 +19,7 @@ public class ResultForm extends javax.swing.JFrame {
         count = noOfValues;
         resultTextArea.setText(count + " objects have been found: \n\n" + result);
         resultTextArea.setEditable(false);
-        setLocationRelativeTo(null);  // to center your app ***
+        setLocationRelativeTo(null);  
   
     }
 

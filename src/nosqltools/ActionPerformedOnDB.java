@@ -15,10 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import org.json.simple.parser.JSONParser;
 
-/**
- *
- * @author Josianne Formosa
- */
+
 public class ActionPerformedOnDB extends javax.swing.JFrame {
 
     private static String action;

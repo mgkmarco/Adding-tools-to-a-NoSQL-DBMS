@@ -30,7 +30,7 @@ public class JSONUtilities
     public JSONObject json_obj = null;
     public JsonNode JSONParsedData;
 
-    //this 
+    //this method checks whether a string is a JSON array
     public boolean isArray(String json_data)
     {
          try 

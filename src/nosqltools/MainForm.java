@@ -88,9 +88,6 @@ public class MainForm extends javax.swing.JFrame {
             
             JOptionPane.showMessageDialog(null,"Value in the cell clicked :" + " "+ Table_JSON.getValueAt(row,col).toString());
 
-            System.out.println("Value in the cell clicked :  "+Table_JSON.getValueAt(row,col).toString());
- 
-                
             if(json_util.isArray(Table_JSON.getValueAt(row,col).toString()))
             {
                 if(JOptionPane.showConfirmDialog( null, "View the array as a table:",
@@ -939,7 +936,7 @@ public class MainForm extends javax.swing.JFrame {
                         if ("CSV".equals(typeToImport))
                         {    
                             try {
-                                if (collectionToImport.equals("none"))
+                                if ("none".equals(collectionToImport))
                                 {
                                     Panel_Text.setVisible(true);
                                     JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
@@ -949,8 +946,6 @@ public class MainForm extends javax.swing.JFrame {
                                 }     
                                 else if (connectionStrings.contains(collectionToImport))
                                 {
-
-                                    //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
                                     sb = dbcon.getCollectionData(collectionToImport);
 
                                     if(sb != null)
@@ -1365,7 +1360,6 @@ public class MainForm extends javax.swing.JFrame {
                                         if(coll_db.contains(tp.getPathComponent(i).toString()))
                                         {
                                             indexOfCurrentCollection = i;
-                                            //System.out.println(coll_db.get(i) + tp.getPathComponent(i).toString());
                                             sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
                                             
                                             if(sb != null)
