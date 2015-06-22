@@ -120,7 +120,7 @@ public class JSONUtilities
         try 
         {
             //if there is some data start parsing
-            if (json_data != null & !json_data.isEmpty())
+            if (json_data != null && !json_data.isEmpty())
             {
                 //use the object mapper to read the json string and create a tree
                 JSONParsedData = mapper.readTree(json_data);

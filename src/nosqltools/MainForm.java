@@ -490,6 +490,7 @@ public class MainForm extends javax.swing.JFrame {
      */
     private void View_TextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_View_TextActionPerformed
         Panel_Text.setVisible(true);
+        Text_MessageBar.setText(Initializations.INITSTRING);
         Panel_Hierarchical.setVisible(false);
         Panel_Table.setVisible(false);
         Panel_Compare.setVisible(false);
