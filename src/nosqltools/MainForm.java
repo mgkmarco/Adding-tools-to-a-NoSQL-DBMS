@@ -180,7 +180,7 @@ public class MainForm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mongo View");
 
-        jSplitPane1.setDividerLocation(150);
+        jSplitPane1.setDividerLocation(200);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(568, 453));
 
         jScrollPane2.setViewportView(jTree1);
@@ -190,7 +190,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Connections.setLayout(Panel_ConnectionsLayout);
         Panel_ConnectionsLayout.setHorizontalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
         );
         Panel_ConnectionsLayout.setVerticalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -286,7 +286,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Views.setLayout(Panel_ViewsLayout);
         Panel_ViewsLayout.setHorizontalGroup(
             Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Panel_Text, javax.swing.GroupLayout.DEFAULT_SIZE, 1344, Short.MAX_VALUE)
+            .addComponent(Panel_Text, javax.swing.GroupLayout.DEFAULT_SIZE, 1294, Short.MAX_VALUE)
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(Panel_Hierarchical, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -939,6 +939,7 @@ public class MainForm extends javax.swing.JFrame {
                             try {
                                 if ("none".equals(collectionToImport))
                                 {
+                                    textArea.setText("");
                                     Panel_Text.setVisible(true);
                                     JsonNode jNode = mapper.readTree(dbcon.import_CSV(collectionToImport, typeToImport, locToImport));
                                     textArea.append(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode));

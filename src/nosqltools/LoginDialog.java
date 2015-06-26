@@ -57,7 +57,7 @@ public class LoginDialog extends JDialog {
         cs.fill = GridBagConstraints.HORIZONTAL;
 
         //The components used in the dialog box
-        lbUsername = new JLabel("Username: ");
+        lbUsername = new JLabel("Username: *");
         cs.gridx = 0;
         cs.gridy = 0;
         cs.gridwidth = 1;
@@ -70,7 +70,7 @@ public class LoginDialog extends JDialog {
         panel.add(tfUsername, cs);
       
 
-        lbPassword = new JLabel("Password: ");
+        lbPassword = new JLabel("Password: *");
         cs.gridx = 0;
         cs.gridy = 1;
         cs.gridwidth = 1;
@@ -82,7 +82,7 @@ public class LoginDialog extends JDialog {
         cs.gridwidth = 2;
         panel.add(pfPassword, cs);
         
-        lbDatabase = new JLabel("Database Name: ");
+        lbDatabase = new JLabel("Database Name: *");
         cs.gridx = 0;
         cs.gridy = 2;
         cs.gridwidth = 1;
