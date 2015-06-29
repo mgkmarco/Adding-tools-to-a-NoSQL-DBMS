@@ -337,7 +337,7 @@ public class MainForm extends javax.swing.JFrame {
         Menu_File.setText("File");
         Menu_File.setName(""); // NOI18N
 
-        Import_JSON.setText("Import JSON file");
+        Import_JSON.setText("Open JSON file");
         Import_JSON.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Import_JSONActionPerformed(evt);
@@ -631,7 +631,7 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     try
                     {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(fc.getSelectedFile()+".json"));
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(fc.getSelectedFile()));
                         writer.write(textArea.getText());
                         writer.close();
                         Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
@@ -1302,7 +1302,7 @@ public class MainForm extends javax.swing.JFrame {
         {
             Text_MessageBar.setText(Initializations.VALIDATIONERROR);
             Text_MessageBar.setForeground(Color.RED);
-            JOptionPane.showMessageDialog(null, Initializations.VALIDATIONERROR, "Success", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, Initializations.VALIDATIONERROR, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_Op_ValidateActionPerformed
    

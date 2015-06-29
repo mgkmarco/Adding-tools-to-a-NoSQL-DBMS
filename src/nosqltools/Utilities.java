@@ -97,13 +97,13 @@ public class Utilities {
     {
         try
         {
-            InputStream is = new FileInputStream("Themes/eclipse.xml");
+            InputStream is = this.getClass().getResourceAsStream("eclipse.xml");
             Theme theme = Theme.load(is);
             theme.apply(textArea);
         } 
         catch (IOException ioe) 
         {
-            ioe.printStackTrace();
+            System.err.println("Default Theme Applied");
         } 
     }
     

@@ -12,7 +12,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="Import_JSON">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Import JSON file"/>
+                <Property name="text" type="java.lang.String" value="Open JSON file"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Import_JSONActionPerformed"/>
