@@ -1029,8 +1029,8 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Import_FileActionPerformed
 
     private void Save_MongoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Save_MongoActionPerformed
-        Text_MessageBar.setText(Initializations.WAITINGFORCONNECTION);
-        Text_MessageBar.setForeground(Color.ORANGE);
+       // Text_MessageBar.setText(Initializations.WAITINGFORCONNECTION);
+      //  Text_MessageBar.setForeground(Color.ORANGE);
         if(dbcon.isConnectionSuccess())
         {              
             if(dbcon.checkDatabaseConnection()){
@@ -1049,10 +1049,19 @@ public class MainForm extends javax.swing.JFrame {
                             parser.parse(textArea.getText());
 
                             String json = textArea.getText();
-                            dbcon.saveColl(json);
+                            
+                            if (dbcon.saveColl(json))
+                            {
+                                Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
+                                Text_MessageBar.setForeground(Color.GREEN);       
+                            }
+                            else
+                            {
+                                Text_MessageBar.setText(Initializations.VALIDATIONERROR);
+                                Text_MessageBar.setForeground(Color.RED); 
+                            }
 
-                            Text_MessageBar.setText(Initializations.JSONSAVESUCCESS);
-                            Text_MessageBar.setForeground(Color.GREEN);           
+                              
                         }
                     }
                     catch(org.json.simple.parser.ParseException pe)

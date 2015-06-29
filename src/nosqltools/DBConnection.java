@@ -327,15 +327,19 @@ public class DBConnection
      * Saves a collection to the DB
      * @param JSON string 
      */
-    public void saveColl(String json)
+    public boolean saveColl(String json)
     {                                                                                                                        
         BasicDBList objList = null;
         List<Object> documents = new ArrayList<>();
+        boolean parse_error = false;
         
         //Get the string from text area and typecast to basic db list and dbobjects respectively
-        objList = (BasicDBList)JSON.parse(json);
         
-        //Add objects to array list
+        try {
+            objList = (BasicDBList)JSON.parse(json);
+            parse_error = true;
+            
+            //Add objects to array list
         for (int i = 0; i<objList.size(); i++)
         {
             documents.add(objList.get(i));
@@ -347,6 +351,13 @@ public class DBConnection
             DBObject object = (DBObject) documents.get(i);
             collection.save(object);
         }     
+        }
+        catch (Exception e)
+        {
+            parse_error = false;
+        }
+        
+        return parse_error;
     }
     
     /**
