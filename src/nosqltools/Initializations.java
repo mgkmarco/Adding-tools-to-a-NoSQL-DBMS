@@ -22,9 +22,10 @@ public class Initializations {
     public static String WAITINGFORCONNECTION = "Waiting for connection...";
     
     public static String NOFILECHOSEN = "No file was chosen";
-    public static String ERRROR = "Error";
+    public static String ERROR = "Error";
     public static String TXT = "txt";
     public static String JSON = "json";
+    public static String SUCCESS = "Ok";
     
     public static String JSONFILESUCCESS = "File has been loaded successfully";
     public static String JSONSAVESUCCESS = "File has been saved successfully";
@@ -67,5 +68,12 @@ public class Initializations {
     
     public static String INITSTRING = "";
     
-    
+    public static String CREATECOMMANDNOTVALID = "Not a valid Create Collection command";
+    public static String CREATECOMMANDDECLAREERROR = "The create collection signature is not correct. (db.createCollection())";
+    public static String CHECKSYNTAXERROR = "Check Syntax";
+    public static String NAMECOLLECTION = "No valid Collection Name present in command!";
+    public static String ADDCOLLECTIONNAME = "Include Collection Name";
+    public static String CREATECOMMANDOPTIONSNOTVALID = "Some option/s are not of the valid type";
+    public static String MAXDOCUMENTSINVALID = "Max Documents should be an integer!";
+    public static String INVALIDPROPERTYENTRY = "Invalid property type."; 
 }

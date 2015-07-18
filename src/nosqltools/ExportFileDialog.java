@@ -218,7 +218,7 @@ public class ExportFileDialog extends JDialog {
        List <String> types = new ArrayList <String>();
        types.add("JSON");
        types.add("CSV");
-    
+   
        return types;
     }
       

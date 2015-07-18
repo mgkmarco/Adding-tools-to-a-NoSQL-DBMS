@@ -27,6 +27,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -504,7 +506,8 @@ public class DBConnection
             if(json_util.isArray(obj))
             {
                 JOptionPane.showMessageDialog(null, "JSON Arrays are not allowed - Change details for only one JSON object!", "Error", JOptionPane.ERROR_MESSAGE);
-            }else{
+            }
+            else{
                 
                 DBObject dbobj = (DBObject)JSON.parse(obj);
                 
@@ -545,5 +548,67 @@ public class DBConnection
     public boolean checkIfEmpty(String x)
     {
         return x.isEmpty();
+    }
+    
+    protected String createCollection(HashMap propertyMap)
+    {
+        DBCollection collection;
+        String collectionName = (String)propertyMap.get(MongoReserved.NAME_PROP);
+        propertyMap.remove(MongoReserved.NAME_PROP);
+        
+        if (!db.collectionExists(collectionName)) 
+        {
+            BasicDBObject options = new BasicDBObject();
+            //iterate through map to get optional properties...
+            Set set = propertyMap.entrySet(); 
+            Iterator iter = set.iterator(); 
+            boolean validator = true;
+            
+            while(iter.hasNext()) 
+            { 
+                Map.Entry me = (Map.Entry)iter.next();                  
+                String key = (String)me.getKey();
+                
+                if(key.equals(MongoReserved.CAPPED_PROP) || key.equals(MongoReserved.AUTOINDEXID_PROP))
+                {
+                    Boolean val = (Boolean)me.getValue();
+                    options.append(key, val);
+                }
+                
+                else if(key.equals(MongoReserved.SIZE_PROP) || key.equals(MongoReserved.MAX_PROP))
+                {
+                    int val = (int) me.getValue();
+                    options.append(key, val);
+                }
+                
+                else
+                {
+                    String val = (String)me.getValue();
+                    
+                    /*Switched this part of on purpose due to StorageEngine constraint 
+                    * Only available on WiredTiger storage...
+                    */
+                    if( 1 != 1 && val != null)
+                    {
+                        options.append((String) me.getKey(), (String)me.getValue());   
+                    }
+                }
+            }
+            
+            try
+            {
+                collection = db.createCollection(collectionName, options);
+            }
+            catch(Exception e)
+            {
+                return e.getMessage();
+            }
+        } 
+        else 
+        {
+            collection = db.getCollection(collectionName);
+        }
+        
+        return Initializations.SUCCESS;
     }
 }

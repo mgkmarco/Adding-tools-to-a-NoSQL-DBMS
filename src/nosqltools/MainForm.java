@@ -47,10 +47,10 @@ public class MainForm extends javax.swing.JFrame {
     RSyntaxTextArea textArea2Comp;
     JSONParser parser = new JSONParser();
     ObjectMapper mapper = new ObjectMapper();
-    DBConnection dbcon = new DBConnection();
-    public static JProgressBar progBar;
-    TreePath tp;
-    int indexOfCurrentCollection;
+    protected DBConnection dbcon = new DBConnection();
+    protected static JProgressBar progBar;
+    protected TreePath tp;
+    protected int indexOfCurrentCollection;
     
     
     final JFileChooser fc = new JFileChooser();
@@ -176,6 +176,7 @@ public class MainForm extends javax.swing.JFrame {
         Menu_Collections = new javax.swing.JMenu();
         Import_File = new javax.swing.JMenuItem();
         Export_File = new javax.swing.JMenuItem();
+        addCollection = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mongo View");
@@ -460,6 +461,15 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         Menu_Collections.add(Export_File);
+
+        addCollection.setText("Add Collection");
+        addCollection.setEnabled(false);
+        addCollection.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                OP_AddCollectionActionPerformed(evt);
+            }
+        });
+        Menu_Collections.add(addCollection);
 
         jMenuBar1.add(Menu_Collections);
 
@@ -892,6 +902,7 @@ public class MainForm extends javax.swing.JFrame {
 
                 if (result == JOptionPane.YES_OPTION)
                 {
+                    addCollection.setEnabled(false);
                     dbcon.closeConnection();
                     connect();
                 }
@@ -1314,6 +1325,12 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, Initializations.VALIDATIONERROR, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_Op_ValidateActionPerformed
+
+    private void OP_AddCollectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OP_AddCollectionActionPerformed
+        AddCollection addCollection = new AddCollection(this, rootPaneCheckingEnabled);
+        addCollection.setLocationRelativeTo(null);
+        addCollection.setVisible(rootPaneCheckingEnabled);
+    }//GEN-LAST:event_OP_AddCollectionActionPerformed
    
     
     public void connect()
@@ -1347,6 +1364,7 @@ public class MainForm extends javax.swing.JFrame {
                     Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
                     Text_MessageBar.setForeground(Color.GREEN);
                     Menu_Collections.setEnabled(true);
+                    addCollection.setEnabled(true);
                 
                     //load the data of collection in panel_text on double click
                     jTree1.addMouseListener(new MouseAdapter() 
@@ -1511,7 +1529,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem Export_File;
     private javax.swing.JMenuItem Import_File;
     private javax.swing.JMenuItem Import_JSON;
-    private javax.swing.JMenu Menu_Collections;
+    protected javax.swing.JMenu Menu_Collections;
     private javax.swing.JMenu Menu_File;
     private javax.swing.JMenu Menu_Operations;
     private javax.swing.JMenu Menu_Views;
@@ -1525,15 +1543,16 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel Panel_Connections;
     private javax.swing.JPanel Panel_Hierarchical;
     private javax.swing.JPanel Panel_Table;
-    private javax.swing.JPanel Panel_Text;
+    protected javax.swing.JPanel Panel_Text;
     private javax.swing.JPanel Panel_Views;
     private javax.swing.JMenuItem Save_File;
     private javax.swing.JMenuItem Save_Mongo;
     private javax.swing.JTable Table_JSON;
-    private javax.swing.JTextField Text_MessageBar;
+    protected javax.swing.JTextField Text_MessageBar;
     private javax.swing.JMenuItem View_Hierarchical;
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
+    protected javax.swing.JMenuItem addCollection;
     private javax.swing.JMenuItem connect_DB;
     private javax.swing.JMenuItem file_close;
     private javax.swing.JMenuBar jMenuBar1;
@@ -1542,7 +1561,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTree jTree1;
+    protected javax.swing.JTree jTree1;
     public javax.swing.JTree jTreeHierarchicalJson;
     private javax.swing.JLabel left_label;
     private javax.swing.JCheckBox left_obj_to_array;
