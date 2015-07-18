@@ -317,7 +317,7 @@ public class AddCollection extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_cappedEnabledActionPerformed
 
-    private void refreshViews()
+    private void refreshTreeView()
     {
         DefaultTreeModel defTableMod = mainForm.dbcon.buildDBTree();
         if (defTableMod != null && mainForm.dbcon.isConnectionSuccess()) 
@@ -525,7 +525,7 @@ public class AddCollection extends javax.swing.JDialog {
                     {
                         messageLabel.setText(returnVal);
                         messageLabel.setForeground(Color.GREEN);
-                        refreshViews();
+                        refreshTreeView();
                     } 
                     else 
                     {
@@ -599,7 +599,7 @@ public class AddCollection extends javax.swing.JDialog {
                 {
                     messageLabel.setText(returnVal);
                     messageLabel.setForeground(Color.GREEN);
-                    refreshViews();
+                    refreshTreeView();
                 } 
                 else 
                 {

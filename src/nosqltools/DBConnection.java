@@ -134,7 +134,6 @@ public class DBConnection
             DefaultMutableTreeNode root = new DefaultMutableTreeNode("DB " + db.getName());
             DefaultMutableTreeNode child_dbcollection;
             dt = new DefaultTreeModel(root);
-
             //Get the names of all collections in the DB as a list
             List<String> collectionNames = getAllCollections();
             

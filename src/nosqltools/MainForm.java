@@ -27,8 +27,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import org.fife.ui.rtextarea.*;
@@ -133,6 +135,9 @@ public class MainForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        rootPopupMenu = new javax.swing.JPopupMenu();
+        addCollectionMenuItem = new javax.swing.JMenuItem();
+        deleteCollectionMenuItem = new javax.swing.JMenuItem();
         jSplitPane1 = new javax.swing.JSplitPane();
         Panel_Connections = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -177,6 +182,23 @@ public class MainForm extends javax.swing.JFrame {
         Import_File = new javax.swing.JMenuItem();
         Export_File = new javax.swing.JMenuItem();
         addCollection = new javax.swing.JMenuItem();
+        dropCollectionMenuItem = new javax.swing.JMenuItem();
+
+        addCollectionMenuItem.setText("Add Collection");
+        addCollectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addCollectionMenuItemActionPerformed(evt);
+            }
+        });
+        rootPopupMenu.add(addCollectionMenuItem);
+
+        deleteCollectionMenuItem.setText("Drop Collection");
+        deleteCollectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteCollectionMenuItemActionPerformed(evt);
+            }
+        });
+        rootPopupMenu.add(deleteCollectionMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mongo View");
@@ -466,10 +488,19 @@ public class MainForm extends javax.swing.JFrame {
         addCollection.setEnabled(false);
         addCollection.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                OP_AddCollectionActionPerformed(evt);
+                addCollectionMenuItemActionPerformed(evt);
             }
         });
         Menu_Collections.add(addCollection);
+
+        dropCollectionMenuItem.setText("Drop Collection");
+        dropCollectionMenuItem.setEnabled(false);
+        dropCollectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteCollectionMenuItemActionPerformed(evt);
+            }
+        });
+        Menu_Collections.add(dropCollectionMenuItem);
 
         jMenuBar1.add(Menu_Collections);
 
@@ -903,6 +934,7 @@ public class MainForm extends javax.swing.JFrame {
                 if (result == JOptionPane.YES_OPTION)
                 {
                     addCollection.setEnabled(false);
+                    dropCollectionMenuItem.setEnabled(false);
                     dbcon.closeConnection();
                     connect();
                 }
@@ -1326,11 +1358,17 @@ public class MainForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_Op_ValidateActionPerformed
 
-    private void OP_AddCollectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OP_AddCollectionActionPerformed
+    private void addCollectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCollectionMenuItemActionPerformed
         AddCollection addCollection = new AddCollection(this, rootPaneCheckingEnabled);
         addCollection.setLocationRelativeTo(null);
         addCollection.setVisible(rootPaneCheckingEnabled);
-    }//GEN-LAST:event_OP_AddCollectionActionPerformed
+    }//GEN-LAST:event_addCollectionMenuItemActionPerformed
+
+    private void deleteCollectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteCollectionMenuItemActionPerformed
+        DeleteCollection deleteCollection = new DeleteCollection(this, rootPaneCheckingEnabled);
+        deleteCollection.setLocationRelativeTo(null);
+        deleteCollection.setVisible(rootPaneCheckingEnabled);
+    }//GEN-LAST:event_deleteCollectionMenuItemActionPerformed
    
     
     public void connect()
@@ -1365,82 +1403,92 @@ public class MainForm extends javax.swing.JFrame {
                     Text_MessageBar.setForeground(Color.GREEN);
                     Menu_Collections.setEnabled(true);
                     addCollection.setEnabled(true);
+                    dropCollectionMenuItem.setEnabled(true);
                 
                     //load the data of collection in panel_text on double click
                     jTree1.addMouseListener(new MouseAdapter() 
                     {
                         @Override
                         public void mouseClicked(MouseEvent me) 
-                        { 
+                        {
                             if (me.getButton() == MouseEvent.BUTTON1)
                             {
-                            if (me.getClickCount()==2)
-                            {
-                                //get the path of the mouse click ex:[localhost,test,testData] 
-                                Op_Refresh.setEnabled(true);
-                                tp = jTree1.getPathForLocation(me.getX(), me.getY());
-                                if (tp != null)
+                                if (me.getClickCount()==2)
                                 {
-                                    List<String> coll_db = dbcon.getAllCollections();
-                                    int cnt = tp.getPathCount();
-                                    for (int i = 0; i<cnt;i++)
+                                    //get the path of the mouse click ex:[localhost,test,testData] 
+                                    Op_Refresh.setEnabled(true);
+                                    tp = jTree1.getPathForLocation(me.getX(), me.getY());
+                                    
+                                    if (tp != null)
                                     {
-                                        //if one of the collection matches the coll that was clicked by the user load data
-                                        if(coll_db.contains(tp.getPathComponent(i).toString()))
+                                        List<String> coll_db = dbcon.getAllCollections();
+                                        int cnt = tp.getPathCount();
+                                        for (int i = 0; i<cnt;i++)
                                         {
-                                            indexOfCurrentCollection = i;
-                                            sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
-                                            
-                                            if(sb != null)
+                                            //if one of the collection matches the coll that was clicked by the user load data
+                                            if(coll_db.contains(tp.getPathComponent(i).toString()))
                                             {
-                                                Panel_Text.setVisible(true);
-
-                                                JsonNode jNode1;
-                                                try
+                                                indexOfCurrentCollection = i;
+                                                sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
+                                            
+                                                if(sb != null)
                                                 {
-                                                    jNode1 = mapper.readTree(sb.toString());
-                                                    textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
-                                                } catch (IOException ex) 
-                                                {
-                                                    Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                                                } 
+                                                    Panel_Text.setVisible(true);
 
-
-                                                Text_MessageBar.setText(Initializations.INITSTRING);
-                                               // textArea.setText(sb.toString());
-                                                validateDataPanel_text(sb);
-                                                /*
-                                                if (json_util.isValid(sb.toString())) 
-                                                {
-                                                    json_util.isDataParsed(textArea.getText());
-                                                    Text_MessageBar.setText(Initializations.JSONFILESUCCESS);
-                                                } 
-                                                else 
-                                                {
-                                                    sb.setLength(0);
-                                                    //JOptionPane.showMessageDialog(this, Initializations.JSONINCORRECTFORMAT , Initializations.VALIDATIONERROR , JOptionPane.ERROR_MESSAGE);
-
+                                                    JsonNode jNode1;
                                                     try
                                                     {
-                                                        Object obj = parser.parse(sb.toString());
-                                                    }
-                                                    catch(org.json.simple.parser.ParseException pe)
+                                                        jNode1 = mapper.readTree(sb.toString());
+                                                        textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                                                    } 
+                                                    catch (IOException ex) 
                                                     {
-                                                       Text_MessageBar.setText(Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
-                                                    }
-                                                } */ 
+                                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                                    } 
+
+                                                    Text_MessageBar.setText(Initializations.INITSTRING);
+                                                    validateDataPanel_text(sb);
+                                                }
+                                                else
+                                                {
+                                                    Panel_Text.setVisible(false);
+                                                    Text_MessageBar.setText(Initializations.SYSTEMCOLL);
+                                                    Text_MessageBar.setForeground(Color.RED);
+                                                }    
                                             }
-                                            else
-                                            {
-                                                Panel_Text.setVisible(false);
-                                                Text_MessageBar.setText(Initializations.SYSTEMCOLL);
-                                                Text_MessageBar.setForeground(Color.RED);
-                                            }    
                                         }
                                     }
+                                } 
+                            }
+                            /**
+                             * This has been added to add a feature of "On Right-Click" on nodes
+                             * Such as add collections, delete collections for the Root node...
+                             */
+                            else if(me.getButton() == MouseEvent.BUTTON3)
+                            {
+                                int selRow = jTree1.getRowForLocation(me.getX(), me.getY());
+                                TreePath selPath = jTree1.getPathForLocation(me.getX(), me.getY());
+                                jTree1.setSelectionPath(selPath); 
+                                
+                                if (selRow>-1)
+                                {
+                                    jTree1.setSelectionRow(selRow); 
                                 }
-                            } 
-                            }                            
+                                
+                                DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)jTree1.getModel().getRoot();
+                                DefaultMutableTreeNode currNode = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
+                                //RootPopupMenu rootPopupMenu = new RootPopupMenu(this);
+                                
+                                if(currNode == rootNode)
+                                {
+                                    rootPopupMenu.setVisible(true);
+                                    rootPopupMenu.show(jTree1, me.getX(), me.getY());
+                                }
+                                else
+                                {
+                                    rootPopupMenu.setVisible(false);
+                                }
+                            }
                         } 
                     });
                 }
@@ -1553,7 +1601,10 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
     protected javax.swing.JMenuItem addCollection;
+    private javax.swing.JMenuItem addCollectionMenuItem;
     private javax.swing.JMenuItem connect_DB;
+    private javax.swing.JMenuItem deleteCollectionMenuItem;
+    private javax.swing.JMenuItem dropCollectionMenuItem;
     private javax.swing.JMenuItem file_close;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -1567,5 +1618,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JCheckBox left_obj_to_array;
     private javax.swing.JLabel right_label;
     private javax.swing.JCheckBox right_obj_to_array;
+    private javax.swing.JPopupMenu rootPopupMenu;
     // End of variables declaration//GEN-END:variables
 }

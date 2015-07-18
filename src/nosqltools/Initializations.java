@@ -66,14 +66,17 @@ public class Initializations {
     public static String SYSTEMCOLL = "System collections are not shown!";
     public static String SYSTEMCOLLNOREFRESH = "System collections cannot be refreshed!";
     
-    public static String INITSTRING = "";
+    public static final String INITSTRING = "";
     
-    public static String CREATECOMMANDNOTVALID = "Not a valid Create Collection command";
-    public static String CREATECOMMANDDECLAREERROR = "The create collection signature is not correct. (db.createCollection())";
-    public static String CHECKSYNTAXERROR = "Check Syntax";
-    public static String NAMECOLLECTION = "No valid Collection Name present in command!";
-    public static String ADDCOLLECTIONNAME = "Include Collection Name";
-    public static String CREATECOMMANDOPTIONSNOTVALID = "Some option/s are not of the valid type";
-    public static String MAXDOCUMENTSINVALID = "Max Documents should be an integer!";
-    public static String INVALIDPROPERTYENTRY = "Invalid property type."; 
+    public static final String CREATECOMMANDNOTVALID = "Not a valid Create Collection command";
+    public static final String CREATECOMMANDDECLAREERROR = "The create collection signature is not correct. (db.createCollection())";
+    public static final String CHECKSYNTAXERROR = "Check Syntax";
+    public static final String NAMECOLLECTION = "No valid Collection Name present in command!";
+    public static final String ADDCOLLECTIONNAME = "Include Collection Name";
+    public static final String CREATECOMMANDOPTIONSNOTVALID = "Some option/s are not of the valid type";
+    public static final String MAXDOCUMENTSINVALID = "Max Documents should be an integer!";
+    public static final String INVALIDPROPERTYENTRY = "Invalid property type.";
+    
+    public static final String ADDCOLLECTION = "Add Collection";
+    public static final String DELETECOLLECTION = "Delete Collection";
 }

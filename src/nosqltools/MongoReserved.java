@@ -15,26 +15,27 @@ public class MongoReserved {
     /**
      * Properties
      */
-    public static String NAME_PROP = "name";
-    public static String CAPPED_PROP = "capped";
-    public static String AUTOINDEXID_PROP = "autoIndexID";
-    public static String SIZE_PROP = "size";
-    public static String MAX_PROP = "max";
-    public static String STORAGEENGINE_PROP = "storageEngine";
+    public static final String NAME_PROP = "name";
+    public static final String CAPPED_PROP = "capped";
+    public static final String AUTOINDEXID_PROP = "autoIndexID";
+    public static final String SIZE_PROP = "size";
+    public static final String MAX_PROP = "max";
+    public static final String STORAGEENGINE_PROP = "storageEngine";
+    public static final String SYSTEMCOLLECTIONSPREFIX = "system.";
     
     /**
      * Commands
      */
-    public static String CREATECOLLECTIONCOMMAND = "db.createcollection";
+    public static final String CREATECOLLECTIONCOMMAND = "db.createcollection";
     
     /**
      * Variables
      */
-    public static String TRUE_VAR = "true";
-    public static String FALSE_VAR = "false";
-    public static String CAPPED_VAR = "capped:";
-    public static String AUTOINDEXID_VAR = "autoIndexId:";
-    public static String SIZE_VAR = "size:";
-    public static String MAX_VAR = "max:";
-    public static String STORAGEENGINE_VAR = "storageEngine:";
+    public static final String TRUE_VAR = "true";
+    public static final String FALSE_VAR = "false";
+    public static final String CAPPED_VAR = "capped:";
+    public static final String AUTOINDEXID_VAR = "autoIndexId:";
+    public static final String SIZE_VAR = "size:";
+    public static final String MAX_VAR = "max:";
+    public static final String STORAGEENGINE_VAR = "storageEngine:";
 }
