@@ -5,8 +5,12 @@
  */
 package nosqltools;
 
+import java.awt.Color;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -17,12 +21,12 @@ public class DeleteCollection extends javax.swing.JDialog {
     /**
      * Creates new form DeleteCollection
      */
-    private final MainForm parent;
+    private final MainForm mainForm;
     
     public DeleteCollection(MainForm parent, boolean modal) 
     {
         super(parent, modal);
-        this.parent = parent;
+        this.mainForm = parent;
         initComponents();
         setCollectionsList();
         setDbNameLabel();
@@ -31,12 +35,12 @@ public class DeleteCollection extends javax.swing.JDialog {
     private void setCollectionsList()
     {
         DefaultListModel listModel = new DefaultListModel();
-        List<String> availCollections = this.parent.dbcon.getAllCollections();
+        List<String> availCollections = this.mainForm.dbcon.getAllCollections();
         
         for(String col : availCollections)
         {
             /**
-             * We obviously don't want to drop system collection,
+             * We obviously don't want to drop system collections,
              * hence they are not added in the list...
              */
             if(!col.toLowerCase().contains(MongoReserved.SYSTEMCOLLECTIONSPREFIX))
@@ -50,7 +54,7 @@ public class DeleteCollection extends javax.swing.JDialog {
     
     private void setDbNameLabel()
     {
-        this.dbNameLabel.setText(this.parent.dbcon.db.getName());
+        this.dbNameLabel.setText(this.mainForm.dbcon.db.getName());
     }
 
     /**
@@ -68,6 +72,7 @@ public class DeleteCollection extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Drop Collections ");
+        setResizable(false);
 
         collectionList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -77,6 +82,11 @@ public class DeleteCollection extends javax.swing.JDialog {
         jScrollPane1.setViewportView(collectionList);
 
         executeDeleteButton.setText("Execute");
+        executeDeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                executeDeleteButtonActionPerformed(evt);
+            }
+        });
 
         dbdescLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         dbdescLabel.setText("Collections of DB: ");
@@ -123,6 +133,71 @@ public class DeleteCollection extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void executeDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_executeDeleteButtonActionPerformed
+
+        List<String> selectedCollections = collectionList.getSelectedValuesList();
+        String dropMessage = Initializations.DROPCOLLETIONSMESSAGE;
+        
+        for(String collectionName : selectedCollections)
+        {
+            dropMessage += "\n\t\t" + collectionName;
+        }
+        
+        JTextArea textMessage = new JTextArea(dropMessage);
+        textMessage.setBorder(null);
+        textMessage.setBackground(new java.awt.Color(214, 217, 223));
+        textMessage.setEditable(false);
+        
+        int result = JOptionPane.showConfirmDialog(this, textMessage, Initializations.DROPCOLLECTIONTITLE, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        
+        switch(result)
+        {
+            case 0: //The Confirmation button YES...
+            {
+                List<String> droppedCollections = this.mainForm.dbcon.dropCollections(selectedCollections);
+                String droppedMessage = Initializations.DROPPEDCOLLECTIONSSUCCESSFULLY;
+                
+                for(String coll : droppedCollections)
+                {
+                    droppedMessage += "\n" + coll;
+                }
+                
+                textMessage.setText(droppedMessage);
+                refreshTreeView();
+                JOptionPane.showMessageDialog(this, textMessage, Initializations.DROPCOLLECTIONSCOMMANDOUTPUT, JOptionPane.YES_OPTION);
+                this.setVisible(false);
+                break;
+            }
+            
+            case 1: //The button NO...
+            {
+                break;
+            }
+            
+            default:
+                break;
+        }
+    }//GEN-LAST:event_executeDeleteButtonActionPerformed
+
+    private void refreshTreeView()
+    {
+        DefaultTreeModel defTableMod = mainForm.dbcon.buildDBTree();
+        if (defTableMod != null && mainForm.dbcon.isConnectionSuccess()) 
+        {
+            mainForm.jTree1.setModel(defTableMod);
+            mainForm.Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
+            mainForm.Text_MessageBar.setForeground(Color.GREEN);
+            mainForm.Menu_Collections.setEnabled(true);
+            mainForm.addCollection.setEnabled(true);
+        } 
+        else 
+        {
+            mainForm.jTree1.setModel(null);
+            mainForm.Text_MessageBar.setText(Initializations.DBCONNFAIL);
+            mainForm.Text_MessageBar.setForeground(Color.RED);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */

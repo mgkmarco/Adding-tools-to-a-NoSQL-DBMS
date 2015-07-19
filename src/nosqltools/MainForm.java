@@ -1477,7 +1477,6 @@ public class MainForm extends javax.swing.JFrame {
                                 
                                 DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)jTree1.getModel().getRoot();
                                 DefaultMutableTreeNode currNode = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
-                                //RootPopupMenu rootPopupMenu = new RootPopupMenu(this);
                                 
                                 if(currNode == rootNode)
                                 {

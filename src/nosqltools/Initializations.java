@@ -68,6 +68,9 @@ public class Initializations {
     
     public static final String INITSTRING = "";
     
+    /**
+     * Dialog messages...
+     */
     public static final String CREATECOMMANDNOTVALID = "Not a valid Create Collection command";
     public static final String CREATECOMMANDDECLAREERROR = "The create collection signature is not correct. (db.createCollection())";
     public static final String CHECKSYNTAXERROR = "Check Syntax";
@@ -76,7 +79,14 @@ public class Initializations {
     public static final String CREATECOMMANDOPTIONSNOTVALID = "Some option/s are not of the valid type";
     public static final String MAXDOCUMENTSINVALID = "Max Documents should be an integer!";
     public static final String INVALIDPROPERTYENTRY = "Invalid property type.";
-    
+    public static final String DROPCOLLETIONSMESSAGE = "Are you sure you want to delete the selected collections? "
+            + "\nBe aware that any data and indices will be deleted, and you can't undo this operation!"
+            + "\nThe following will be dropped: ";
+    public static final String DROPPEDCOLLECTIONSSUCCESSFULLY = "Below is the output of the Drop Command: ";                
+    public static final String DROPCOLLECTIONTITLE = "Confirm Drop Command";
+    public static final String COLLECTIONCREATEDSUCCESSFULLY = "The Collection was successfully created.";
+    public static final String COLLECTIONCREATED = "Collection Created";
     public static final String ADDCOLLECTION = "Add Collection";
     public static final String DELETECOLLECTION = "Delete Collection";
+    public static final String DROPCOLLECTIONSCOMMANDOUTPUT = "Dropped Selected Collection/s Output";
 }

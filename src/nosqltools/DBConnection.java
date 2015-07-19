@@ -549,6 +549,11 @@ public class DBConnection
         return x.isEmpty();
     }
     
+    /**
+     * Collections specific operations... 
+     * @param propertyMap
+     * @return 
+     */
     protected String createCollection(HashMap propertyMap)
     {
         DBCollection collection;
@@ -610,4 +615,32 @@ public class DBConnection
         
         return Initializations.SUCCESS;
     }
+    
+    protected List<String> dropCollections(List<String> collectionList)
+    {
+        DBCollection collection = null; 
+        String collectionName = "";
+        
+        for(int i = 0; i < collectionList.size(); i++)
+        {
+            try
+            {
+                collectionName = collectionList.get(i);
+                collection = db.getCollection(collectionName);
+                collection.drop();
+                //--- If it was successful then it should hit here otherwise it will be caught in the exception...
+                collectionName += "--- Dropped";
+                collectionList.set(i, collectionName);
+            }
+           catch(Exception exp)
+           {
+               collectionName += exp.getMessage();
+               collectionList.set(i, collectionName);
+           }
+        }
+        
+        return collectionList;
+    }
+    
+    
 }
