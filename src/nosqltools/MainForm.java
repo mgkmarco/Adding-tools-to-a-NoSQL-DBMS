@@ -1785,7 +1785,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JCheckBox right_obj_to_array;
     private javax.swing.JPopupMenu rootPopupMenu;
     protected javax.swing.JMenuItem startClientMenuItem;
-    private javax.swing.JMenuItem startServerMenuItem;
+    protected javax.swing.JMenuItem startServerMenuItem;
     protected javax.swing.JMenuItem stopClientMenuItem;
     protected javax.swing.JMenuItem stopServerMenuItem;
     protected javax.swing.JMenu toolsMenu;
