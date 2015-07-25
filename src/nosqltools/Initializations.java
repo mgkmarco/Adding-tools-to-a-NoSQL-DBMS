@@ -89,4 +89,32 @@ public class Initializations {
     public static final String ADDCOLLECTION = "Add Collection";
     public static final String DELETECOLLECTION = "Delete Collection";
     public static final String DROPCOLLECTIONSCOMMANDOUTPUT = "Dropped Selected Collection/s Output";
+    public static final String SUCCESSFULLYINSTALLED = "MongoDB has been successfully installed";
+    public static final String TERMINATEDBYUSER = "The installer has been stopped by the user";
+    public static final String TERMINATEDBYUSERTITLE = "Installation Aborted";
+    public static final String INSTALLERFAILED = "The installer has failed with the following errors: \n";
+    public static final String INSTALLERFAILEDTITLE = "Installer has Failed";
+    public static final String QUITEMODETOOLTIP = "MongoDB will be installed un-attended, just like a Ninja";
+    public static final String PLEASEWAIT = "Please be patient... MongoDB will soon be installed";
+    public static final String INSTALLERNOTE = "The following dialog will let you install MongoDB. Please note that this feature is currently only available for Windows Operating Systems. "; 
+    public static final String BINLOCATIONERROR = "Location for the 'mongod.exe' could not be resolved!";
+    public static final String LOCATIONERROR = "Location Error";
+    public static final String DBPATHERROR = "Location for the db storage path could not be resolved!";
+    public static final String LOGLOCATIONERROR =  "Location for the log storage path could not be resolved!";
+    public static final String SERVICEMONGODSTARTED = "Mongod Server Service has been successfully started!";
+    public static final String EXCEPTIONMESSAGE = "Process failed with the following exception thrown: ";
+    public static final String SUCCESSMESSAGELABEL = "Server Service Started";
+    public static final String ERRORMESSAGE = "Server Service has not been started";
+    public static final String SERVERSTOPPED = "Server has been successfully stopped";
+    public static final String SERVERSTOPPEDERROR = "We were unable to switch off the server";
+    public static final String SERVERSTOPPEDERROREXCEPTION = "The command has failed with the following exception: ";
+    
+    /**
+     * app.properties File property KEYS
+     */
+    public static final String DEFAULT_INSTALL_PATH = "C:\\MongoDB\\Server\\3.0\\bin";
+    public static final String MONGO_BIN_PATH = "mongo_bin_path";
+    public static final String DB_STORAGE_PATH = "db_storage_path";
+    public static final String LOG_STORAGE_PATH = "log_storage_path";
+    public static final String DONT_ALTER_WARNING = "DON'T ALTER THIS FILE SINCE THE PROGRAM MAY WORK ERRENOUSLY";
 }

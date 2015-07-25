@@ -7,11 +7,8 @@ package nosqltools;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import java.awt.Color;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -23,14 +20,14 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author mgalea
  */
-public class AddCollection extends javax.swing.JDialog {
+public class AddCollectionDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form AddCollection
+     * Creates new form AddCollectionDialog
      */
     private final MainForm mainForm;
 
-    public AddCollection(MainForm parent, boolean modal) {
+    public AddCollectionDialog(MainForm parent, boolean modal) {
         super(parent, modal);
         mainForm = parent;
         initComponents();
@@ -386,20 +383,23 @@ public class AddCollection extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddCollection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddCollectionDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddCollection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddCollectionDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddCollection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddCollectionDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddCollection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AddCollectionDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                AddCollection dialog = new AddCollection(new MainForm(), true);
+                AddCollectionDialog dialog = new AddCollectionDialog(new MainForm(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

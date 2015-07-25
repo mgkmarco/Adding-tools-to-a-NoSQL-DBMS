@@ -566,7 +566,6 @@ public class DBConnection
             //iterate through map to get optional properties...
             Set set = propertyMap.entrySet(); 
             Iterator iter = set.iterator(); 
-            boolean validator = true;
             
             while(iter.hasNext()) 
             { 

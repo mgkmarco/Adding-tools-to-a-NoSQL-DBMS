@@ -183,6 +183,15 @@ public class MainForm extends javax.swing.JFrame {
         Export_File = new javax.swing.JMenuItem();
         addCollection = new javax.swing.JMenuItem();
         dropCollectionMenuItem = new javax.swing.JMenuItem();
+        toolsMenu = new javax.swing.JMenu();
+        installMongoDB = new javax.swing.JMenuItem();
+        uninstallMongoDBMenuItem = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        startServerMenuItem = new javax.swing.JMenuItem();
+        stopServerMenuItem = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        startClientMenuItem = new javax.swing.JMenuItem();
+        stopClientMenuItem = new javax.swing.JMenuItem();
 
         addCollectionMenuItem.setText("Add Collection");
         addCollectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -503,6 +512,50 @@ public class MainForm extends javax.swing.JFrame {
         Menu_Collections.add(dropCollectionMenuItem);
 
         jMenuBar1.add(Menu_Collections);
+
+        toolsMenu.setText("Tools");
+        toolsMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                toolsMenuMouseClicked(evt);
+            }
+        });
+
+        installMongoDB.setText("Install MongoDB");
+        installMongoDB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                installMongoDBActionPerformed(evt);
+            }
+        });
+        toolsMenu.add(installMongoDB);
+
+        uninstallMongoDBMenuItem.setText("Uninstall MongoDB");
+        toolsMenu.add(uninstallMongoDBMenuItem);
+        toolsMenu.add(jSeparator1);
+
+        startServerMenuItem.setText("Start Server (mongod.exe)");
+        startServerMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startServerMenuItemActionPerformed(evt);
+            }
+        });
+        toolsMenu.add(startServerMenuItem);
+
+        stopServerMenuItem.setText("Stop Server (mongod.exe)");
+        stopServerMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopServerMenuItemActionPerformed(evt);
+            }
+        });
+        toolsMenu.add(stopServerMenuItem);
+        toolsMenu.add(jSeparator2);
+
+        startClientMenuItem.setText("Start Client (mongo.exe)");
+        toolsMenu.add(startClientMenuItem);
+
+        stopClientMenuItem.setText("Stop Client (mongo.exe)");
+        toolsMenu.add(stopClientMenuItem);
+
+        jMenuBar1.add(toolsMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -1359,16 +1412,72 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_Op_ValidateActionPerformed
 
     private void addCollectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCollectionMenuItemActionPerformed
-        AddCollection addCollection = new AddCollection(this, rootPaneCheckingEnabled);
+        AddCollectionDialog addCollection = new AddCollectionDialog(this, rootPaneCheckingEnabled);
         addCollection.setLocationRelativeTo(null);
         addCollection.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_addCollectionMenuItemActionPerformed
 
     private void deleteCollectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteCollectionMenuItemActionPerformed
-        DeleteCollection deleteCollection = new DeleteCollection(this, rootPaneCheckingEnabled);
+        DeleteCollectionDialog deleteCollection = new DeleteCollectionDialog(this, rootPaneCheckingEnabled);
         deleteCollection.setLocationRelativeTo(null);
         deleteCollection.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_deleteCollectionMenuItemActionPerformed
+
+    private void installMongoDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_installMongoDBActionPerformed
+        InstallMongoDialog installMongoDialog = new InstallMongoDialog(this, true);
+        installMongoDialog.setLocationRelativeTo(null);
+        installMongoDialog.setVisible(true);
+    }//GEN-LAST:event_installMongoDBActionPerformed
+
+    private void startServerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerMenuItemActionPerformed
+        StartServerDialog startServerDialog = new StartServerDialog(this, true);
+        startServerDialog.setLocationRelativeTo(null);
+        startServerDialog.setVisible(true);
+    }//GEN-LAST:event_startServerMenuItemActionPerformed
+
+    private void toolsMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_toolsMenuMouseClicked
+       /** 
+         * To Determine how to show the menu items...
+         */
+        ServerController sc = new ServerController();
+        
+        if(sc.isServiceRunning(MongoReserved.MONGODEXE))
+        {   
+            startServerMenuItem.setEnabled(false);
+            stopServerMenuItem.setEnabled(true);
+        }
+        else
+        {
+            startServerMenuItem.setEnabled(true);
+            stopServerMenuItem.setEnabled(false);
+        }
+    }//GEN-LAST:event_toolsMenuMouseClicked
+
+    private void stopServerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopServerMenuItemActionPerformed
+        ServerController sc = new ServerController();
+        int retVal = sc.stopServer();
+        
+        switch(retVal)
+        {
+            case 0: //success
+            {
+                JOptionPane.showMessageDialog(this, Initializations.SERVERSTOPPED, Initializations.SUCCESS, JOptionPane.INFORMATION_MESSAGE);
+                break;
+            }
+            
+            case -1: //Exception 
+            {
+                JOptionPane.showMessageDialog(this, Initializations.SERVERSTOPPEDERROREXCEPTION + sc.ExceptionMessage, Initializations.ERROR, JOptionPane.WARNING_MESSAGE);
+                break;
+            }
+            
+            case 1: //Something went wrong like incorrect function or something else which does not generate an exception but an error...
+            {
+                JOptionPane.showMessageDialog(this, Initializations.SERVERSTOPPEDERROR, Initializations.ERROR, JOptionPane.WARNING_MESSAGE);
+                break;
+            }
+        }
+    }//GEN-LAST:event_stopServerMenuItemActionPerformed
    
     
     public void connect()
@@ -1605,11 +1714,14 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem deleteCollectionMenuItem;
     private javax.swing.JMenuItem dropCollectionMenuItem;
     private javax.swing.JMenuItem file_close;
+    private javax.swing.JMenuItem installMongoDB;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
     protected javax.swing.JTree jTree1;
     public javax.swing.JTree jTreeHierarchicalJson;
@@ -1618,5 +1730,11 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JLabel right_label;
     private javax.swing.JCheckBox right_obj_to_array;
     private javax.swing.JPopupMenu rootPopupMenu;
+    private javax.swing.JMenuItem startClientMenuItem;
+    protected javax.swing.JMenuItem startServerMenuItem;
+    private javax.swing.JMenuItem stopClientMenuItem;
+    private javax.swing.JMenuItem stopServerMenuItem;
+    private javax.swing.JMenu toolsMenu;
+    private javax.swing.JMenuItem uninstallMongoDBMenuItem;
     // End of variables declaration//GEN-END:variables
 }

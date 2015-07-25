@@ -38,4 +38,20 @@ public class MongoReserved {
     public static final String SIZE_VAR = "size:";
     public static final String MAX_VAR = "max:";
     public static final String STORAGEENGINE_VAR = "storageEngine:";
+    
+    /**
+     * Component Set
+     */
+    public static final String SERVER = "Server";
+    public static final String CLIENT = "Client";
+    public static final String ROUTER = "Router";
+    public static final String MONITORING_TOOLS = "Monitoring Tools";
+    public static final String IMPORT_EXPORT_TOOLS = "Import-Export Tools";
+    public static final String MISC_TOOLS = "Miscellaneous Tools";
+    public static final String MONGODEXE = "mongod.exe";
+    
+    /**
+     * Exception message when service has started and not yet finished
+     */
+    public static final String PROCESSNOTEXITED = "process has not exited";
 }

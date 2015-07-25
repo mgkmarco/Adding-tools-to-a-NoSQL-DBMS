@@ -16,14 +16,14 @@ import javax.swing.tree.DefaultTreeModel;
  *
  * @author mgalea
  */
-public class DeleteCollection extends javax.swing.JDialog {
+public class DeleteCollectionDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form DeleteCollection
+     * Creates new form DeleteCollectionDialog
      */
     private final MainForm mainForm;
     
-    public DeleteCollection(MainForm parent, boolean modal) 
+    public DeleteCollectionDialog(MainForm parent, boolean modal) 
     {
         super(parent, modal);
         this.mainForm = parent;
@@ -215,20 +215,23 @@ public class DeleteCollection extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DeleteCollection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteCollectionDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DeleteCollection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteCollectionDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DeleteCollection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteCollectionDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DeleteCollection.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DeleteCollectionDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DeleteCollection dialog = new DeleteCollection(new MainForm(), true);
+                DeleteCollectionDialog dialog = new DeleteCollectionDialog(new MainForm(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
