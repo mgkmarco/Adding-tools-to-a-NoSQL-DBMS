@@ -96,23 +96,39 @@ public class Initializations {
     public static final String INSTALLERFAILEDTITLE = "Installer has Failed";
     public static final String QUITEMODETOOLTIP = "MongoDB will be installed un-attended, just like a Ninja";
     public static final String PLEASEWAIT = "Please be patient... MongoDB will soon be installed";
+    public static final String PLEASEWAITUNINSTALL = "Please be patient... MongoDB will soon be uninstalled";
     public static final String INSTALLERNOTE = "The following dialog will let you install MongoDB. Please note that this feature is currently only available for Windows Operating Systems. "; 
     public static final String BINLOCATIONERROR = "Location for the 'mongod.exe' could not be resolved!";
     public static final String LOCATIONERROR = "Location Error";
     public static final String DBPATHERROR = "Location for the db storage path could not be resolved!";
     public static final String LOGLOCATIONERROR =  "Location for the log storage path could not be resolved!";
     public static final String SERVICEMONGODSTARTED = "Mongod Server Service has been successfully started!";
+    public static final String SERVICEMONGOSTARTED = "Mongo Client Service has been successfully started!";
     public static final String EXCEPTIONMESSAGE = "Process failed with the following exception thrown: ";
-    public static final String SUCCESSMESSAGELABEL = "Server Service Started";
+    public static final String SUCCESSMESSAGELABEL = "Service Started";
     public static final String ERRORMESSAGE = "Server Service has not been started";
     public static final String SERVERSTOPPED = "Server has been successfully stopped";
+    public static final String CLIENTSTOPPED = "Client has been successfully stopped";
     public static final String SERVERSTOPPEDERROR = "We were unable to switch off the server";
+    public static final String CLIENTSTOPPEDERROR = "We were unable to switch off the server";
     public static final String SERVERSTOPPEDERROREXCEPTION = "The command has failed with the following exception: ";
+    public static final String CLIENTSTOPPEDERROREXCEPTION = "The command has failed with the following exception: ";
+    public static final String UNINSTALLMONGO = "Are you sure you want to uninstall MongoDB?";
+    public static final String UNINSTALLMONGOTITLE = "Uninstaller";
+    public static final String UNINSTALLABORTEDMESSAGE = "Uninstallation has been aborted";
+    public static final String UNINSTALLATIONSUCCESSMESSAGE = "Uninstalled successfully";
+    public static final String FILEDOESNOTEXIST = "Not a valid *.MSI file selected";
+    public static final String CLIENTBINLOCATIONERROR = "Location for the 'mongod.exe' could not be resolved!";
+    public static final String ERRORUNINSTALL = "Errors occured during the uninstallation";
+    public static final String ERRORUNINSTALLEXCEPTION = "The command has failed with the following exception: ";
+    public static final String ERRORUNINSTALLEXCEPTIONTITLE = "Exception";
+    public static final String UNABLETOCONNECTTOSERVER = "Unable to connect to server. Make sure it's started";
     
     /**
      * app.properties File property KEYS
      */
-    public static final String DEFAULT_INSTALL_PATH = "C:\\MongoDB\\Server\\3.0\\bin";
+    public static final String DEFAULT_INSTALL_PATH = "C:\\MongoDB\\Server\\3.0";
+    public static final String BIN_FOLDER = "\\bin";
     public static final String MONGO_BIN_PATH = "mongo_bin_path";
     public static final String DB_STORAGE_PATH = "db_storage_path";
     public static final String LOG_STORAGE_PATH = "log_storage_path";

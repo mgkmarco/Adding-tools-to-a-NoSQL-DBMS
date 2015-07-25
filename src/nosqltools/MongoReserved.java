@@ -49,6 +49,7 @@ public class MongoReserved {
     public static final String IMPORT_EXPORT_TOOLS = "Import-Export Tools";
     public static final String MISC_TOOLS = "Miscellaneous Tools";
     public static final String MONGODEXE = "mongod.exe";
+    public static final String MONGOEXE = "mongo.exe";
     
     /**
      * Exception message when service has started and not yet finished

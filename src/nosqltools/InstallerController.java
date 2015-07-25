@@ -5,6 +5,7 @@
  */
 package nosqltools;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -19,6 +20,7 @@ public class InstallerController {
     private boolean QuiteModeFlag;
     private String InstallLocation;
     private String AddLocal;
+    protected String ExceptionMessage;
     
     private static enum Arguments
     {
@@ -38,7 +40,8 @@ public class InstallerController {
         COMMA_SEPARATOR(","),
         ADD_LOCAL_ALL("all"),
         CMD("cmd.exe"),
-        CMD_RUN_FLAG("/c");
+        CMD_RUN_FLAG("/c"),
+        UNINSTALL_FLAG("/uninstall");
         
         private final String argument;
         
@@ -186,6 +189,43 @@ public class InstallerController {
         } 
         
         return -1;
+    }
+    
+    protected int uninstallMSI()
+    {
+        /** 
+         * check if file exists first and foremost...
+         * stop server service/process...
+         */
+        String path = getPath().replace("\"", "");
+        
+        File file = new File(path);
+        if(!file.exists())
+        {
+            return 999;
+        }
+        
+        ServerController sc = new ServerController();
+        sc.stopServer();
+        
+        try 
+        {
+            ProcessBuilder builder = new ProcessBuilder(
+                    Arguments.CMD.getArgument(), 
+                    Arguments.CMD_RUN_FLAG.getArgument(), 
+                    Arguments.MSIEXEC_CMD.getArgument(),
+                    Arguments.UNINSTALL_FLAG.getArgument(),
+                    getPath()
+            );
+            Process p = builder.start();
+            return p.waitFor();
+        } 
+        catch(Exception e) 
+        {
+            this.ExceptionMessage = e.getMessage();
+            e.printStackTrace();
+            return -1;
+        }
     }
     
     private String getExecCommand()

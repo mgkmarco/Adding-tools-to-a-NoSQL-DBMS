@@ -334,7 +334,7 @@ public class InstallMongoDialog extends javax.swing.JDialog {
                  * Write installation location into the app.properties file
                  */
                 PropertiesController propCntrl = new PropertiesController();
-                propCntrl.writeConfigFile(Initializations.MONGO_BIN_PATH, pathToInstallation);
+                propCntrl.writeConfigFile(Initializations.MONGO_BIN_PATH, pathToInstallation + Initializations.BIN_FOLDER);
                 break;
             }
             case 1602: //Terminated by the user...
