@@ -11,6 +11,7 @@ package nosqltools;
  */
 public class Initializations {
     
+    public static String ADDUSERS = "Add Users to DB";
     public static String DBCONNSUCCESS = "Connection to MongoDB has been successful ";
     public static String DBCONNFAIL = "Connection to MongoDB has failed. Please try again.";
     public static String DBATTEMPTING = "Attempting to connect, please wait!";

@@ -29,6 +29,7 @@ public class JSONUtilities
     public JSONArray json_array = null;
     public JSONObject json_obj = null;
     public JsonNode JSONParsedData;
+    public int LineNumber = -1;
 
     //this method checks whether a string is a JSON array
     public boolean isArray(String json_data)
@@ -134,6 +135,7 @@ public class JSONUtilities
         } 
         catch (JsonParseException | JsonGenerationException | JsonMappingException e) 
         {
+            LineNumber = (e.getLocation().getLineNr()) - 1;
             return false;
         } 
         catch (IOException e)

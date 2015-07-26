@@ -525,7 +525,7 @@ public class AddCollectionDialog extends javax.swing.JDialog {
                     {
                         messageLabel.setText(returnVal);
                         messageLabel.setForeground(Color.GREEN);
-                        JOptionPane.showMessageDialog(this, Initializations.COLLECTIONCREATEDSUCCESSFULLY, Initializations.COLLECTIONCREATED, JOptionPane.YES_OPTION);
+                        JOptionPane.showMessageDialog(this, Initializations.COLLECTIONCREATEDSUCCESSFULLY, Initializations.COLLECTIONCREATED, JOptionPane.INFORMATION_MESSAGE);
                         refreshTreeView();
                     } 
                     else 
@@ -600,7 +600,7 @@ public class AddCollectionDialog extends javax.swing.JDialog {
                 {
                     messageLabel.setText(returnVal);
                     messageLabel.setForeground(Color.GREEN);
-                    JOptionPane.showMessageDialog(this, Initializations.COLLECTIONCREATEDSUCCESSFULLY, Initializations.COLLECTIONCREATED, JOptionPane.YES_OPTION);
+                    JOptionPane.showMessageDialog(this, Initializations.COLLECTIONCREATEDSUCCESSFULLY, Initializations.COLLECTIONCREATED, JOptionPane.INFORMATION_MESSAGE);
                     refreshTreeView();
                 } 
                 else 

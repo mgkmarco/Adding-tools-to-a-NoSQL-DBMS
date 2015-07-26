@@ -7,9 +7,14 @@ package nosqltools;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
+import com.mongodb.ServerAddress;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -19,14 +24,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -141,6 +151,8 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Connections = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jList2 = new javax.swing.JList();
         Panel_Views = new javax.swing.JPanel();
         Panel_Text = new javax.swing.JPanel();
         Panel_Hierarchical = new javax.swing.JPanel();
@@ -166,6 +178,9 @@ public class MainForm extends javax.swing.JFrame {
         Import_JSON = new javax.swing.JMenuItem();
         Save_File = new javax.swing.JMenuItem();
         Save_Mongo = new javax.swing.JMenuItem();
+        addUserMenuItem = new javax.swing.JMenuItem();
+        viewUsersMenuItem = new javax.swing.JMenuItem();
+        viewDBMenuItem = new javax.swing.JMenuItem();
         connect_DB = new javax.swing.JMenuItem();
         file_close = new javax.swing.JMenuItem();
         Menu_Views = new javax.swing.JMenu();
@@ -217,15 +232,31 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTree1);
         jTree1.setModel(null);
 
+        jList2.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jList2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList2MouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(jList2);
+
         javax.swing.GroupLayout Panel_ConnectionsLayout = new javax.swing.GroupLayout(Panel_Connections);
         Panel_Connections.setLayout(Panel_ConnectionsLayout);
         Panel_ConnectionsLayout.setHorizontalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+            .addGroup(Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
         );
         Panel_ConnectionsLayout.setVerticalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
+            .addGroup(Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(Panel_Connections);
@@ -367,6 +398,11 @@ public class MainForm extends javax.swing.JFrame {
 
         Menu_File.setText("File");
         Menu_File.setName(""); // NOI18N
+        Menu_File.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                Menu_FileMousePressed(evt);
+            }
+        });
 
         Import_JSON.setText("Open JSON file");
         Import_JSON.addActionListener(new java.awt.event.ActionListener() {
@@ -391,6 +427,33 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         Menu_File.add(Save_Mongo);
+
+        addUserMenuItem.setText("Add User");
+        addUserMenuItem.setEnabled(false);
+        addUserMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addUserMenuItemActionPerformed(evt);
+            }
+        });
+        Menu_File.add(addUserMenuItem);
+
+        viewUsersMenuItem.setText("View Users");
+        viewUsersMenuItem.setEnabled(false);
+        viewUsersMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewUsersMenuItemActionPerformed(evt);
+            }
+        });
+        Menu_File.add(viewUsersMenuItem);
+
+        viewDBMenuItem.setText("View DB");
+        viewDBMenuItem.setEnabled(false);
+        viewDBMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewDBMenuItemActionPerformed(evt);
+            }
+        });
+        Menu_File.add(viewDBMenuItem);
 
         connect_DB.setText("Connect");
         connect_DB.addActionListener(new java.awt.event.ActionListener() {
@@ -1414,6 +1477,7 @@ public class MainForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, Initializations.VALIDATIONSUCCESS, "Success", JOptionPane.INFORMATION_MESSAGE);
         }else
         {
+            int retVal = json_util.LineNumber;
             Text_MessageBar.setText(Initializations.VALIDATIONERROR);
             Text_MessageBar.setForeground(Color.RED);
             JOptionPane.showMessageDialog(null, Initializations.VALIDATIONERROR, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1532,6 +1596,109 @@ public class MainForm extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_stopClientMenuItemActionPerformed
+
+    private void addUserMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserMenuItemActionPerformed
+        try {
+            AddUsersDialog dlg_addusers = new AddUsersDialog(null);
+            dlg_addusers.setVisible(true);
+        } catch (UnknownHostException ex) {
+            ex.getMessage();
+            ex.printStackTrace();
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_addUserMenuItemActionPerformed
+
+    private void Menu_FileMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Menu_FileMousePressed
+        ServerController sc = new ServerController();
+        
+        if(sc.isServiceRunning(MongoReserved.MONGODEXE))
+        {
+            addUserMenuItem.setEnabled(true);
+            
+            if(jScrollPane2.isVisible())
+            {
+                viewUsersMenuItem.setEnabled(true);
+            }
+        }
+        else
+        {
+            addUserMenuItem.setEnabled(false);
+            viewUsersMenuItem.setEnabled(false);
+        }
+    }//GEN-LAST:event_Menu_FileMousePressed
+
+    private void viewUsersMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewUsersMenuItemActionPerformed
+            jScrollPane5.setVisible(true);
+            jScrollPane2.setVisible(false);
+            viewUsersMenuItem.setEnabled(false);
+            viewDBMenuItem.setEnabled(true);
+            GetUsersFromDB gufdb = new GetUsersFromDB();
+            DefaultListModel listModel = gufdb.get_users();
+            jList2.setModel(listModel);
+            Text_MessageBar.setText("username");
+    }//GEN-LAST:event_viewUsersMenuItemActionPerformed
+
+    private void jList2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseClicked
+        ActionListener al3 = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        try {
+            AddUsersDialog dlg_addusers = new AddUsersDialog(null);
+            dlg_addusers.setVisible(true);
+            Text_MessageBar.setText(jList2.getSelectedValue().toString());
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }};
+      
+            
+      ActionListener al1 = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        try {
+            Text_MessageBar.setText(jList2.getSelectedValue().toString());
+            MongoClient mongoClient = new MongoClient(new ServerAddress("localhost", 27017)); 
+            DB db = mongoClient.getDB("test");
+            db.removeUser(jList2.getSelectedValue().toString());
+            viewUsersMenuItem.doClick();
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }}; 
+          
+      //Create the JPopupMenu with three options.
+      final JPopupMenu popupMenu = new JPopupMenu();
+      JMenuItem item1 = new JMenuItem("Delete");
+      item1.addActionListener(al1);
+      popupMenu.add(item1);  
+      popupMenu.add(new JPopupMenu.Separator());
+      JMenuItem item3 = new JMenuItem("Add");
+      item3.addActionListener(al3);
+      popupMenu.add(item3);
+      
+      
+      jList2.addMouseListener(new MouseAdapter() {
+         public void mouseClicked(MouseEvent me) {
+            if (SwingUtilities.isRightMouseButton(me)      // if right mouse button clicked
+                  && !jList2.isSelectionEmpty()            // and list selection is not empty
+                  && jList2.locationToIndex(me.getPoint()) // and clicked point is
+                  == jList2.getSelectedIndex()) {          // inside selected item bounds
+                  Text_MessageBar.setText(jList2.getSelectedValue().toString() + " RIGHT");
+                  Text_MessageBar.setForeground(Color.blue);
+                  popupMenu.show(jList2, me.getX(), me.getY());
+            }else
+            {
+                  Text_MessageBar.setText(jList2.getSelectedValue().toString() + " LEFT");
+                  Text_MessageBar.setForeground(Color.MAGENTA);  
+            }
+         }
+      }); 
+    }//GEN-LAST:event_jList2MouseClicked
+
+    private void viewDBMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewDBMenuItemActionPerformed
+        jScrollPane5.setVisible(false);
+        jScrollPane2.setVisible(true);
+        viewDBMenuItem.setEnabled(false);
+        viewUsersMenuItem.setEnabled(true);
+    }//GEN-LAST:event_viewDBMenuItemActionPerformed
    
     
     public void connect()
@@ -1764,15 +1931,18 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem View_Text;
     protected javax.swing.JMenuItem addCollection;
     private javax.swing.JMenuItem addCollectionMenuItem;
+    private javax.swing.JMenuItem addUserMenuItem;
     private javax.swing.JMenuItem connect_DB;
     private javax.swing.JMenuItem deleteCollectionMenuItem;
     private javax.swing.JMenuItem dropCollectionMenuItem;
     private javax.swing.JMenuItem file_close;
     private javax.swing.JMenuItem installMongoDB;
+    private javax.swing.JList jList2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
@@ -1790,5 +1960,7 @@ public class MainForm extends javax.swing.JFrame {
     protected javax.swing.JMenuItem stopServerMenuItem;
     protected javax.swing.JMenu toolsMenu;
     private javax.swing.JMenuItem uninstallMongoDBMenuItem;
+    private javax.swing.JMenuItem viewDBMenuItem;
+    private javax.swing.JMenuItem viewUsersMenuItem;
     // End of variables declaration//GEN-END:variables
 }
