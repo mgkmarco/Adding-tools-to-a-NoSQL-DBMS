@@ -11,6 +11,8 @@ import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -132,7 +134,8 @@ public class MainForm extends javax.swing.JFrame {
         
         util.changeTextAreaTheme(textArea);
         
-        
+        //--------------------- to remove------------------
+        connectAutomatically("su", "1234", "test");
     }
 
     /**
@@ -147,6 +150,8 @@ public class MainForm extends javax.swing.JFrame {
         rootPopupMenu = new javax.swing.JPopupMenu();
         addCollectionMenuItem = new javax.swing.JMenuItem();
         deleteCollectionMenuItem = new javax.swing.JMenuItem();
+        collectionPopupMenu = new javax.swing.JPopupMenu();
+        queryCollectionMenuItem = new javax.swing.JMenuItem();
         jSplitPane1 = new javax.swing.JSplitPane();
         Panel_Connections = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -197,6 +202,7 @@ public class MainForm extends javax.swing.JFrame {
         Export_File = new javax.swing.JMenuItem();
         addCollection = new javax.swing.JMenuItem();
         dropCollectionMenuItem = new javax.swing.JMenuItem();
+        QueryCollectionMenuItem = new javax.swing.JMenuItem();
         toolsMenu = new javax.swing.JMenu();
         installMongoDB = new javax.swing.JMenuItem();
         uninstallMongoDBMenuItem = new javax.swing.JMenuItem();
@@ -222,6 +228,14 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         rootPopupMenu.add(deleteCollectionMenuItem);
+
+        queryCollectionMenuItem.setText("Query Collection");
+        queryCollectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                QueryCollectionActionPerformed(evt);
+            }
+        });
+        collectionPopupMenu.add(queryCollectionMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mongo View");
@@ -573,6 +587,14 @@ public class MainForm extends javax.swing.JFrame {
         });
         Menu_Collections.add(dropCollectionMenuItem);
 
+        QueryCollectionMenuItem.setText("Query Collection");
+        QueryCollectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                QueryCollectionActionPerformed(evt);
+            }
+        });
+        Menu_Collections.add(QueryCollectionMenuItem);
+
         jMenuBar1.add(Menu_Collections);
 
         toolsMenu.setText("Tools");
@@ -591,6 +613,11 @@ public class MainForm extends javax.swing.JFrame {
         toolsMenu.add(installMongoDB);
 
         uninstallMongoDBMenuItem.setText("Uninstall MongoDB");
+        uninstallMongoDBMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uninstallMongoDBMenuItemActionPerformed(evt);
+            }
+        });
         toolsMenu.add(uninstallMongoDBMenuItem);
         toolsMenu.add(jSeparator1);
 
@@ -1658,8 +1685,10 @@ public class MainForm extends javax.swing.JFrame {
             MongoClient mongoClient = new MongoClient(new ServerAddress("localhost", 27017)); 
             DB db = mongoClient.getDB("test");
             db.removeUser(jList2.getSelectedValue().toString());
+            viewUsersMenuItem.setEnabled(true);
             viewUsersMenuItem.doClick();
-        } catch (UnknownHostException ex) {
+            viewUsersMenuItem.setEnabled(false);
+        } catch (Exception ex) {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
         }
       }}; 
@@ -1699,7 +1728,173 @@ public class MainForm extends javax.swing.JFrame {
         viewDBMenuItem.setEnabled(false);
         viewUsersMenuItem.setEnabled(true);
     }//GEN-LAST:event_viewDBMenuItemActionPerformed
+
+    private void uninstallMongoDBMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uninstallMongoDBMenuItemActionPerformed
+        UninstallMongoDialog uninstallMongoDialog = new UninstallMongoDialog(this, true);
+        uninstallMongoDialog.setLocationRelativeTo(null);
+        uninstallMongoDialog.setVisible(true);
+    }//GEN-LAST:event_uninstallMongoDBMenuItemActionPerformed
+
+    private void QueryCollectionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QueryCollectionActionPerformed
+        Component source = (Component)evt.getSource();
+        Container parentContainer = source.getParent();
+        QueryCollectionDialog queryCollectionDialog = null;
+        
+        /**
+         * To handle when different behaviour of MenuItem click and direct node click
+         * Since the collection on direct node click will be explicit 
+         * but on MenuItem the user can select the collection to query manually...
+         */
+        if(parentContainer.equals(this.collectionPopupMenu))
+        {
+            queryCollectionDialog = new QueryCollectionDialog(this, true, true);
+        }
+        else
+        {
+            queryCollectionDialog = new QueryCollectionDialog(this, true, false);
+        }
+        
+        queryCollectionDialog.setLocationRelativeTo(null);
+        queryCollectionDialog.setVisible(true);
+    }//GEN-LAST:event_QueryCollectionActionPerformed
    
+    // TO BE REMOVED -----------------------------------------------------------------------------------------------------------------------------
+    public void connectAutomatically(String user, String pass, String dbname)
+    {
+        String serveradd;
+        int port;
+            
+        //If user chose login and not cancel option on dialog box
+        if (true)
+        {
+            if (dbcon.connect(user, pass, dbname, "", 27017))
+            {
+                DefaultTreeModel defTableMod = dbcon.buildDBTree();
+                if (defTableMod != null && dbcon.isConnectionSuccess())
+                {
+                    jTree1.setModel(defTableMod);
+                    Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
+                    Text_MessageBar.setForeground(Color.GREEN);
+                    Menu_Collections.setEnabled(true);
+                    addCollection.setEnabled(true);
+                    dropCollectionMenuItem.setEnabled(true);
+                
+                    //load the data of collection in panel_text on double click
+                    jTree1.addMouseListener(new MouseAdapter() 
+                    {
+                        @Override
+                        public void mouseClicked(MouseEvent me) 
+                        {
+                            if (me.getButton() == MouseEvent.BUTTON1)
+                            {
+                                if (me.getClickCount()==2)
+                                {
+                                    //get the path of the mouse click ex:[localhost,test,testData] 
+                                    Op_Refresh.setEnabled(true);
+                                    tp = jTree1.getPathForLocation(me.getX(), me.getY());
+                                    
+                                    if (tp != null)
+                                    {
+                                        List<String> coll_db = dbcon.getAllCollections();
+                                        int cnt = tp.getPathCount();
+                                        for (int i = 0; i<cnt;i++)
+                                        {
+                                            //if one of the collection matches the coll that was clicked by the user load data
+                                            if(coll_db.contains(tp.getPathComponent(i).toString()))
+                                            {
+                                                indexOfCurrentCollection = i;
+                                                sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
+                                            
+                                                if(sb != null)
+                                                {
+                                                    Panel_Text.setVisible(true);
+
+                                                    JsonNode jNode1;
+                                                    try
+                                                    {
+                                                        jNode1 = mapper.readTree(sb.toString());
+                                                        textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
+                                                    } 
+                                                    catch (IOException ex) 
+                                                    {
+                                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+                                                    } 
+
+                                                    Text_MessageBar.setText(Initializations.INITSTRING);
+                                                    validateDataPanel_text(sb);
+                                                }
+                                                else
+                                                {
+                                                    Panel_Text.setVisible(false);
+                                                    Text_MessageBar.setText(Initializations.SYSTEMCOLL);
+                                                    Text_MessageBar.setForeground(Color.RED);
+                                                }    
+                                            }
+                                        }
+                                    }
+                                } 
+                            }
+                            /** -- MG -----------------------------------------------------------
+                             * This has been added to add a feature of "On Right-Click" on nodes |
+                             * Such as add collections, delete collections for the Root node...  |
+                             * ------------------------------------------------------------------
+                             */ 
+                            else if(me.getButton() == MouseEvent.BUTTON3)
+                            {
+                                int selRow = jTree1.getRowForLocation(me.getX(), me.getY());
+                                TreePath selPath = jTree1.getPathForLocation(me.getX(), me.getY());
+                                jTree1.setSelectionPath(selPath); 
+                                
+                                if (selRow>-1)
+                                {
+                                    jTree1.setSelectionRow(selRow); 
+                                }
+                                
+                                DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)jTree1.getModel().getRoot();
+                                DefaultMutableTreeNode currNode = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
+                                
+                                if(currNode == rootNode)
+                                {
+                                    collectionPopupMenu.setVisible(false);
+                                    rootPopupMenu.setVisible(true);
+                                    rootPopupMenu.show(jTree1, me.getX(), me.getY());
+                                }
+                                else
+                                {
+                                    if(selRow > -1)
+                                    {
+                                        rootPopupMenu.setVisible(false);
+                                        collectionPopupMenu.setVisible(true);
+                                        collectionPopupMenu.show(jTree1, me.getX(), me.getY());
+                                    }
+                                }
+                            }
+                        } 
+                    });
+                }
+                else
+                {
+                    jTree1.setModel(null);
+                    Text_MessageBar.setText(Initializations.DBCONNFAIL);
+                    Text_MessageBar.setForeground(Color.RED);
+                }      
+            }
+            else
+            {
+                jTree1.setModel(null);
+                Text_MessageBar.setText(Initializations.DBCONNFAIL);
+                Text_MessageBar.setForeground(Color.RED);
+            }
+        }
+        else
+        {
+            jTree1.setModel(null);
+            Text_MessageBar.setText(Initializations.DBCONNFAIL);
+            Text_MessageBar.setForeground(Color.RED);
+        }
+           
+    }
+    //--------------------------------------------------------------------------------------------------------------------------------------------
     
     public void connect()
     {
@@ -1790,10 +1985,11 @@ public class MainForm extends javax.swing.JFrame {
                                     }
                                 } 
                             }
-                            /**
-                             * This has been added to add a feature of "On Right-Click" on nodes
-                             * Such as add collections, delete collections for the Root node...
-                             */
+                            /** -- MG -----------------------------------------------------------
+                             * This has been added to add a feature of "On Right-Click" on nodes |
+                             * Such as add collections, delete collections for the Root node...  |
+                             * ------------------------------------------------------------------
+                             */ 
                             else if(me.getButton() == MouseEvent.BUTTON3)
                             {
                                 int selRow = jTree1.getRowForLocation(me.getX(), me.getY());
@@ -1810,12 +2006,15 @@ public class MainForm extends javax.swing.JFrame {
                                 
                                 if(currNode == rootNode)
                                 {
+                                    collectionPopupMenu.setVisible(false);
                                     rootPopupMenu.setVisible(true);
                                     rootPopupMenu.show(jTree1, me.getX(), me.getY());
                                 }
                                 else
                                 {
                                     rootPopupMenu.setVisible(false);
+                                    collectionPopupMenu.setVisible(true);
+                                    collectionPopupMenu.show(jTree1, me.getX(), me.getY());
                                 }
                             }
                         } 
@@ -1922,6 +2121,7 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPanel Panel_Table;
     protected javax.swing.JPanel Panel_Text;
     private javax.swing.JPanel Panel_Views;
+    private javax.swing.JMenuItem QueryCollectionMenuItem;
     private javax.swing.JMenuItem Save_File;
     private javax.swing.JMenuItem Save_Mongo;
     private javax.swing.JTable Table_JSON;
@@ -1932,6 +2132,7 @@ public class MainForm extends javax.swing.JFrame {
     protected javax.swing.JMenuItem addCollection;
     private javax.swing.JMenuItem addCollectionMenuItem;
     private javax.swing.JMenuItem addUserMenuItem;
+    private javax.swing.JPopupMenu collectionPopupMenu;
     private javax.swing.JMenuItem connect_DB;
     private javax.swing.JMenuItem deleteCollectionMenuItem;
     private javax.swing.JMenuItem dropCollectionMenuItem;
@@ -1951,6 +2152,7 @@ public class MainForm extends javax.swing.JFrame {
     public javax.swing.JTree jTreeHierarchicalJson;
     private javax.swing.JLabel left_label;
     private javax.swing.JCheckBox left_obj_to_array;
+    private javax.swing.JMenuItem queryCollectionMenuItem;
     private javax.swing.JLabel right_label;
     private javax.swing.JCheckBox right_obj_to_array;
     private javax.swing.JPopupMenu rootPopupMenu;
