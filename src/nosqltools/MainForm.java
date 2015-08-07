@@ -200,8 +200,10 @@ public class MainForm extends javax.swing.JFrame {
         Menu_Collections = new javax.swing.JMenu();
         Import_File = new javax.swing.JMenuItem();
         Export_File = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JPopupMenu.Separator();
         addCollection = new javax.swing.JMenuItem();
         dropCollectionMenuItem = new javax.swing.JMenuItem();
+        jSeparator4 = new javax.swing.JPopupMenu.Separator();
         QueryCollectionMenuItem = new javax.swing.JMenuItem();
         toolsMenu = new javax.swing.JMenu();
         installMongoDB = new javax.swing.JMenuItem();
@@ -568,6 +570,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         Menu_Collections.add(Export_File);
+        Menu_Collections.add(jSeparator3);
 
         addCollection.setText("Add Collection");
         addCollection.setEnabled(false);
@@ -586,6 +589,7 @@ public class MainForm extends javax.swing.JFrame {
             }
         });
         Menu_Collections.add(dropCollectionMenuItem);
+        Menu_Collections.add(jSeparator4);
 
         QueryCollectionMenuItem.setText("Query Collection");
         QueryCollectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -2147,6 +2151,8 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JPopupMenu.Separator jSeparator3;
+    private javax.swing.JPopupMenu.Separator jSeparator4;
     private javax.swing.JSplitPane jSplitPane1;
     protected javax.swing.JTree jTree1;
     public javax.swing.JTree jTreeHierarchicalJson;

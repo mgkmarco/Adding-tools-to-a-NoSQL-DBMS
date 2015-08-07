@@ -5,12 +5,21 @@
  */
 package nosqltools;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author mgalea
  */
 public class ConditionalPanel extends javax.swing.JPanel {
 
+    private QueryCollectionDialog parent;
+    protected String QueryString = "";
+    
     /**
      * Creates new form ConditionalPanel
      */
@@ -26,8 +35,8 @@ public class ConditionalPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         matchPanel = new javax.swing.JPanel();
-        ValueTextArea = new javax.swing.JTextField();
-        FieldTextArea = new javax.swing.JTextField();
+        valueTextArea = new javax.swing.JTextField();
+        fieldTextArea = new javax.swing.JTextField();
         whereValueFieldLabel = new javax.swing.JLabel();
         whereFieldLabel = new javax.swing.JLabel();
         andField = new javax.swing.JTextField();
@@ -38,9 +47,10 @@ public class ConditionalPanel extends javax.swing.JPanel {
         whereValueFieldLabel2 = new javax.swing.JLabel();
         orField = new javax.swing.JTextField();
         orValue = new javax.swing.JTextField();
-        betweenRB = new javax.swing.JRadioButton();
-        orField1 = new javax.swing.JTextField();
-        orValue1 = new javax.swing.JTextField();
+        rangeRB = new javax.swing.JRadioButton();
+        rangeFromVal = new javax.swing.JTextField();
+        rangeToVal = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(471, 135));
         setMinimumSize(new java.awt.Dimension(471, 135));
@@ -49,7 +59,7 @@ public class ConditionalPanel extends javax.swing.JPanel {
         matchPanel.setMinimumSize(new java.awt.Dimension(471, 135));
         matchPanel.setPreferredSize(new java.awt.Dimension(471, 135));
 
-        FieldTextArea.setMaximumSize(new java.awt.Dimension(6, 20));
+        fieldTextArea.setMaximumSize(new java.awt.Dimension(6, 20));
 
         whereValueFieldLabel.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         whereValueFieldLabel.setText("Has Value = ");
@@ -62,15 +72,23 @@ public class ConditionalPanel extends javax.swing.JPanel {
 
         andValue.setEnabled(false);
 
-        andRB.setSelected(true);
         andRB.setText("AND");
+        andRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBActionPerformed(evt);
+            }
+        });
 
         whereValueFieldLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         whereValueFieldLabel1.setText("Has Value = ");
         whereValueFieldLabel1.setFocusable(false);
 
-        orRB.setSelected(true);
         orRB.setText("OR");
+        orRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBActionPerformed(evt);
+            }
+        });
 
         whereValueFieldLabel2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         whereValueFieldLabel2.setText("Has Value = ");
@@ -80,12 +98,20 @@ public class ConditionalPanel extends javax.swing.JPanel {
 
         orValue.setEnabled(false);
 
-        betweenRB.setText("RANGE");
+        rangeRB.setText("Range >=");
+        rangeRB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBActionPerformed(evt);
+            }
+        });
 
-        orField1.setEnabled(false);
-        orField1.setMaximumSize(new java.awt.Dimension(6, 20));
+        rangeFromVal.setEnabled(false);
+        rangeFromVal.setMaximumSize(new java.awt.Dimension(6, 20));
 
-        orValue1.setEnabled(false);
+        rangeToVal.setEnabled(false);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel1.setText("To Value <=");
 
         javax.swing.GroupLayout matchPanelLayout = new javax.swing.GroupLayout(matchPanel);
         matchPanel.setLayout(matchPanelLayout);
@@ -101,37 +127,39 @@ public class ConditionalPanel extends javax.swing.JPanel {
                             .addComponent(orRB))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(matchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(FieldTextArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(fieldTextArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(andField)
                             .addComponent(orField, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(18, 18, 18)
                         .addGroup(matchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(matchPanelLayout.createSequentialGroup()
                                 .addComponent(whereValueFieldLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                                 .addComponent(orValue, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, matchPanelLayout.createSequentialGroup()
+                            .addGroup(matchPanelLayout.createSequentialGroup()
                                 .addComponent(whereValueFieldLabel)
                                 .addGap(29, 29, 29)
-                                .addComponent(ValueTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(valueTextArea))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, matchPanelLayout.createSequentialGroup()
                                 .addComponent(whereValueFieldLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(andValue, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(matchPanelLayout.createSequentialGroup()
-                        .addComponent(betweenRB)
+                        .addComponent(rangeRB)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(orField1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(119, 119, 119)
-                        .addComponent(orValue1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(rangeFromVal, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(rangeToVal, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         matchPanelLayout.setVerticalGroup(
             matchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(matchPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(matchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ValueTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(FieldTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(valueTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fieldTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(whereValueFieldLabel)
                     .addComponent(whereFieldLabel))
                 .addGap(10, 10, 10)
@@ -149,9 +177,10 @@ public class ConditionalPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(matchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(matchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(betweenRB)
-                        .addComponent(orField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(orValue1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(rangeRB)
+                        .addComponent(rangeFromVal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1))
+                    .addComponent(rangeToVal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 32, Short.MAX_VALUE))
         );
 
@@ -159,7 +188,7 @@ public class ConditionalPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(matchPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(matchPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,20 +198,199 @@ public class ConditionalPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void RBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBActionPerformed
+        if(evt.getSource().equals(andRB))
+        {
+            if(andRB.isSelected())
+            {
+                andField.setEnabled(true);
+                andValue.setEnabled(true);
+                orRB.setSelected(false);
+                orField.setEnabled(false);
+                orValue.setEnabled(false);
+                rangeRB.setSelected(false);
+                rangeFromVal.setEnabled(false);
+                rangeToVal.setEnabled(false);
+                valueTextArea.setEnabled(true);
+            }
+            else
+            {
+                andField.setEnabled(false);
+                andValue.setEnabled(false);
+                valueTextArea.setEnabled(true);
+            }
+        }
+            
+        if(evt.getSource().equals(orRB))
+        {
+            if(orRB.isSelected())
+            {
+                orField.setEnabled(true);
+                orValue.setEnabled(true);
+                andRB.setSelected(false);
+                andField.setEnabled(false);
+                andValue.setEnabled(false);
+                rangeRB.setSelected(false);
+                rangeFromVal.setEnabled(false);
+                rangeToVal.setEnabled(false);
+                valueTextArea.setEnabled(true);
+            }
+            else
+            {
+                orField.setEnabled(false);
+                orValue.setEnabled(false);
+                valueTextArea.setEnabled(true);
+            }
+        }
+        else
+        {
+            if(rangeRB.isSelected())
+            {
+                rangeFromVal.setEnabled(true);
+                rangeToVal.setEnabled(true);
+                andRB.setSelected(false);
+                andField.setEnabled(false);
+                andValue.setEnabled(false);
+                orRB.setSelected(false);
+                orField.setEnabled(false);
+                orValue.setEnabled(false);
+                valueTextArea.setEnabled(false);
+            }
+            else
+            {
+                rangeFromVal.setEnabled(false);
+                rangeToVal.setEnabled(false);
+                valueTextArea.setEnabled(true);
+            }
+        }
+    }//GEN-LAST:event_RBActionPerformed
+
+    protected String executeConditionalQuery(DBCollection collection, QueryCollectionDialog parent)
+    {
+        this.parent = parent;
+        BasicDBObject query = null;
+        DBCursor cursor = null;
+        String result = "";
+        this.QueryString = "";
+        
+        /**
+         * First and foremost determine which condition was selected and jump to respective method accordingly...
+         */
+        
+        if(andRB.isSelected())
+        {
+            QueryString += Initializations.WHERE_SYNTAX + fieldTextArea.getText() + Initializations.EQUALS_SYNTAX + valueTextArea.getText() + "\n";
+            QueryString += Initializations.AND_SYNTAX + andField.getText() + Initializations.EQUALS_SYNTAX + andValue.getText() + "\n";
+            query = getAndQueryDBObject(fieldTextArea.getText(), valueTextArea.getText(), andField.getText(), andValue.getText());
+        }
+        
+        else if(orRB.isSelected())
+        {
+            QueryString += Initializations.WHERE_SYNTAX + fieldTextArea.getText() + Initializations.EQUALS_SYNTAX + valueTextArea.getText() + "\n";
+            QueryString += Initializations.OR_SYNTAX + orField.getText() + Initializations.EQUALS_SYNTAX + orValue.getText() + "\n";
+            query = getOrQueryDBObject(fieldTextArea.getText(), valueTextArea.getText(), orField.getText(), orValue.getText());
+        }
+        
+        else if(rangeRB.isSelected())
+        {
+            int fromVal = -1; 
+            int toVal = -1; 
+            
+            try
+            {
+                fromVal = Integer.parseInt(rangeFromVal.getText());
+                toVal = Integer.parseInt(rangeToVal.getText());
+            }
+            catch(Exception ex)
+            {
+                return Initializations.INTEGERPARSEERROR;
+            }
+            
+            QueryString += Initializations.WHERE_SYNTAX + fieldTextArea.getText() + Initializations.BETWEEN_SYNTAX + fromVal + " " + Initializations.AND_SYNTAX + toVal + "\n";
+            query = getRangeQueryDBObject(fieldTextArea.getText(), fromVal, toVal);
+        }
+        else //just a normal select * from where x = y
+        {
+            QueryString += Initializations.WHERE_SYNTAX + fieldTextArea.getText() + Initializations.EQUALS_SYNTAX + valueTextArea.getText() + "\n";
+            query = new BasicDBObject(fieldTextArea.getText(), valueTextArea.getText());
+        }
+        
+        try
+        {
+            if(this.parent.orderByRB.isSelected())
+            {
+                if(this.parent.descendingRB.isSelected())
+                {
+                    QueryString += Initializations.ORDER_BY_SYNTAX + this.parent.orderByTF.getText() + Initializations.DESCENDING_SYNTAX + "\n";
+                    cursor = collection.find(query).sort(new BasicDBObject(this.parent.orderByTF.getText(), -1));
+                }
+                else
+                {
+                    QueryString += Initializations.ORDER_BY_SYNTAX + this.parent.orderByTF.getText() + Initializations.ASCENDING_SYNTAX + "\n";
+                    cursor = collection.find(query).sort(new BasicDBObject(this.parent.orderByTF.getText(), 1));
+                }
+            }
+            else
+            {
+                cursor = collection.find(query);
+            }
+            
+            while(cursor.hasNext())
+            {
+                result += cursor.next().toString() + "\n\n";
+            }
+        }
+        catch(Exception exp)
+        {
+            return Initializations.QUERYGENERALERROR;
+        }        
+     
+        return result;
+    }
+    
+    private BasicDBObject getAndQueryDBObject(String whereField, String whereVal, String andField, String andVal)
+    {
+        BasicDBObject andQuery = new BasicDBObject();
+        List<BasicDBObject> objList = new ArrayList<BasicDBObject>();
+        objList.add(new BasicDBObject(whereField, whereVal));
+        objList.add(new BasicDBObject(andField, andVal));
+        andQuery.put("$and", objList);
+        
+        return andQuery;
+    }
+    
+    private BasicDBObject getOrQueryDBObject(String whereField, String whereVal, String orField, String orVal)
+    {
+        BasicDBObject orQuery = new BasicDBObject();
+        List<BasicDBObject> objList = new ArrayList<BasicDBObject>();
+        objList.add(new BasicDBObject(whereField, whereVal));
+        objList.add(new BasicDBObject(orField, orVal));
+        orQuery.put("$or", objList);
+        
+        return orQuery;
+    }
+    
+    private BasicDBObject getRangeQueryDBObject(String rangeField, int fromValue, int toValue)
+    {
+        BasicDBObject rangedQuery = new BasicDBObject();
+        rangedQuery.put(rangeField, new BasicDBObject("$gte", fromValue).append("$lte", toValue));
+        return rangedQuery;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    protected javax.swing.JTextField FieldTextArea;
-    protected javax.swing.JTextField ValueTextArea;
     protected javax.swing.JTextField andField;
     private javax.swing.JRadioButton andRB;
     protected javax.swing.JTextField andValue;
-    private javax.swing.JRadioButton betweenRB;
+    protected javax.swing.JTextField fieldTextArea;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel matchPanel;
     protected javax.swing.JTextField orField;
-    protected javax.swing.JTextField orField1;
     private javax.swing.JRadioButton orRB;
     protected javax.swing.JTextField orValue;
-    protected javax.swing.JTextField orValue1;
+    protected javax.swing.JTextField rangeFromVal;
+    private javax.swing.JRadioButton rangeRB;
+    protected javax.swing.JTextField rangeToVal;
+    protected javax.swing.JTextField valueTextArea;
     private javax.swing.JLabel whereFieldLabel;
     private javax.swing.JLabel whereValueFieldLabel;
     private javax.swing.JLabel whereValueFieldLabel1;

@@ -19,7 +19,7 @@ public class GroupByPanel extends javax.swing.JPanel {
     
     private QueryCollectionDialog parent;
     protected String QueryString = "";
-    private String SortOrder = "ASC ";
+    private String SortOrder = Initializations.ASCENDING_SYNTAX;
     
     /**
      * Creates new form groupByPanel
@@ -278,7 +278,7 @@ public class GroupByPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_AvgRBRBActionPerformed
     
-    protected String groupByOperation(DBCollection collection, QueryCollectionDialog parent) 
+    protected String executeGroupByOperation(DBCollection collection, QueryCollectionDialog parent) 
     {
         this.parent = parent;
         AggregationOutput aggOut = null;
@@ -296,21 +296,21 @@ public class GroupByPanel extends javax.swing.JPanel {
         {
             if (this.countRB.isSelected()) 
             {
-                groupByWith = "COUNT ";
+                    groupByWith = Initializations.COUNT_AGGREGATE_SYNTAX;
                 group = new BasicDBObject("$group",
                         new BasicDBObject("_id", "$" + this.groupByTF.getText())
                         .append("Count", new BasicDBObject("$sum", 1)));
             }
             else if (this.SumRB.isSelected()) 
             {
-                groupByWith = "SUM ";
+                groupByWith = Initializations.SUM_AGGREGATE_SYNTAX;
                 group = new BasicDBObject("$group",
                         new BasicDBObject("_id", "$" + this.groupByTF.getText())
                         .append("Sum", new BasicDBObject("$sum", "$" + this.sumTF.getText())));
             }
             else if (this.AvgRB.isSelected()) 
             {
-                groupByWith = "AVERAGE ";
+                groupByWith = Initializations.AVERAGE_AGGREGATE_SYNTAX;
                 group = new BasicDBObject("$group",
                         new BasicDBObject("_id", "$" + this.groupByTF.getText())
                         .append("Average", new BasicDBObject("$avg", "$" + this.avgTF.getText())));
@@ -327,13 +327,13 @@ public class GroupByPanel extends javax.swing.JPanel {
                 
                 if(sort == null)
                 {
-                    QueryString += "GROUP BY " + groupByTF.getText() + " WITH " + groupByWith + "\n";
+                    QueryString += Initializations.GROUP_BY_SYNTAX + groupByTF.getText() + Initializations.WITH_SYNTAX + groupByWith + "\n";
                     aggOut = collection.aggregate(group);
                 } 
                 else
                 {
-                    QueryString += "GROUP BY " + groupByTF.getText() + " WITH " + groupByWith + "\n";
-                    QueryString += "ORDER BY " + orderON + SortOrder + "\n";
+                    QueryString += Initializations.GROUP_BY_SYNTAX + groupByTF.getText() + Initializations.WITH_SYNTAX + groupByWith + "\n";
+                    QueryString += Initializations.ORDER_BY_SYNTAX + orderON + SortOrder + "\n";
                     aggOut = collection.aggregate(group, sort);
                 }
             }
@@ -356,15 +356,15 @@ public class GroupByPanel extends javax.swing.JPanel {
                 
                 if(sort == null)
                 {
-                    QueryString += "SELECT " + FieldTextArea.getText() + " = " + ValueTextArea.getText() + "\n";
-                    QueryString += "GROUP BY " + groupByTF.getText() + " WITH " + groupByWith + "\n";
+                    QueryString += Initializations.SELECT_SYNTAX + FieldTextArea.getText() + " = " + ValueTextArea.getText() + "\n";
+                    QueryString += Initializations.GROUP_BY_SYNTAX + groupByTF.getText() + Initializations.WITH_SYNTAX + groupByWith + "\n";
                     aggOut = collection.aggregate(match, group);
                 }
                 else
                 {
-                    QueryString += "SELECT " + FieldTextArea.getText() + " = " + ValueTextArea.getText() + "\n";
-                    QueryString += "GROUP BY " + groupByTF.getText() + " WITH " + groupByWith + "\n";
-                    QueryString += "ORDER BY " + orderON + SortOrder + "\n";
+                    QueryString += Initializations.SELECT_SYNTAX + FieldTextArea.getText() + " = " + ValueTextArea.getText() + "\n";
+                    QueryString += Initializations.GROUP_BY_SYNTAX + groupByTF.getText() + Initializations.WITH_SYNTAX + groupByWith + "\n";
+                    QueryString += Initializations.ORDER_BY_SYNTAX + orderON + SortOrder + "\n";
                     aggOut = collection.aggregate(match, group, sort);
                 }
             }
@@ -373,13 +373,13 @@ public class GroupByPanel extends javax.swing.JPanel {
         {
             if(sort == null)
             {
-                QueryString += "SELECT " + FieldTextArea.getText() + " = " + ValueTextArea.getText() + "\n";
+                QueryString += Initializations.SELECT_SYNTAX + FieldTextArea.getText() + " = " + ValueTextArea.getText() + "\n";
                 aggOut = collection.aggregate(match);
             }
             else
             {
-                QueryString += "SELECT " + FieldTextArea.getText() + " = " + ValueTextArea.getText() + "\n";
-                QueryString += "ORDER BY " + orderON + SortOrder + "\n";
+                QueryString += Initializations.SELECT_SYNTAX + FieldTextArea.getText() + " = " + ValueTextArea.getText() + "\n";
+                QueryString += Initializations.ORDER_BY_SYNTAX + orderON + SortOrder + "\n";
                 aggOut = collection.aggregate(match, sort);
             }
         }
@@ -403,7 +403,7 @@ public class GroupByPanel extends javax.swing.JPanel {
         //Get the order by order if Asc or Desc... by default ASC i.e 1
         if(this.parent.descendingRB.isSelected())
         {
-            SortOrder = "DESC ";
+            SortOrder = Initializations.DESCENDING_SYNTAX;
             sortOrder = -1;
         }
 

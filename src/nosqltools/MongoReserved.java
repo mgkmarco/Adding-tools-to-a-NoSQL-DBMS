@@ -55,4 +55,9 @@ public class MongoReserved {
      * Exception message when service has started and not yet finished
      */
     public static final String PROCESSNOTEXITED = "process has not exited";
+    
+    /**
+     * Queries and Querying keywords...
+     */
+    
 }

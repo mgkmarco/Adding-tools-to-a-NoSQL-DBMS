@@ -124,7 +124,8 @@ public class Initializations {
     public static final String ERRORUNINSTALLEXCEPTION = "The command has failed with the following exception: ";
     public static final String ERRORUNINSTALLEXCEPTIONTITLE = "Exception";
     public static final String UNABLETOCONNECTTOSERVER = "Unable to connect to server. Make sure it's started";
-    
+    public static final String INTEGERPARSEERROR = "Some of the fields entered are not correct and cannot be parsed... Make sure you are inputting integers";
+    public static final String QUERYGENERALERROR = "The query could not be executed... Please check inputted data";
     /**
      * app.properties File property KEYS
      */
@@ -134,4 +135,24 @@ public class Initializations {
     public static final String DB_STORAGE_PATH = "db_storage_path";
     public static final String LOG_STORAGE_PATH = "log_storage_path";
     public static final String DONT_ALTER_WARNING = "DON'T ALTER THIS FILE SINCE THE PROGRAM MAY WORK ERRENOUSLY";
+    /**
+     * QueryCollectionDialog Reserved keywords...
+     */
+    public static final String MATCH_DIALOG = "Match";
+    public static final String CONDITIONAL_DIALOG = "Conditional";
+    public static final String FROM_SYNTAX = "FROM ";
+    public static final String SELECT_SYNTAX = "SELECT ";
+    public static final String GROUP_BY_SYNTAX = "GROUP BY ";
+    public static final String COUNT_AGGREGATE_SYNTAX = "COUNT ";
+    public static final String SUM_AGGREGATE_SYNTAX = "SUM ";
+    public static final String AVERAGE_AGGREGATE_SYNTAX = "AVERAGE ";
+    public static final String WITH_SYNTAX = " WITH ";
+    public static final String ORDER_BY_SYNTAX = "ORDER BY ";
+    public static final String ASCENDING_SYNTAX = "ASC ";
+    public static final String DESCENDING_SYNTAX = "DESC ";
+    public static final String WHERE_SYNTAX = "WHERE ";
+    public static final String EQUALS_SYNTAX = " = ";
+    public static final String AND_SYNTAX = "AND ";
+    public static final String OR_SYNTAX = "OR ";
+    public static final String BETWEEN_SYNTAX = " BETWEEN ";
 }
