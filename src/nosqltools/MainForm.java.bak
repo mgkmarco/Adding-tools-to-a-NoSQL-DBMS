@@ -7,13 +7,14 @@ package nosqltools;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -110,7 +111,6 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     Panel_Views.setEnabled(false);
                     Panel_Connections.setEnabled(false);
-                    Panel_Connections.update(null);
                     jMenuBar1.setEnabled(false);
 
 
@@ -204,7 +204,6 @@ public class MainForm extends javax.swing.JFrame {
         Op_Refresh = new javax.swing.JMenuItem();
         Op_DBActions = new javax.swing.JMenuItem();
         Menu_Collections = new javax.swing.JMenu();
-        jSeparator5 = new javax.swing.JPopupMenu.Separator();
         Import_File = new javax.swing.JMenuItem();
         Export_File = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -252,9 +251,6 @@ public class MainForm extends javax.swing.JFrame {
         jSplitPane1.setDividerLocation(200);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(568, 453));
 
-        Panel_Connections.setMaximumSize(new java.awt.Dimension(23, 535));
-        Panel_Connections.setMinimumSize(new java.awt.Dimension(23, 535));
-
         jScrollPane2.setViewportView(jTree1);
         jTree1.setModel(null);
 
@@ -292,11 +288,11 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Connections.setLayout(Panel_ConnectionsLayout);
         Panel_ConnectionsLayout.setHorizontalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
             .addGroup(Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(UsersScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                .addComponent(UsersScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
             .addGroup(Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(DBScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                .addComponent(DBScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
         );
         Panel_ConnectionsLayout.setVerticalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -396,7 +392,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Views.setLayout(Panel_ViewsLayout);
         Panel_ViewsLayout.setHorizontalGroup(
             Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Panel_Text, javax.swing.GroupLayout.DEFAULT_SIZE, 1450, Short.MAX_VALUE)
+            .addComponent(Panel_Text, javax.swing.GroupLayout.DEFAULT_SIZE, 1294, Short.MAX_VALUE)
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(Panel_Hierarchical, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,7 +400,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, 1331, Short.MAX_VALUE)
+                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(0, 0, Short.MAX_VALUE)))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
@@ -422,7 +418,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(0, 0, Short.MAX_VALUE)))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
@@ -594,7 +590,6 @@ public class MainForm extends javax.swing.JFrame {
         jMenuBar1.add(Menu_Operations);
 
         Menu_Collections.setText("Collections");
-        Menu_Collections.add(jSeparator5);
 
         Import_File.setText("Import File");
         Import_File.addActionListener(new java.awt.event.ActionListener() {
@@ -707,11 +702,8 @@ public class MainForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(Text_MessageBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1500, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1553,22 +1545,16 @@ public class MainForm extends javax.swing.JFrame {
             Text_MessageBar.setForeground(Color.GREEN);
             textArea.removeAllLineHighlights();
             JOptionPane.showMessageDialog(null, Initializations.VALIDATIONSUCCESS, "Success", JOptionPane.INFORMATION_MESSAGE);
-        }
-        else
+        }else
         {
             retVal = json_util.LineNumber;
             Text_MessageBar.setText(Initializations.VALIDATIONERROR + " at line " + retVal + ".");
             Text_MessageBar.setForeground(Color.RED);
-            
-            try 
-            {
+            try {
                 textArea.addLineHighlight(retVal-1, Color.red);
-            } 
-            catch (BadLocationException ex) 
-            {
+            } catch (BadLocationException ex) {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
             JOptionPane.showMessageDialog(null, Initializations.VALIDATIONERROR + " at line " + retVal + ".", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_Op_ValidateActionPerformed
@@ -1722,22 +1708,10 @@ public class MainForm extends javax.swing.JFrame {
             jScrollPane2.setVisible(false);
             //viewUsersMenuItem.setEnabled(false);
             viewDBMenuItem.setEnabled(true);
-            DBScrollPane.setVisible(false);
-            Panel_Connections.revalidate();
             GetUsersFromDB gufdb = new GetUsersFromDB();
-            DefaultListModel listModel = null; 
-            
-            //To avoid if no DB has been selected we show users for the default db, i.e. the one that we are currently connected to...
-            if(DBList.getSelectedValue() == null)
-            {
-                listModel = gufdb.get_users(dbcon.db.getName());
-            }
-            else
-            {
-                listModel = gufdb.get_users(DBList.getSelectedValue().toString());
-            }
-            
+            DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
             jList2.setModel(listModel);
+            Text_MessageBar.setText("username");
     }//GEN-LAST:event_viewUsersMenuItemActionPerformed
 
     private void jList2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseClicked
@@ -1759,7 +1733,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             Text_MessageBar.setText(jList2.getSelectedValue().toString());
             MongoClient mongoClient = new MongoClient(new ServerAddress("localhost", 27017)); 
-            DB db = mongoClient.getDB(DBList.getSelectedValue().toString()); //To arrange to be the database which is connected to.
+            DB db = mongoClient.getDB("test");
             db.removeUser(jList2.getSelectedValue().toString());
             viewUsersMenuItem.setEnabled(true);
             viewUsersMenuItem.doClick();
@@ -1803,7 +1777,6 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane2.setVisible(true);
         viewDBMenuItem.setEnabled(false);
         viewUsersMenuItem.setEnabled(true);
-        Panel_Connections.revalidate();
     }//GEN-LAST:event_viewDBMenuItemActionPerformed
 
     private void uninstallMongoDBMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uninstallMongoDBMenuItemActionPerformed
@@ -1836,33 +1809,21 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_QueryCollectionActionPerformed
 
     private void viewAllDBsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewAllDBsMenuItemActionPerformed
-            DBScrollPane.setVisible(true);
-            UsersScrollPane.setVisible(false);
-            jScrollPane2.setVisible(false);
-            viewDBMenuItem.setEnabled(false);
-            Panel_Connections.revalidate();
-            ShowDatabases sd = new ShowDatabases();
-            DefaultListModel listModel = sd.show_dbs(dbcon.db.getName());
-            DBList.setModel(listModel);
-            Text_MessageBar.setForeground(Color.GREEN); 
-            Text_MessageBar.setText(Initializations.DATABASES);
+        UsersScrollPane.setVisible(false);
+        jScrollPane2.setVisible(true);
+        viewDBMenuItem.setEnabled(false);
+        viewUsersMenuItem.setEnabled(true);
     }//GEN-LAST:event_viewAllDBsMenuItemActionPerformed
 
-    
     private void DBListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseClicked
-     //Event for the View Users DB menu item.
+        //Event for the View Users DB menu item.
       ActionListener al_viewUsers = new ActionListener(){
       public void actionPerformed(ActionEvent e){
             UsersScrollPane.setVisible(true);
             jScrollPane2.setVisible(false);
             viewDBMenuItem.setEnabled(true);
-            DBScrollPane.setVisible(false);
-            Panel_Connections.revalidate();
             GetUsersFromDB gufdb = new GetUsersFromDB();
-            String dbName = DBList.getSelectedValue().toString();
-            int whiteSpace = dbName.indexOf(" ");
-            dbName = dbName.substring(0, whiteSpace);
-            DefaultListModel listModel = gufdb.get_users(dbName);
+            DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
             jList2.setModel(listModel);
             //To dislay a meessage fi the database is empty!!!
             Text_MessageBar.setText("username");
@@ -1946,7 +1907,7 @@ public class MainForm extends javax.swing.JFrame {
       popupMenu.add(item3);
       item3.addActionListener(al_connect);
       
-      DBList.addMouseListener(new MouseAdapter() {
+DBList.addMouseListener(new MouseAdapter() {
          public void mouseClicked(MouseEvent me) {
             if (SwingUtilities.isRightMouseButton(me)      // if right mouse button clicked
                   && !DBList.isSelectionEmpty()            // and list selection is not empty
@@ -1962,15 +1923,11 @@ public class MainForm extends javax.swing.JFrame {
             }
          }
       });
-
-        Panel_Connections.revalidate();
     }//GEN-LAST:event_DBListMouseClicked
 
     private void DBListMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseEntered
-        
         Text_MessageBar.setForeground(Color.BLUE);
         Text_MessageBar.setText(Initializations.POPUPMENUMESSAGE);
-        
     }//GEN-LAST:event_DBListMouseEntered
 
     private void DBListMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseExited
@@ -2370,7 +2327,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
-    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JSplitPane jSplitPane1;
     protected javax.swing.JTree jTree1;
     public javax.swing.JTree jTreeHierarchicalJson;

@@ -68,6 +68,7 @@ public class Initializations {
     public static String SYSTEMCOLLNOREFRESH = "System collections cannot be refreshed!";
     
     public static final String INITSTRING = "";
+    public static final String CONNECTED_DB = " [Connected]";
     
     /**
      * Dialog messages...
@@ -148,11 +149,29 @@ public class Initializations {
     public static final String AVERAGE_AGGREGATE_SYNTAX = "AVERAGE ";
     public static final String WITH_SYNTAX = " WITH ";
     public static final String ORDER_BY_SYNTAX = "ORDER BY ";
-    public static final String ASCENDING_SYNTAX = "ASC ";
-    public static final String DESCENDING_SYNTAX = "DESC ";
+    public static final String ASCENDING_SYNTAX = " ASC ";
+    public static final String DESCENDING_SYNTAX = " DESC ";
     public static final String WHERE_SYNTAX = "WHERE ";
     public static final String EQUALS_SYNTAX = " = ";
     public static final String AND_SYNTAX = "AND ";
     public static final String OR_SYNTAX = "OR ";
     public static final String BETWEEN_SYNTAX = " BETWEEN ";
+    
+    //Added by Ronald
+    public static final String DATABASE = "schembri";
+    public static final String DATABASES = "All databases have been listed.";
+    public static final String NODATABASESFOUND = "No database files have been found!";
+    public static final String CREATEDATABASE = "Please create a database.";
+    public static final String NODATABASESFOUNDERROR = "Cannot find database files";
+    public static final String POPUPMENUMESSAGE = "Right click on any item to show the popup menu.";
+    public static final String NOUSERSEXIST = "No users exist!";
+    
+    /**
+     * Error Codes for JSON Validations
+     */
+    public static final String UNEXPECTED_CHARACTER_CODE_34 = "code 34"; //Missing ','
+    public static final String UNEXPECTED_CHARACTER_CODE_44 = "code 44"; //Extra ','
+    public static final String UNEXPECTED_CHARACTER_CODE_57 = "code 57"; //Missing ':'
+    public static final String UNEXPECTED_CHARACTER_CODE_123 = "code 123"; //Missing '}' or '{' or extra '}' or extra '{'
+    public static final String UNEXPECTED_CHARACTER_CODE_58 = "code 58"; //Extra ':'
 }

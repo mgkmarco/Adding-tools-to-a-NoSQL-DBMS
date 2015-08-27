@@ -19,14 +19,14 @@ private DB db;
     }
     
    //This method returns a DefaultListModel with all the users from a database. 
-   public DefaultListModel get_users(String dbName) {
+   public DefaultListModel get_users() {
        
        DefaultListModel listModel = new DefaultListModel();
          try {
                 String username = "";
                 mongoClient = new MongoClient();
                 //The db to use is hardcoded until now. To modify to make user to select the db to use hence return a different user list according to db selected.
-                db = mongoClient.getDB(dbName);
+                db = mongoClient.getDB("test");
                 BasicDBObject dbStats = new BasicDBObject("usersInfo", 1);
                 CommandResult command = db.command(dbStats);
 

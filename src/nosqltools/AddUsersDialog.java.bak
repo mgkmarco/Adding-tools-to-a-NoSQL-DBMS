@@ -16,7 +16,11 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.UnknownHostException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -27,7 +31,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -84,7 +87,7 @@ public class AddUsersDialog extends JDialog {
         cs.gridwidth = 1;
         panel.add(lbPassword, cs);
 
-        tfPassword = new JPasswordField(20);
+        tfPassword = new JTextField(20);
         cs.gridx = 1;
         cs.gridy = 1;
         cs.gridwidth = 2;
@@ -139,8 +142,6 @@ public class AddUsersDialog extends JDialog {
             else{
                 
                 db = mongoClient.getDB(cbDatabases.getSelectedItem().toString());
-                collection = db.createCollection("default",null);
-                   
                 boolean flag = false;
                 if(getRole().equals("read")){
                     flag = true;
@@ -151,7 +152,6 @@ public class AddUsersDialog extends JDialog {
                 }
   
                     }
-            
                         });
                
         btnCancel = new JButton("Cancel");

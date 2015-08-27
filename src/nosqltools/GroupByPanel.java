@@ -296,7 +296,7 @@ public class GroupByPanel extends javax.swing.JPanel {
         {
             if (this.countRB.isSelected()) 
             {
-                    groupByWith = Initializations.COUNT_AGGREGATE_SYNTAX;
+                groupByWith = Initializations.COUNT_AGGREGATE_SYNTAX;
                 group = new BasicDBObject("$group",
                         new BasicDBObject("_id", "$" + this.groupByTF.getText())
                         .append("Count", new BasicDBObject("$sum", 1)));

@@ -307,7 +307,6 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
         try
         {
             DBCollection collection = this.parent.dbcon.db.getCollection(CollectionName);
-            AggregationOutput aggOut = null;
             
             switch(this.QryType)
             {
@@ -365,6 +364,11 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_sortingRBActionPerformed
 
+    
+    /**
+     * TODO: To set the panels Visible/Invisble according to the Item in the DropDown List selected, such as Match, Conditional, etc...
+     * @param evt 
+     */
     private void queryAndProjectionDDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_queryAndProjectionDDActionPerformed
         this.QryType = (String)this.queryAndProjectionDD.getSelectedItem();
 

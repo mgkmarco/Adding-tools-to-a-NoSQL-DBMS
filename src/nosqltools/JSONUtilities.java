@@ -135,7 +135,21 @@ public class JSONUtilities
         } 
         catch (JsonParseException | JsonGenerationException | JsonMappingException e) 
         {
-            LineNumber = (e.getLocation().getLineNr()) - 1;
+            
+            String eMessage = e.getMessage();
+            
+            if(eMessage.contains(Initializations.UNEXPECTED_CHARACTER_CODE_34) || eMessage.contains(Initializations.UNEXPECTED_CHARACTER_CODE_44))
+            {
+                LineNumber = (e.getLocation().getLineNr()) - 1;
+            }
+            else
+                if(eMessage.contains(Initializations.UNEXPECTED_CHARACTER_CODE_57) 
+                        || eMessage.contains(Initializations.UNEXPECTED_CHARACTER_CODE_123)
+                        || eMessage.contains(Initializations.UNEXPECTED_CHARACTER_CODE_58))
+                {
+                    LineNumber = (e.getLocation().getLineNr());
+                }
+            
             return false;
         } 
         catch (IOException e)
