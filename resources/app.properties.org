@@ -1,0 +1,5 @@
+#DON'T ALTER THIS FILE SINCE THE PROGRAM MAY WORK ERRENOUSLY
+#Thu Aug 27 18:35:22 CEST 2015
+mongo_bin_path=C\:\\Program Files\\MongoDB\\Server\\3.0\\bin
+db_storage_path=C\:\\Users\\mgalea.EXIGY\\Documents\\Uni\\Uni\\Year 4_2014_2015\\GAPT\\data\\db
+log_storage_path=C\:\\Users\\mgalea.EXIGY\\Documents\\Uni\\Uni\\Year 4_2014_2015\\GAPT\\data\\log\\mongod.log
