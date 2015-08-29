@@ -13,7 +13,6 @@ import com.mongodb.ServerAddress;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -71,7 +70,6 @@ public class MainForm extends javax.swing.JFrame {
     String[] ext_array = new String[]{Initializations.TXT, Initializations.JSON};
     String ext = util.formatExtentsions(ext_array);
     FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (" + ext + ")", ext_array);
-   
 
     
     /**
@@ -79,7 +77,6 @@ public class MainForm extends javax.swing.JFrame {
      * form
      */
     public MainForm() {  
-        
         Image img = null;
         try {
             img = ImageIO.read(new File("resources/mongoicon.png"));
@@ -110,7 +107,6 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     Panel_Views.setEnabled(false);
                     Panel_Connections.setEnabled(false);
-                    Panel_Connections.update(null);
                     jMenuBar1.setEnabled(false);
 
 
@@ -136,9 +132,10 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Connect.setVisible(false);
         
         util.changeTextAreaTheme(textArea);
-        
-        //--------------------- to remove------------------
-        connectAutomatically("su", "1234", "test");
+
+        this.setVisible(true);
+        btStartLoginDialog.setVisible(false);
+        btStartLoginDialog.doClick();
     }
 
     /**
@@ -183,6 +180,7 @@ public class MainForm extends javax.swing.JFrame {
         right_label = new javax.swing.JLabel();
         Panel_Connect = new javax.swing.JPanel();
         Text_MessageBar = new javax.swing.JTextField();
+        btStartLoginDialog = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu_File = new javax.swing.JMenu();
         Import_JSON = new javax.swing.JMenuItem();
@@ -258,11 +256,6 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTree1);
         jTree1.setModel(null);
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jList2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jList2MouseClicked(evt);
@@ -270,11 +263,6 @@ public class MainForm extends javax.swing.JFrame {
         });
         UsersScrollPane.setViewportView(jList2);
 
-        DBList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         DBList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 DBListMouseClicked(evt);
@@ -438,19 +426,16 @@ public class MainForm extends javax.swing.JFrame {
 
         Text_MessageBar.setEditable(false);
         Text_MessageBar.setForeground(new java.awt.Color(255, 0, 0));
-        Text_MessageBar.addActionListener(new java.awt.event.ActionListener() {
+
+        btStartLoginDialog.setText("jButton1");
+        btStartLoginDialog.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Text_MessageBarActionPerformed(evt);
+                btStartLoginDialogActionPerformed(evt);
             }
         });
 
         Menu_File.setText("File");
         Menu_File.setName(""); // NOI18N
-        Menu_File.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                Menu_FileMousePressed(evt);
-            }
-        });
 
         Import_JSON.setText("Open JSON file");
         Import_JSON.addActionListener(new java.awt.event.ActionListener() {
@@ -707,7 +692,10 @@ public class MainForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Text_MessageBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1500, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(btStartLoginDialog)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Text_MessageBar, javax.swing.GroupLayout.DEFAULT_SIZE, 1421, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -718,7 +706,9 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Text_MessageBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Text_MessageBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btStartLoginDialog)))
         );
 
         pack();
@@ -896,10 +886,6 @@ public class MainForm extends javax.swing.JFrame {
            Text_MessageBar.setText(Initializations.JSONSAVEERROR + Initializations.ERRORLINE + json_util.getLineNumber(pe.getPosition(), textArea.getText()) + " - " + pe);
         }
     }//GEN-LAST:event_Save_FileActionPerformed
-
-    private void Text_MessageBarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Text_MessageBarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_Text_MessageBarActionPerformed
 
     /**
      * This event handler is used to load the Compare operation and prepare for 
@@ -1148,9 +1134,7 @@ public class MainForm extends javax.swing.JFrame {
         else
         {
             connect();
-        }
-       
-            
+        }            
     }//GEN-LAST:event_connect_DBActionPerformed
 
     private void Import_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Import_FileActionPerformed
@@ -1687,70 +1671,48 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_stopClientMenuItemActionPerformed
 
     private void addUserMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserMenuItemActionPerformed
-        try {
-            AddUsersDialog dlg_addusers = new AddUsersDialog(null);
-            dlg_addusers.setVisible(true);
-        } catch (UnknownHostException ex) {
-            ex.getMessage();
-            ex.printStackTrace();
-            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        AddUsersDialog dlg_addusers = null;
+        dlg_addusers = new AddUsersDialog(this);
+        dlg_addusers.setVisible(true);
+        
+        //Information messages.
+        if(dlg_addusers.isSucceeded())
+        {
+            Text_MessageBar.setText(Initializations.YOU_HAVE_SUCCESSFULLY_ADDED + dlg_addusers.getUsername() + Initializations.TO_DATABASE + dlg_addusers.getDatabase() + Initializations.FULL_STOP);
+            Text_MessageBar.setForeground(Color.BLUE);
+        }else{
+            Text_MessageBar.setText(Initializations.CREATE_USER_ABORTED);
+            Text_MessageBar.setForeground(Color.RED);
         }
     }//GEN-LAST:event_addUserMenuItemActionPerformed
 
-    private void Menu_FileMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Menu_FileMousePressed
-        ServerController sc = new ServerController();
-        
-        if(sc.isServiceRunning(MongoReserved.MONGODEXE))
-        {
-            addUserMenuItem.setEnabled(true);
-            
-            if(jScrollPane2.isVisible())
-            {
-                viewUsersMenuItem.setEnabled(true);
-            }
-        }
-        else
-        {
-			//TODO: To refactor...
-           //addUserMenuItem.setEnabled(false);
-           //viewUsersMenuItem.setEnabled(false);
-        }
-    }//GEN-LAST:event_Menu_FileMousePressed
-
     private void viewUsersMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewUsersMenuItemActionPerformed
-            UsersScrollPane.setVisible(true);
+ 
             jScrollPane2.setVisible(false);
-            //viewUsersMenuItem.setEnabled(false);
-            viewDBMenuItem.setEnabled(true);
-            DBScrollPane.setVisible(false);
-            Panel_Connections.revalidate();
             GetUsersFromDB gufdb = new GetUsersFromDB();
-            DefaultListModel listModel = null; 
-            
-            //To avoid if no DB has been selected we show users for the default db, i.e. the one that we are currently connected to...
-            if(DBList.getSelectedValue() == null)
+            if(DBList.isSelectionEmpty())
             {
-                listModel = gufdb.get_users(dbcon.db.getName());
+                JOptionPane.showMessageDialog(this, Initializations.NO_DB_SELECTED_MESSAGE, Initializations.NO_DB_SELECTED_ERROR, JOptionPane.ERROR_MESSAGE);                 
             }
             else
             {
-                listModel = gufdb.get_users(DBList.getSelectedValue().toString());
-            }
-            
-            jList2.setModel(listModel);
+                DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
+                jList2.setModel(listModel);
+                UsersScrollPane.setVisible(true);
+                viewDBMenuItem.setEnabled(true);
+                viewAllDBsMenuItem.setEnabled(true);
+                viewUsersMenuItem.setEnabled(false);
+                Panel_Connections.revalidate();
+            }            
     }//GEN-LAST:event_viewUsersMenuItemActionPerformed
 
     private void jList2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseClicked
+        final AddUsersDialog dlg_addusers = new AddUsersDialog(this);
         ActionListener al3 = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        try {
-            AddUsersDialog dlg_addusers = new AddUsersDialog(null);
             dlg_addusers.setVisible(true);
             viewUsersMenuItem.doClick();
             Text_MessageBar.setText(jList2.getSelectedValue().toString());
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
       }};
       
             
@@ -1786,12 +1748,12 @@ public class MainForm extends javax.swing.JFrame {
                   && !jList2.isSelectionEmpty()            // and list selection is not empty
                   && jList2.locationToIndex(me.getPoint()) // and clicked point is
                   == jList2.getSelectedIndex()) {          // inside selected item bounds
-                  Text_MessageBar.setText(jList2.getSelectedValue().toString() + " RIGHT");
+                  //Text_MessageBar.setText(jList2.getSelectedValue().toString() + " RIGHT");
                   Text_MessageBar.setForeground(Color.blue);
                   popupMenu.show(jList2, me.getX(), me.getY());
             }else
             {
-                  Text_MessageBar.setText(jList2.getSelectedValue().toString() + " LEFT");
+                  //Text_MessageBar.setText(jList2.getSelectedValue().toString() + " LEFT");
                   Text_MessageBar.setForeground(Color.MAGENTA);  
             }
          }
@@ -1803,6 +1765,7 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane2.setVisible(true);
         viewDBMenuItem.setEnabled(false);
         viewUsersMenuItem.setEnabled(true);
+        viewAllDBsMenuItem.setEnabled(true);
         Panel_Connections.revalidate();
     }//GEN-LAST:event_viewDBMenuItemActionPerformed
 
@@ -1839,37 +1802,38 @@ public class MainForm extends javax.swing.JFrame {
             DBScrollPane.setVisible(true);
             UsersScrollPane.setVisible(false);
             jScrollPane2.setVisible(false);
-            viewDBMenuItem.setEnabled(false);
-            Panel_Connections.revalidate();
             ShowDatabases sd = new ShowDatabases();
-            DefaultListModel listModel = sd.show_dbs(dbcon.db.getName());
+            DefaultListModel listModel = sd.show_dbs();
             DBList.setModel(listModel);
             Text_MessageBar.setForeground(Color.GREEN); 
             Text_MessageBar.setText(Initializations.DATABASES);
+            
+            viewAllDBsMenuItem.setEnabled(false);
+            viewDBMenuItem.setEnabled(true);
+            viewUsersMenuItem.setEnabled(true);
+            Panel_Connections.revalidate();
     }//GEN-LAST:event_viewAllDBsMenuItemActionPerformed
 
     
     private void DBListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseClicked
-     //Event for the View Users DB menu item.
+  
+        //Event for the View Users DB Menu Item.
       ActionListener al_viewUsers = new ActionListener(){
       public void actionPerformed(ActionEvent e){
             UsersScrollPane.setVisible(true);
             jScrollPane2.setVisible(false);
-            viewDBMenuItem.setEnabled(true);
-            DBScrollPane.setVisible(false);
-            Panel_Connections.revalidate();
+            viewDBMenuItem.setEnabled(false);
             GetUsersFromDB gufdb = new GetUsersFromDB();
-            String dbName = DBList.getSelectedValue().toString();
-            int whiteSpace = dbName.indexOf(" ");
-            dbName = dbName.substring(0, whiteSpace);
-            DefaultListModel listModel = gufdb.get_users(dbName);
+            DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
             jList2.setModel(listModel);
-            //To dislay a meessage fi the database is empty!!!
-            Text_MessageBar.setText("username");
-      }    //SHOWING ONLY ONE USER FOR SAME DATABBAE ALWAYS!!! TO FIX. PROBABLY DB IS HARDCOCDED SOMEWHERE
+                        
+            viewAllDBsMenuItem.setEnabled(true);
+            viewUsersMenuItem.setEnabled(false);
+            Panel_Connections.revalidate();
+      }
       };
               
-      //Event for the Add DB menu item.
+      //Event for the Add DB Menu Item.
       ActionListener al_add = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
           CreateDBDialog createDBDialog = new CreateDBDialog();
@@ -1878,7 +1842,7 @@ public class MainForm extends javax.swing.JFrame {
           viewAllDBsMenuItem.doClick();        
       }};
       
-      //Event for the Drop DB menu item.
+      //Event for the Drop DB Menu Item.
       ActionListener al_drop = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
           DropDBDialog dropDBDialog = new DropDBDialog();
@@ -1887,7 +1851,7 @@ public class MainForm extends javax.swing.JFrame {
           viewAllDBsMenuItem.doClick();
       }};
       
-      //Event for the Connect menu item.
+      //Event for the Connect Menu Item.
       ActionListener al_connect = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
 
@@ -1946,7 +1910,7 @@ public class MainForm extends javax.swing.JFrame {
       popupMenu.add(item3);
       item3.addActionListener(al_connect);
       
-      DBList.addMouseListener(new MouseAdapter() {
+DBList.addMouseListener(new MouseAdapter() {
          public void mouseClicked(MouseEvent me) {
             if (SwingUtilities.isRightMouseButton(me)      // if right mouse button clicked
                   && !DBList.isSelectionEmpty()            // and list selection is not empty
@@ -1962,20 +1926,33 @@ public class MainForm extends javax.swing.JFrame {
             }
          }
       });
-
-        Panel_Connections.revalidate();
     }//GEN-LAST:event_DBListMouseClicked
 
     private void DBListMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseEntered
-        
         Text_MessageBar.setForeground(Color.BLUE);
-        Text_MessageBar.setText(Initializations.POPUPMENUMESSAGE);
+        Text_MessageBar.setText(Initializations.DBS_POP_UP_MENU_MESSAGE);
         
     }//GEN-LAST:event_DBListMouseEntered
 
     private void DBListMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseExited
         Text_MessageBar.setText(null);
     }//GEN-LAST:event_DBListMouseExited
+
+    private void btStartLoginDialogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btStartLoginDialogActionPerformed
+        
+        MainAppLoginDialog mald = new MainAppLoginDialog(this, true);
+        mald.setLocationRelativeTo(null);
+        mald.setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_btStartLoginDialogActionPerformed
+
+    private void jList2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseEntered
+        Text_MessageBar.setForeground(Color.BLUE);
+        Text_MessageBar.setText(Initializations.USERS_POP_UP_MENU_MESSAGE);
+    }//GEN-LAST:event_jList2MouseEntered
+
+    private void jList2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseExited
+        Text_MessageBar.setText(null);
+    }//GEN-LAST:event_jList2MouseExited
    
     // TO BE REMOVED -----------------------------------------------------------------------------------------------------------------------------
     public void connectAutomatically(String user, String pass, String dbname)
@@ -2347,13 +2324,14 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem Save_Mongo;
     private javax.swing.JTable Table_JSON;
     protected javax.swing.JTextField Text_MessageBar;
-    private javax.swing.JScrollPane UsersScrollPane;
+    protected javax.swing.JScrollPane UsersScrollPane;
     private javax.swing.JMenuItem View_Hierarchical;
     private javax.swing.JMenuItem View_Table;
     private javax.swing.JMenuItem View_Text;
     protected javax.swing.JMenuItem addCollection;
     private javax.swing.JMenuItem addCollectionMenuItem;
-    private javax.swing.JMenuItem addUserMenuItem;
+    protected javax.swing.JMenuItem addUserMenuItem;
+    private javax.swing.JButton btStartLoginDialog;
     private javax.swing.JPopupMenu collectionPopupMenu;
     private javax.swing.JMenuItem connect_DB;
     private javax.swing.JMenuItem deleteCollectionMenuItem;
@@ -2386,8 +2364,8 @@ public class MainForm extends javax.swing.JFrame {
     protected javax.swing.JMenuItem stopServerMenuItem;
     protected javax.swing.JMenu toolsMenu;
     private javax.swing.JMenuItem uninstallMongoDBMenuItem;
-    private javax.swing.JMenuItem viewAllDBsMenuItem;
+    protected javax.swing.JMenuItem viewAllDBsMenuItem;
     private javax.swing.JMenuItem viewDBMenuItem;
-    private javax.swing.JMenuItem viewUsersMenuItem;
+    protected javax.swing.JMenuItem viewUsersMenuItem;
     // End of variables declaration//GEN-END:variables
 }

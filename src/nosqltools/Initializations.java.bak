@@ -156,7 +156,9 @@ public class Initializations {
     public static final String AND_SYNTAX = "AND ";
     public static final String OR_SYNTAX = "OR ";
     public static final String BETWEEN_SYNTAX = " BETWEEN ";
-    //Added by Ronald for queries
+    
+    //Added by Ronald
+        //Added by Ronald for queries
     public static final String CONDITIONAL_DIALOG_IN_AND_NOT_IN = "Conditional (IN and NOT IN)";
     public static final String IN_SYNTAX = "IN ";
     public static final String NOT_IN_SYNTAX = "NOT IN ";

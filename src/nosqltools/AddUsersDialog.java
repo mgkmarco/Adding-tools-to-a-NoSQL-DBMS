@@ -5,12 +5,12 @@
  */
 package nosqltools;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -49,19 +49,25 @@ public class AddUsersDialog extends JDialog {
     private final JLabel lbRole;
 
     private final JButton btnAdd;
-    private final JButton btnDelete;
     private final JButton btnCancel;
     private boolean succeeded;
     private boolean choice = false;
-
-    public AddUsersDialog(Frame parent) throws UnknownHostException {
-        super(parent, Initializations.ADDUSERS, true);
-       
+    private MainForm parent;
+    
+    public AddUsersDialog(MainForm parent) {
+        this.parent = parent; 
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
-        mongoClient = new MongoClient(new ServerAddress("localhost", 27017));
-     
         
+        try
+        {
+           mongoClient = new MongoClient(new ServerAddress("localhost", 27017)); 
+        }
+        catch(UnknownHostException ex)
+        {
+            ex.printStackTrace();
+        }
+  
         cs.fill = GridBagConstraints.HORIZONTAL;
 
         //The components used in the dialog box
@@ -75,8 +81,7 @@ public class AddUsersDialog extends JDialog {
         cs.gridx = 1;
         cs.gridy = 0;
         cs.gridwidth = 2;
-        panel.add(tfUsername, cs);
-      
+        panel.add(tfUsername, cs);      
 
         lbPassword = new JLabel("Password: ");
         cs.gridx = 0;
@@ -123,59 +128,28 @@ public class AddUsersDialog extends JDialog {
         panel.add(cbRoles, cs);   
                
         btnAdd = new JButton("Add");
+        this.getRootPane().setDefaultButton(btnAdd);
         
         btnAdd.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { 
-            
-            if(getUsername().equals("") || getPassword().equals(""))
-            {
-                JOptionPane.showMessageDialog(null, "Your username and password must not be blank.", "Unable to create user.", JOptionPane.WARNING_MESSAGE);
+            public void actionPerformed(ActionEvent e) {
+                ostja();
             }
-            else if(getUsername().equals(getPassword()))
-            {
-                JOptionPane.showMessageDialog(null, "Your username and password must not match.", "Unable to create user.", JOptionPane.WARNING_MESSAGE);
-            }
-            else{
-                
-                db = mongoClient.getDB(cbDatabases.getSelectedItem().toString());
-                collection = db.createCollection("default",null);
-                   
-                boolean flag = false;
-                if(getRole().equals("read")){
-                    flag = true;
-                }
-                db.addUser(getUsername(), getPassword().toCharArray() ,flag);
-                choice = false;
-                dispose();
-                }
-  
-                    }
-            
-                        });
-               
+        });
+        
         btnCancel = new JButton("Cancel");
         btnCancel.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 choice = false;
+                succeeded = false;
                 dispose();
             }
         });
-        
-        btnDelete = new JButton("Delete");
-        btnDelete.addActionListener(new ActionListener() {
 
-            
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-     
         JPanel bp = new JPanel();
-        //Adds the buttons to the panel
+        //Add the buttons to the panel
         bp.add(btnAdd);
-        bp.add(btnDelete);
         bp.add(btnCancel);
 
         getContentPane().add(panel, BorderLayout.CENTER);
@@ -185,7 +159,48 @@ public class AddUsersDialog extends JDialog {
         setResizable(false);
         setLocationRelativeTo(parent);
     }
-    
+
+    private void ostja()
+        {
+            if(getUsername().equals("") || getPassword().equals(""))
+            {
+                JOptionPane.showMessageDialog(null, Initializations.BLANK_USERNAME_AND_PASSWORD, Initializations.UNABLE_TO_CREATE_USER, JOptionPane.WARNING_MESSAGE);
+            }
+            else if(getUsername().equals(getPassword()))
+            {
+                JOptionPane.showMessageDialog(null, Initializations.SAME_USER_NAME_AND_PASSWORD, Initializations.UNABLE_TO_CREATE_USER, JOptionPane.WARNING_MESSAGE);
+            }
+            else{
+                db = mongoClient.getDB(cbDatabases.getSelectedItem().toString());
+                if(db.collectionExists("Default")){
+                    boolean flag = false;
+                    if(getRole().equals("read")){
+                        flag = true;
+                    }
+                    db.addUser(getUsername(), getPassword().toCharArray() ,flag);
+                    choice = false;
+                }
+                else{
+                    db.createCollection("Default", new BasicDBObject());
+                    boolean flag = false;
+                    if(getRole().equals("read")){
+                        flag = true;
+                    }
+                    db.addUser(getUsername(), getPassword().toCharArray() ,flag);
+                    choice = false;
+                }
+                succeeded = true;
+                
+                if(parent.UsersScrollPane.isVisible())
+                {
+                    parent.viewUsersMenuItem.setEnabled(true);
+                    parent.viewUsersMenuItem.doClick();
+                    parent.viewUsersMenuItem.setEnabled(false);
+                }
+                
+                dispose();
+                }
+        }
     
     /**
      * @return The text in the Username text field
@@ -207,6 +222,10 @@ public class AddUsersDialog extends JDialog {
     public String getPassword() {
         return tfPassword.getText().trim();
     }
+    
+    public String getDatabase(){
+        return cbDatabases.getSelectedItem().toString();
+    }
 
      /**
       * @return if the connection should be attempted or not
@@ -227,7 +246,7 @@ public class AddUsersDialog extends JDialog {
           public void actionPerformed(ActionEvent actionEvent) { 
             setVisible(false);
           } 
-        } ;
+        };
         
         //When the 'Esc' key is pressed on the keyboard, the window is destroyed
         InputMap inputMap = rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -236,5 +255,4 @@ public class AddUsersDialog extends JDialog {
 
         return rootPane;
   } 
-
 }

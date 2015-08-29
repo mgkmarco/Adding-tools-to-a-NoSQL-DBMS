@@ -7,14 +7,13 @@ package nosqltools;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -72,7 +71,6 @@ public class MainForm extends javax.swing.JFrame {
     String[] ext_array = new String[]{Initializations.TXT, Initializations.JSON};
     String ext = util.formatExtentsions(ext_array);
     FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (" + ext + ")", ext_array);
-   
 
     
     /**
@@ -80,7 +78,6 @@ public class MainForm extends javax.swing.JFrame {
      * form
      */
     public MainForm() {  
-        
         Image img = null;
         try {
             img = ImageIO.read(new File("resources/mongoicon.png"));
@@ -111,6 +108,7 @@ public class MainForm extends javax.swing.JFrame {
                 {
                     Panel_Views.setEnabled(false);
                     Panel_Connections.setEnabled(false);
+                    Panel_Connections.update(null);
                     jMenuBar1.setEnabled(false);
 
 
@@ -136,9 +134,10 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Connect.setVisible(false);
         
         util.changeTextAreaTheme(textArea);
-        
-        //--------------------- to remove------------------
-        connectAutomatically("su", "1234", "test");
+
+        this.setVisible(true);
+        btStartLoginDialog.setVisible(false);
+        btStartLoginDialog.doClick();
     }
 
     /**
@@ -183,6 +182,7 @@ public class MainForm extends javax.swing.JFrame {
         right_label = new javax.swing.JLabel();
         Panel_Connect = new javax.swing.JPanel();
         Text_MessageBar = new javax.swing.JTextField();
+        btStartLoginDialog = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         Menu_File = new javax.swing.JMenu();
         Import_JSON = new javax.swing.JMenuItem();
@@ -204,6 +204,7 @@ public class MainForm extends javax.swing.JFrame {
         Op_Refresh = new javax.swing.JMenuItem();
         Op_DBActions = new javax.swing.JMenuItem();
         Menu_Collections = new javax.swing.JMenu();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
         Import_File = new javax.swing.JMenuItem();
         Export_File = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
@@ -247,30 +248,31 @@ public class MainForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mongo View");
+        setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
 
         jSplitPane1.setDividerLocation(200);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(568, 453));
 
+        Panel_Connections.setMaximumSize(new java.awt.Dimension(23, 535));
+        Panel_Connections.setMinimumSize(new java.awt.Dimension(23, 535));
+
         jScrollPane2.setViewportView(jTree1);
         jTree1.setModel(null);
 
-        jList2.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        jList2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jList2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jList2MouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jList2MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jList2MouseExited(evt);
+            }
         });
         UsersScrollPane.setViewportView(jList2);
 
-        DBList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         DBList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 DBListMouseClicked(evt);
@@ -288,11 +290,11 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Connections.setLayout(Panel_ConnectionsLayout);
         Panel_ConnectionsLayout.setHorizontalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
             .addGroup(Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(UsersScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+                .addComponent(UsersScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
             .addGroup(Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(DBScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+                .addComponent(DBScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
         );
         Panel_ConnectionsLayout.setVerticalGroup(
             Panel_ConnectionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -392,7 +394,7 @@ public class MainForm extends javax.swing.JFrame {
         Panel_Views.setLayout(Panel_ViewsLayout);
         Panel_ViewsLayout.setHorizontalGroup(
             Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Panel_Text, javax.swing.GroupLayout.DEFAULT_SIZE, 1294, Short.MAX_VALUE)
+            .addComponent(Panel_Text, javax.swing.GroupLayout.DEFAULT_SIZE, 1450, Short.MAX_VALUE)
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(Panel_Hierarchical, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -400,7 +402,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, 1331, Short.MAX_VALUE)
                     .addGap(0, 0, Short.MAX_VALUE)))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
@@ -418,7 +420,7 @@ public class MainForm extends javax.swing.JFrame {
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Panel_Compare, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
                     .addGap(0, 0, Short.MAX_VALUE)))
             .addGroup(Panel_ViewsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(Panel_ViewsLayout.createSequentialGroup()
@@ -437,6 +439,13 @@ public class MainForm extends javax.swing.JFrame {
         Text_MessageBar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Text_MessageBarActionPerformed(evt);
+            }
+        });
+
+        btStartLoginDialog.setText("jButton1");
+        btStartLoginDialog.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btStartLoginDialogActionPerformed(evt);
             }
         });
 
@@ -590,6 +599,7 @@ public class MainForm extends javax.swing.JFrame {
         jMenuBar1.add(Menu_Operations);
 
         Menu_Collections.setText("Collections");
+        Menu_Collections.add(jSeparator5);
 
         Import_File.setText("Import File");
         Import_File.addActionListener(new java.awt.event.ActionListener() {
@@ -702,15 +712,23 @@ public class MainForm extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(Text_MessageBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1500, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(btStartLoginDialog)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Text_MessageBar, javax.swing.GroupLayout.DEFAULT_SIZE, 1421, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Text_MessageBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Text_MessageBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btStartLoginDialog)))
         );
 
         pack();
@@ -1545,16 +1563,22 @@ public class MainForm extends javax.swing.JFrame {
             Text_MessageBar.setForeground(Color.GREEN);
             textArea.removeAllLineHighlights();
             JOptionPane.showMessageDialog(null, Initializations.VALIDATIONSUCCESS, "Success", JOptionPane.INFORMATION_MESSAGE);
-        }else
+        }
+        else
         {
             retVal = json_util.LineNumber;
             Text_MessageBar.setText(Initializations.VALIDATIONERROR + " at line " + retVal + ".");
             Text_MessageBar.setForeground(Color.RED);
-            try {
+            
+            try 
+            {
                 textArea.addLineHighlight(retVal-1, Color.red);
-            } catch (BadLocationException ex) {
+            } 
+            catch (BadLocationException ex) 
+            {
                 Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
             JOptionPane.showMessageDialog(null, Initializations.VALIDATIONERROR + " at line " + retVal + ".", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_Op_ValidateActionPerformed
@@ -1673,45 +1697,71 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_stopClientMenuItemActionPerformed
 
     private void addUserMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addUserMenuItemActionPerformed
-        try {
-            AddUsersDialog dlg_addusers = new AddUsersDialog(null);
-            dlg_addusers.setVisible(true);
-        } catch (UnknownHostException ex) {
-            ex.getMessage();
-            ex.printStackTrace();
+        AddUsersDialog dlg_addusers = null;
+        try 
+        {
+            dlg_addusers = new AddUsersDialog(null);
+        } 
+        catch (UnknownHostException ex)
+        {
             Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        dlg_addusers.setVisible(true);
+        
+        //Information messages.
+        if(dlg_addusers.isSucceeded())
+        {
+            Text_MessageBar.setText(Initializations.YOU_HAVE_SUCCESSFULLY_ADDED + dlg_addusers.getUsername() + Initializations.TO_DATABASE + dlg_addusers.getDatabase() + Initializations.FULL_STOP);
+            Text_MessageBar.setForeground(Color.BLUE);
+        }else{
+            Text_MessageBar.setText(Initializations.CREATE_USER_ABORTED);
+            Text_MessageBar.setForeground(Color.RED);
         }
     }//GEN-LAST:event_addUserMenuItemActionPerformed
 
     private void Menu_FileMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Menu_FileMousePressed
-        ServerController sc = new ServerController();
-        
-        if(sc.isServiceRunning(MongoReserved.MONGODEXE))
+        if(dbcon.isConnectionSuccess())
         {
-            addUserMenuItem.setEnabled(true);
-            
-            if(jScrollPane2.isVisible())
-            {
-                viewUsersMenuItem.setEnabled(true);
-            }
+            viewAllDBsMenuItem.setEnabled(true);
         }
         else
         {
-			//TODO: To refactor...
-           //addUserMenuItem.setEnabled(false);
-           //viewUsersMenuItem.setEnabled(false);
+            viewAllDBsMenuItem.setEnabled(false);
         }
+//        ServerController sc = new ServerController();
+//        if(sc.isServiceRunning(MongoReserved.MONGODEXE))
+//        {
+//            //addUserMenuItem.setEnabled(true);
+//            
+//            if(jScrollPane2.isVisible())
+//            {
+//              //  viewUsersMenuItem.setEnabled(true);
+//            }
+//        }
+//        else
+//        {
+//			//TODO: To refactor...
+//           //addUserMenuItem.setEnabled(false);
+//           //viewUsersMenuItem.setEnabled(false);
+//        }
     }//GEN-LAST:event_Menu_FileMousePressed
 
     private void viewUsersMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewUsersMenuItemActionPerformed
-            UsersScrollPane.setVisible(true);
+ 
             jScrollPane2.setVisible(false);
-            //viewUsersMenuItem.setEnabled(false);
-            viewDBMenuItem.setEnabled(true);
             GetUsersFromDB gufdb = new GetUsersFromDB();
-            DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
-            jList2.setModel(listModel);
-            Text_MessageBar.setText("username");
+            if(DBList.isSelectionEmpty())
+            {
+                JOptionPane.showMessageDialog(this, Initializations.NO_DB_SELECTED_MESSAGE, Initializations.NO_DB_SELECTED_ERROR, JOptionPane.ERROR_MESSAGE);                 
+            }
+            else
+            {
+                DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
+                jList2.setModel(listModel);
+                UsersScrollPane.setVisible(true);
+                viewAllDBsMenuItem.setEnabled(true);
+                viewUsersMenuItem.setEnabled(false);
+            } 
     }//GEN-LAST:event_viewUsersMenuItemActionPerformed
 
     private void jList2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseClicked
@@ -1733,7 +1783,7 @@ public class MainForm extends javax.swing.JFrame {
         try {
             Text_MessageBar.setText(jList2.getSelectedValue().toString());
             MongoClient mongoClient = new MongoClient(new ServerAddress("localhost", 27017)); 
-            DB db = mongoClient.getDB("test");
+            DB db = mongoClient.getDB(DBList.getSelectedValue().toString()); //To arrange to be the database which is connected to.
             db.removeUser(jList2.getSelectedValue().toString());
             viewUsersMenuItem.setEnabled(true);
             viewUsersMenuItem.doClick();
@@ -1760,13 +1810,7 @@ public class MainForm extends javax.swing.JFrame {
                   && !jList2.isSelectionEmpty()            // and list selection is not empty
                   && jList2.locationToIndex(me.getPoint()) // and clicked point is
                   == jList2.getSelectedIndex()) {          // inside selected item bounds
-                  Text_MessageBar.setText(jList2.getSelectedValue().toString() + " RIGHT");
-                  Text_MessageBar.setForeground(Color.blue);
                   popupMenu.show(jList2, me.getX(), me.getY());
-            }else
-            {
-                  Text_MessageBar.setText(jList2.getSelectedValue().toString() + " LEFT");
-                  Text_MessageBar.setForeground(Color.MAGENTA);  
             }
          }
       }); 
@@ -1777,6 +1821,7 @@ public class MainForm extends javax.swing.JFrame {
         jScrollPane2.setVisible(true);
         viewDBMenuItem.setEnabled(false);
         viewUsersMenuItem.setEnabled(true);
+        Panel_Connections.revalidate();
     }//GEN-LAST:event_viewDBMenuItemActionPerformed
 
     private void uninstallMongoDBMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uninstallMongoDBMenuItemActionPerformed
@@ -1809,28 +1854,44 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_QueryCollectionActionPerformed
 
     private void viewAllDBsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewAllDBsMenuItemActionPerformed
-        UsersScrollPane.setVisible(false);
-        jScrollPane2.setVisible(true);
-        viewDBMenuItem.setEnabled(false);
-        viewUsersMenuItem.setEnabled(true);
+            DBScrollPane.setVisible(true);
+            UsersScrollPane.setVisible(false);
+            jScrollPane2.setVisible(false);
+            viewDBMenuItem.setEnabled(false);
+            Panel_Connections.revalidate();
+            ShowDatabases sd = new ShowDatabases();
+            DefaultListModel listModel = sd.show_dbs(dbcon.db.getName());
+            DBList.setModel(listModel);
+            Text_MessageBar.setForeground(Color.GREEN); 
+            Text_MessageBar.setText(Initializations.DATABASES);
+            
+            viewAllDBsMenuItem.setEnabled(false);
+            viewUsersMenuItem.setEnabled(true);
     }//GEN-LAST:event_viewAllDBsMenuItemActionPerformed
 
+    
     private void DBListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseClicked
-        //Event for the View Users DB menu item.
+     //Event for the View Users DB menu item.
       ActionListener al_viewUsers = new ActionListener(){
       public void actionPerformed(ActionEvent e){
             UsersScrollPane.setVisible(true);
             jScrollPane2.setVisible(false);
-            viewDBMenuItem.setEnabled(true);
+            viewDBMenuItem.setEnabled(false);
+            DBScrollPane.setVisible(false);
+            Panel_Connections.revalidate();
             GetUsersFromDB gufdb = new GetUsersFromDB();
-            DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
+            String dbName = DBList.getSelectedValue().toString();
+            int whiteSpace = dbName.indexOf(" ");
+            dbName = dbName.substring(0, whiteSpace);
+            DefaultListModel listModel = gufdb.get_users(dbName);
             jList2.setModel(listModel);
-            //To dislay a meessage fi the database is empty!!!
-            Text_MessageBar.setText("username");
-      }    //SHOWING ONLY ONE USER FOR SAME DATABBAE ALWAYS!!! TO FIX. PROBABLY DB IS HARDCOCDED SOMEWHERE
+                        
+            viewAllDBsMenuItem.setEnabled(true);
+            viewUsersMenuItem.setEnabled(false);
+      }
       };
               
-      //Event for the Add DB menu item.
+      //Event for the Add DB Menu Item.
       ActionListener al_add = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
           CreateDBDialog createDBDialog = new CreateDBDialog();
@@ -1839,7 +1900,7 @@ public class MainForm extends javax.swing.JFrame {
           viewAllDBsMenuItem.doClick();        
       }};
       
-      //Event for the Drop DB menu item.
+      //Event for the Drop DB Menu Item.
       ActionListener al_drop = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
           DropDBDialog dropDBDialog = new DropDBDialog();
@@ -1848,7 +1909,7 @@ public class MainForm extends javax.swing.JFrame {
           viewAllDBsMenuItem.doClick();
       }};
       
-      //Event for the Connect menu item.
+      //Event for the Connect Menu Item.
       ActionListener al_connect = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
 
@@ -1907,171 +1968,47 @@ public class MainForm extends javax.swing.JFrame {
       popupMenu.add(item3);
       item3.addActionListener(al_connect);
       
-DBList.addMouseListener(new MouseAdapter() {
+      DBList.addMouseListener(new MouseAdapter() {
          public void mouseClicked(MouseEvent me) {
             if (SwingUtilities.isRightMouseButton(me)      // if right mouse button clicked
                   && !DBList.isSelectionEmpty()            // and list selection is not empty
                   && DBList.locationToIndex(me.getPoint()) // and clicked point is
                   == DBList.getSelectedIndex()) {          // inside selected item bounds
-                  Text_MessageBar.setText(DBList.getSelectedValue().toString() + " RIGHT");
-                  Text_MessageBar.setForeground(Color.blue);
                   popupMenu.show(DBList, me.getX(), me.getY());
-            }else
-            {
-                  Text_MessageBar.setText(DBList.getSelectedValue().toString() + " LEFT");
-                  Text_MessageBar.setForeground(Color.MAGENTA);  
             }
          }
       });
+
+        Panel_Connections.revalidate();
     }//GEN-LAST:event_DBListMouseClicked
 
     private void DBListMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseEntered
+        
         Text_MessageBar.setForeground(Color.BLUE);
-        Text_MessageBar.setText(Initializations.POPUPMENUMESSAGE);
+        Text_MessageBar.setText(Initializations.DBS_POP_UP_MENU_MESSAGE);
+        
     }//GEN-LAST:event_DBListMouseEntered
 
     private void DBListMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DBListMouseExited
         Text_MessageBar.setText(null);
     }//GEN-LAST:event_DBListMouseExited
+
+    private void btStartLoginDialogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btStartLoginDialogActionPerformed
+        
+        MainAppLoginDialog mald = new MainAppLoginDialog(this, true);
+        mald.setLocationRelativeTo(null);
+        mald.setVisible(true);        // TODO add your handling code here:
+    }//GEN-LAST:event_btStartLoginDialogActionPerformed
+
+    private void jList2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseEntered
+        Text_MessageBar.setForeground(Color.BLUE);
+        Text_MessageBar.setText(Initializations.USERS_POP_UP_MENU_MESSAGE);
+    }//GEN-LAST:event_jList2MouseEntered
+
+    private void jList2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseExited
+        Text_MessageBar.setText(null);
+    }//GEN-LAST:event_jList2MouseExited
    
-    // TO BE REMOVED -----------------------------------------------------------------------------------------------------------------------------
-    public void connectAutomatically(String user, String pass, String dbname)
-    {
-        String serveradd;
-        int port;
-            
-        //If user chose login and not cancel option on dialog box
-        if (true)
-        {
-            if (dbcon.connect(user, pass, dbname, "", 27017))
-            {
-                DefaultTreeModel defTableMod = dbcon.buildDBTree();
-                if (defTableMod != null && dbcon.isConnectionSuccess())
-                {
-                    jTree1.setModel(defTableMod);
-                    Text_MessageBar.setText(Initializations.DBCONNSUCCESS);
-                    Text_MessageBar.setForeground(Color.GREEN);
-                    Menu_Collections.setEnabled(true);
-                    addCollection.setEnabled(true);
-                    dropCollectionMenuItem.setEnabled(true);
-                
-                    //load the data of collection in panel_text on double click
-                    jTree1.addMouseListener(new MouseAdapter() 
-                    {
-                        @Override
-                        public void mouseClicked(MouseEvent me) 
-                        {
-                            if (me.getButton() == MouseEvent.BUTTON1)
-                            {
-                                if (me.getClickCount()==2)
-                                {
-                                    //get the path of the mouse click ex:[localhost,test,testData] 
-                                    Op_Refresh.setEnabled(true);
-                                    tp = jTree1.getPathForLocation(me.getX(), me.getY());
-                                    
-                                    if (tp != null)
-                                    {
-                                        List<String> coll_db = dbcon.getAllCollections();
-                                        int cnt = tp.getPathCount();
-                                        for (int i = 0; i<cnt;i++)
-                                        {
-                                            //if one of the collection matches the coll that was clicked by the user load data
-                                            if(coll_db.contains(tp.getPathComponent(i).toString()))
-                                            {
-                                                indexOfCurrentCollection = i;
-                                                sb = dbcon.getCollectionData(tp.getPathComponent(i).toString());
-                                            
-                                                if(sb != null)
-                                                {
-                                                    Panel_Text.setVisible(true);
-
-                                                    JsonNode jNode1;
-                                                    try
-                                                    {
-                                                        jNode1 = mapper.readTree(sb.toString());
-                                                        textArea.setText(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jNode1));
-                                                    } 
-                                                    catch (IOException ex) 
-                                                    {
-                                                        Logger.getLogger(MainForm.class.getName()).log(Level.SEVERE, null, ex);
-                                                    } 
-
-                                                    Text_MessageBar.setText(Initializations.INITSTRING);
-                                                    validateDataPanel_text(sb);
-                                                }
-                                                else
-                                                {
-                                                    Panel_Text.setVisible(false);
-                                                    Text_MessageBar.setText(Initializations.SYSTEMCOLL);
-                                                    Text_MessageBar.setForeground(Color.RED);
-                                                }    
-                                            }
-                                        }
-                                    }
-                                } 
-                            }
-                            /** -- MG -----------------------------------------------------------
-                             * This has been added to add a feature of "On Right-Click" on nodes |
-                             * Such as add collections, delete collections for the Root node...  |
-                             * ------------------------------------------------------------------
-                             */ 
-                            else if(me.getButton() == MouseEvent.BUTTON3)
-                            {
-                                int selRow = jTree1.getRowForLocation(me.getX(), me.getY());
-                                TreePath selPath = jTree1.getPathForLocation(me.getX(), me.getY());
-                                jTree1.setSelectionPath(selPath); 
-                                
-                                if (selRow>-1)
-                                {
-                                    jTree1.setSelectionRow(selRow); 
-                                }
-                                
-                                DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode)jTree1.getModel().getRoot();
-                                DefaultMutableTreeNode currNode = (DefaultMutableTreeNode)jTree1.getLastSelectedPathComponent();
-                                
-                                if(currNode == rootNode)
-                                {
-                                    collectionPopupMenu.setVisible(false);
-                                    rootPopupMenu.setVisible(true);
-                                    rootPopupMenu.show(jTree1, me.getX(), me.getY());
-                                }
-                                else
-                                {
-                                    if(selRow > -1)
-                                    {
-                                        rootPopupMenu.setVisible(false);
-                                        collectionPopupMenu.setVisible(true);
-                                        collectionPopupMenu.show(jTree1, me.getX(), me.getY());
-                                    }
-                                }
-                            }
-                        } 
-                    });
-                }
-                else
-                {
-                    jTree1.setModel(null);
-                    Text_MessageBar.setText(Initializations.DBCONNFAIL);
-                    Text_MessageBar.setForeground(Color.RED);
-                }      
-            }
-            else
-            {
-                jTree1.setModel(null);
-                Text_MessageBar.setText(Initializations.DBCONNFAIL);
-                Text_MessageBar.setForeground(Color.RED);
-            }
-        }
-        else
-        {
-            jTree1.setModel(null);
-            Text_MessageBar.setText(Initializations.DBCONNFAIL);
-            Text_MessageBar.setForeground(Color.RED);
-        }
-           
-    }
-    //--------------------------------------------------------------------------------------------------------------------------------------------
-    
     public void connect()
     {
         String user;
@@ -2310,7 +2247,8 @@ DBList.addMouseListener(new MouseAdapter() {
     private javax.swing.JMenuItem View_Text;
     protected javax.swing.JMenuItem addCollection;
     private javax.swing.JMenuItem addCollectionMenuItem;
-    private javax.swing.JMenuItem addUserMenuItem;
+    protected javax.swing.JMenuItem addUserMenuItem;
+    private javax.swing.JButton btStartLoginDialog;
     private javax.swing.JPopupMenu collectionPopupMenu;
     private javax.swing.JMenuItem connect_DB;
     private javax.swing.JMenuItem deleteCollectionMenuItem;
@@ -2327,6 +2265,7 @@ DBList.addMouseListener(new MouseAdapter() {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JSplitPane jSplitPane1;
     protected javax.swing.JTree jTree1;
     public javax.swing.JTree jTreeHierarchicalJson;
@@ -2342,8 +2281,8 @@ DBList.addMouseListener(new MouseAdapter() {
     protected javax.swing.JMenuItem stopServerMenuItem;
     protected javax.swing.JMenu toolsMenu;
     private javax.swing.JMenuItem uninstallMongoDBMenuItem;
-    private javax.swing.JMenuItem viewAllDBsMenuItem;
+    protected javax.swing.JMenuItem viewAllDBsMenuItem;
     private javax.swing.JMenuItem viewDBMenuItem;
-    private javax.swing.JMenuItem viewUsersMenuItem;
+    protected javax.swing.JMenuItem viewUsersMenuItem;
     // End of variables declaration//GEN-END:variables
 }

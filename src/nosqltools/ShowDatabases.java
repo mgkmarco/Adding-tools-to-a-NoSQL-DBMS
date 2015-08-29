@@ -17,7 +17,7 @@ private MongoClient mongoClient;
     }
     
    //This method returns a DefaultListModel with all the users from a database. 
-   public DefaultListModel show_dbs(String currentDBName) {
+   public DefaultListModel show_dbs() {
        
        DefaultListModel listModel = new DefaultListModel();
          try {
@@ -31,15 +31,15 @@ private MongoClient mongoClient;
               else
               {
                     for (String name : dbs) {
-                        
-                        if(name.equals(currentDBName))
-                        {
-                            listModel.addElement(name + Initializations.CONNECTED_DB);
-                        }
-                        else
-                        {
-                            listModel.addElement(name);
-                        }
+                        listModel.addElement(name);
+//                        if(name.equals(currentDBName))
+//                        {
+//                            listModel.addElement(name + Initializations.CONNECTED_DB);
+//                        }
+//                        else
+//                        {
+//                            listModel.addElement(name);
+//                        }
                     }
               }
     } catch (UnknownHostException ex) {

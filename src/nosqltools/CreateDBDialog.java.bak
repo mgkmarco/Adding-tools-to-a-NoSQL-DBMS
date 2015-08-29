@@ -39,7 +39,6 @@ public class CreateDBDialog {
                 mongoClient = new MongoClient();
                 db = mongoClient.getDB(name);
                 db.createCollection("Default", new BasicDBObject());
-                
             } catch (UnknownHostException ex) {
                 Logger.getLogger(CreateDBDialog.class.getName()).log(Level.SEVERE, null, ex);
             }  

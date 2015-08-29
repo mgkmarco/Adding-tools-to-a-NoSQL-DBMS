@@ -10,6 +10,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -75,6 +76,10 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
         ArrayList<String> qryAndProjection = new ArrayList<>();
         qryAndProjection.add(Initializations.MATCH_DIALOG);
         qryAndProjection.add(Initializations.CONDITIONAL_DIALOG);
+        qryAndProjection.add(Initializations.CONDITIONAL_DIALOG_IN_AND_NOT_IN);
+        qryAndProjection.add(Initializations.CONDITIONAL_WITH_LIMITED_FIELDS);
+        qryAndProjection.add(Initializations.UPDATE_DIALOG);
+        qryAndProjection.add(Initializations.INSERT_DIALOG);
         
         for(String qry : qryAndProjection)
         {
@@ -101,8 +106,12 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
         collectionLabel = new javax.swing.JLabel();
         executeButton = new javax.swing.JButton();
         operationsMainPanel = new javax.swing.JPanel();
+        insertPanel = new nosqltools.InsertPanel();
         groupByPanel = new nosqltools.GroupByPanel();
         conditionalPanel = new nosqltools.ConditionalPanel();
+        inOperatorPanel = new nosqltools.InOperatorPanel();
+        limitedFieldsPanel = new nosqltools.LimitedFieldsPanel();
+        updatePanel = new nosqltools.UpdatePanel();
         orderByRB = new javax.swing.JRadioButton();
         orderByTF = new javax.swing.JTextField();
         ascendingRB = new javax.swing.JRadioButton();
@@ -112,6 +121,7 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Query Collections");
+        setLocationByPlatform(true);
         setResizable(false);
 
         queryTabbedPane.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
@@ -120,7 +130,7 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
         queryPane.setLayout(queryPaneLayout);
         queryPaneLayout.setHorizontalGroup(
             queryPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(queryEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+            .addComponent(queryEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
         );
         queryPaneLayout.setVerticalGroup(
             queryPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -133,7 +143,7 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
         outputPane.setLayout(outputPaneLayout);
         outputPaneLayout.setHorizontalGroup(
             outputPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(outputEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+            .addComponent(outputEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
         );
         outputPaneLayout.setVerticalGroup(
             outputPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,18 +192,31 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
         operationsMainPanelLayout.setHorizontalGroup(
             operationsMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, operationsMainPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(groupByPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
+                .addComponent(limitedFieldsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(conditionalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(updatePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(inOperatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(groupByPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(conditionalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(insertPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         operationsMainPanelLayout.setVerticalGroup(
             operationsMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(operationsMainPanelLayout.createSequentialGroup()
                 .addGroup(operationsMainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(insertPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(groupByPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(conditionalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(conditionalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(inOperatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(limitedFieldsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updatePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 20, Short.MAX_VALUE))
         );
 
         orderByRB.setText("Order By:");
@@ -229,38 +252,37 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(operationsMainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
                     .addComponent(queryTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(executeButton))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(orderByRB)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(orderByTF, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(ascendingRB)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(descendingRB))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(descriptionLabel)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(8, 8, 8)
-                                .addComponent(orderByRB)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(queryAndProjectionLabel)
+                                    .addComponent(collectionLabel))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(orderByTF, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(ascendingRB)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(descendingRB))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(queryAndProjectionLabel)
-                                            .addComponent(collectionLabel))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(collectionList, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(queryAndProjectionDD, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addComponent(descriptionLabel))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(queryAndProjectionDD, 0, 180, Short.MAX_VALUE)
+                                    .addComponent(collectionList, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
                 .addContainerGap())
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addComponent(jSeparator2)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(operationsMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 577, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -278,8 +300,8 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
                 .addGap(17, 17, 17)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(operationsMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(operationsMainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -289,9 +311,9 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
                     .addComponent(descendingRB))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(queryTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(executeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         getAccessibleContext().setAccessibleParent(this);
@@ -327,6 +349,62 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
                     String query = Initializations.FROM_SYNTAX + CollectionName + "\n";
                     query += this.conditionalPanel.QueryString;
                     this.queryEditor.textArea.setText(query);
+                    break;
+                }
+                
+                case Initializations.CONDITIONAL_DIALOG_IN_AND_NOT_IN:
+                {
+
+                    this.outputEditor.textArea.setText(this.inOperatorPanel.executeInConditionalQuery(collection, this));    
+                    if(inOperatorPanel.executeInConditionalQuery(collection, this).isEmpty())
+                    {
+                        this.outputEditor.textArea.setText(Initializations.NO_DATA_FOUND);
+                    }
+                    this.queryTabbedPane.setSelectedIndex(1);
+                    String query = Initializations.SELECT_ALL_SYNTAX + Initializations.FROM_SYNTAX + CollectionName + "\n";
+                    query += this.inOperatorPanel.QueryString;
+                    this.queryEditor.textArea.setText(query);
+                    break;
+                }
+                
+                case Initializations.CONDITIONAL_WITH_LIMITED_FIELDS:
+                {
+                    this.outputEditor.textArea.setText(this.limitedFieldsPanel.executeConditionalQuery(collection, this));
+                    if(limitedFieldsPanel.executeConditionalQuery(collection, this).isEmpty())
+                    {
+                        this.outputEditor.textArea.setText(Initializations.NO_DATA_FOUND);
+                    }
+                    this.queryTabbedPane.setSelectedIndex(1); 
+                    String query = this.limitedFieldsPanel.FieldsString + "\n" +Initializations.FROM_SYNTAX + CollectionName + "\n";
+                    query += this.limitedFieldsPanel.QueryString;
+                    this.queryEditor.textArea.setText(query);
+                    break;
+                }
+                
+                case Initializations.UPDATE_DIALOG:
+                {
+//                    this.updatePanel1.executeUpdateQuery(collection);
+//                    this.queryTabbedPane.setSelectedIndex(1);
+//                    String query = Initializations.UPDATE_SYNTAX + collection + "\n" + updatePanel1.QueryString;
+//                    this.queryEditor.textArea.setText(query);
+//                    if(updatePanel1.NoOfDocumentsUpdated == 0)
+//                    {
+//                        this.outputEditor.textArea.setText(Initializations.NO_DOCUMENTS_UPDATED);
+//                    }
+//                    else if(updatePanel1.NoOfDocumentsUpdated == 1)
+//                    {
+////                        this.outputEditor.textArea.setText(Initializations.ONE_DOCUMENT_UPDATED);
+//                    }
+//                    else
+//                    {
+//                        this.outputEditor.textArea.setText(updatePanel1.NoOfDocumentsUpdated + Initializations.MULTIPLE_DOCUMENTS_UPDATED);
+//                    }
+                    break;
+                }
+                
+                case Initializations.INSERT_DIALOG:
+                {
+                    this.insertPanel.executeInsertOperation(collection, this);
                     break;
                 }
             }
@@ -377,14 +455,73 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
             case Initializations.MATCH_DIALOG:
             {
                 this.conditionalPanel.setVisible(false);
+                this.inOperatorPanel.setVisible(false);
+                this.limitedFieldsPanel.setVisible(false);
+                this.updatePanel.setVisible(false);
+                this.insertPanel.setVisible(false);
                 this.groupByPanel.setVisible(true);
+                this.revalidate();
                 break;
             }
             
             case Initializations.CONDITIONAL_DIALOG:
             {
                 this.groupByPanel.setVisible(false);
+                this.inOperatorPanel.setVisible(false);
+                this.limitedFieldsPanel.setVisible(false);
+                this.updatePanel.setVisible(false);
+                this.insertPanel.setVisible(false);
                 this.conditionalPanel.setVisible(true);
+                this.revalidate();
+                break;
+            }
+            
+            case Initializations.CONDITIONAL_DIALOG_IN_AND_NOT_IN:
+            {
+                this.conditionalPanel.setVisible(false);
+                this.groupByPanel.setVisible(false);
+                this.limitedFieldsPanel.setVisible(false);
+                this.updatePanel.setVisible(false);
+                this.insertPanel.setVisible(false);
+                this.inOperatorPanel.setVisible(true);
+                this.revalidate();
+                break;
+            }
+            
+            case Initializations.CONDITIONAL_WITH_LIMITED_FIELDS:
+            {
+                this.conditionalPanel.setVisible(false);
+                this.groupByPanel.setVisible(false);
+                this.inOperatorPanel.setVisible(false);
+                this.updatePanel.setVisible(false);
+                this.insertPanel.setVisible(false);
+                this.limitedFieldsPanel.setVisible(true);
+                this.revalidate();
+                break;
+            }
+            
+            case Initializations.UPDATE_DIALOG:
+            {
+                this.conditionalPanel.setVisible(false);
+                this.groupByPanel.setVisible(false);
+                this.inOperatorPanel.setVisible(false);
+                this.limitedFieldsPanel.setVisible(false);
+                this.insertPanel.setVisible(false);
+                this.updatePanel.setVisible(true);
+                this.revalidate();
+                break;
+            }
+            
+            case Initializations.INSERT_DIALOG:
+            {
+                this.conditionalPanel.setVisible(false);
+                this.groupByPanel.setVisible(false);
+                this.inOperatorPanel.setVisible(false);
+                this.limitedFieldsPanel.setVisible(false);
+                this.updatePanel.setVisible(false);
+                this.insertPanel.setVisible(true);
+                this.revalidate();
+                break;
             }
         }
     }//GEN-LAST:event_queryAndProjectionDDActionPerformed
@@ -440,8 +577,11 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JButton executeButton;
     private nosqltools.GroupByPanel groupByPanel;
+    private nosqltools.InOperatorPanel inOperatorPanel;
+    private nosqltools.InsertPanel insertPanel;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private nosqltools.LimitedFieldsPanel limitedFieldsPanel;
     private javax.swing.JPanel operationsMainPanel;
     protected javax.swing.JRadioButton orderByRB;
     protected javax.swing.JTextField orderByTF;
@@ -452,5 +592,6 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
     private nosqltools.SyntaxEditor queryEditor;
     private javax.swing.JPanel queryPane;
     private javax.swing.JTabbedPane queryTabbedPane;
+    private nosqltools.UpdatePanel updatePanel;
     // End of variables declaration//GEN-END:variables
 }
