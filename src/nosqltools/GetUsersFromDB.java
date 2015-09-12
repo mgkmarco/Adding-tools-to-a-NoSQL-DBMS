@@ -25,7 +25,6 @@ private DB db;
          try {
                 String username = "";
                 mongoClient = new MongoClient();
-                //The db to use is hardcoded until now. To modify to make user to select the db to use hence return a different user list according to db selected.
                 db = mongoClient.getDB(dbName);
                 BasicDBObject dbStats = new BasicDBObject("usersInfo", 1);
                 CommandResult command = db.command(dbStats);

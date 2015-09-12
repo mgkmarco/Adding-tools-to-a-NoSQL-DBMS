@@ -157,7 +157,7 @@ public class InstallMongoDialog extends javax.swing.JDialog {
 
         allTB.setSelected(true);
         allTB.setText("All");
-        allTB.setToolTipText("");
+        allTB.setToolTipText("Install the full component set");
         allTB.setEnabled(false);
         allTB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -166,7 +166,7 @@ public class InstallMongoDialog extends javax.swing.JDialog {
         });
 
         customTB.setText("Custom");
-        customTB.setToolTipText("");
+        customTB.setToolTipText("Select components to be installed");
         customTB.setEnabled(false);
         customTB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -309,7 +309,7 @@ public class InstallMongoDialog extends javax.swing.JDialog {
             
             else
             {
-                mongoInstaller = new InstallerController(msiPath, pathToInstallation, allTB.isSelected());
+                mongoInstaller = new InstallerController(msiPath, pathToInstallation);
             }
             
         }
@@ -344,6 +344,15 @@ public class InstallMongoDialog extends javax.swing.JDialog {
                 JOptionPane.showMessageDialog(this, Initializations.TERMINATEDBYUSER, Initializations.TERMINATEDBYUSERTITLE, JOptionPane.WARNING_MESSAGE);
                 break;
             }
+            
+            case 1603: //Not enough privilages to install...
+            {
+                statusLabel.setText(Initializations.INSTALLERFAILEDTITLE);
+                statusLabel.setForeground(Color.RED);
+                JOptionPane.showMessageDialog(this, Initializations.NOTENOUGHRIGHTTOINSTALL, Initializations.INSTALLERFAILEDTITLE, JOptionPane.WARNING_MESSAGE);
+                break;
+            }
+            
             case -1:
             {
                 statusLabel.setText(Initializations.INSTALLERFAILEDTITLE);

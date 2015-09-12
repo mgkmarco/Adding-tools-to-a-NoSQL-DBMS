@@ -218,7 +218,7 @@
     <Component class="javax.swing.JCheckBox" name="saveDefaultLogPath">
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
-        <Property name="text" type="java.lang.String" value="Save as defaiult"/>
+        <Property name="text" type="java.lang.String" value="Save as default"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="saveDefaultMongoPath">

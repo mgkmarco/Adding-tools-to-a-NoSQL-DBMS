@@ -96,6 +96,7 @@ public class Initializations {
     public static final String TERMINATEDBYUSERTITLE = "Installation Aborted";
     public static final String INSTALLERFAILED = "The installer has failed with the following errors: \n";
     public static final String INSTALLERFAILEDTITLE = "Installer has Failed";
+    public static final String NOTENOUGHRIGHTTOINSTALL = "Product: MongoDB -- Error 1925. You do not have sufficient privileges to complete this installation for all users of the machine. Log on as administrator and then retry this installation.";
     public static final String QUITEMODETOOLTIP = "MongoDB will be installed un-attended, just like a Ninja";
     public static final String PLEASEWAIT = "Please be patient... MongoDB will soon be installed";
     public static final String PLEASEWAITUNINSTALL = "Please be patient... MongoDB will soon be uninstalled";
@@ -130,7 +131,7 @@ public class Initializations {
     /**
      * app.properties File property KEYS
      */
-    public static final String DEFAULT_INSTALL_PATH = "C:\\MongoDB\\Server\\3.0";
+    public static final String DEFAULT_INSTALL_PATH = "C:\\Program Files\\MongoDB\\Server\\3.0";
     public static final String BIN_FOLDER = "\\bin";
     public static final String MONGO_BIN_PATH = "mongo_bin_path";
     public static final String DB_STORAGE_PATH = "db_storage_path";

@@ -275,7 +275,7 @@
       <Properties>
         <Property name="selected" type="boolean" value="true"/>
         <Property name="text" type="java.lang.String" value="All"/>
-        <Property name="toolTipText" type="java.lang.String" value=""/>
+        <Property name="toolTipText" type="java.lang.String" value="Install the full component set"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
@@ -285,7 +285,7 @@
     <Component class="javax.swing.JCheckBox" name="customTB">
       <Properties>
         <Property name="text" type="java.lang.String" value="Custom"/>
-        <Property name="toolTipText" type="java.lang.String" value=""/>
+        <Property name="toolTipText" type="java.lang.String" value="Select components to be installed"/>
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>

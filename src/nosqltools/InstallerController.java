@@ -5,6 +5,7 @@
  */
 package nosqltools;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class InstallerController {
         setAddLocal(arguments);
     }
     
-    public InstallerController(String msiPath, String installLocation, boolean allTB)
+    public InstallerController(String msiPath, String installLocation)
     {
         setPath(msiPath);
         setquiteModeFlag(true);
@@ -180,7 +181,8 @@ public class InstallerController {
                     getExecCommand()
             );
             Process p = builder.start();
-            return p.waitFor();
+            int x = p.waitFor();
+            return x;
         } 
         catch(Exception e) 
         {

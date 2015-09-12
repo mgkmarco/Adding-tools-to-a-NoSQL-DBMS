@@ -1687,8 +1687,7 @@ public class MainForm extends javax.swing.JFrame {
     }//GEN-LAST:event_addUserMenuItemActionPerformed
 
     private void viewUsersMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewUsersMenuItemActionPerformed
- 
-            jScrollPane2.setVisible(false);
+
             GetUsersFromDB gufdb = new GetUsersFromDB();
             if(DBList.isSelectionEmpty())
             {
@@ -1698,6 +1697,8 @@ public class MainForm extends javax.swing.JFrame {
             {
                 DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
                 jList2.setModel(listModel);
+                jScrollPane2.setVisible(false);
+                DBScrollPane.setVisible(false);
                 UsersScrollPane.setVisible(true);
                 viewDBMenuItem.setEnabled(true);
                 viewAllDBsMenuItem.setEnabled(true);
@@ -1762,6 +1763,7 @@ public class MainForm extends javax.swing.JFrame {
 
     private void viewDBMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewDBMenuItemActionPerformed
         UsersScrollPane.setVisible(false);
+        DBScrollPane.setVisible(false);
         jScrollPane2.setVisible(true);
         viewDBMenuItem.setEnabled(false);
         viewUsersMenuItem.setEnabled(true);
@@ -1819,18 +1821,19 @@ public class MainForm extends javax.swing.JFrame {
   
         //Event for the View Users DB Menu Item.
       ActionListener al_viewUsers = new ActionListener(){
-      public void actionPerformed(ActionEvent e){
-            UsersScrollPane.setVisible(true);
-            jScrollPane2.setVisible(false);
-            viewDBMenuItem.setEnabled(false);
-            GetUsersFromDB gufdb = new GetUsersFromDB();
-            DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
-            jList2.setModel(listModel);
-                        
-            viewAllDBsMenuItem.setEnabled(true);
-            viewUsersMenuItem.setEnabled(false);
-            Panel_Connections.revalidate();
-      }
+          public void actionPerformed(ActionEvent e){
+                jScrollPane2.setVisible(false);
+                DBScrollPane.setVisible(false);
+                UsersScrollPane.setVisible(true);
+                GetUsersFromDB gufdb = new GetUsersFromDB();
+                DefaultListModel listModel = gufdb.get_users(DBList.getSelectedValue().toString());
+                jList2.setModel(listModel);
+                
+                viewAllDBsMenuItem.setEnabled(true);
+                viewDBMenuItem.setEnabled(false);
+                viewUsersMenuItem.setEnabled(false);
+                Panel_Connections.revalidate();
+          }
       };
               
       //Event for the Add DB Menu Item.
@@ -1848,7 +1851,9 @@ public class MainForm extends javax.swing.JFrame {
           DropDBDialog dropDBDialog = new DropDBDialog();
           dropDBDialog.DropDB(DBList.getSelectedValue().toString());
           Text_MessageBar.setForeground(Color.GREEN);
+          viewAllDBsMenuItem.setEnabled(true);
           viewAllDBsMenuItem.doClick();
+          viewAllDBsMenuItem.setEnabled(false);
       }};
       
       //Event for the Connect Menu Item.
@@ -1916,12 +1921,9 @@ DBList.addMouseListener(new MouseAdapter() {
                   && !DBList.isSelectionEmpty()            // and list selection is not empty
                   && DBList.locationToIndex(me.getPoint()) // and clicked point is
                   == DBList.getSelectedIndex()) {          // inside selected item bounds
-                  Text_MessageBar.setText(DBList.getSelectedValue().toString() + " RIGHT");
-                  Text_MessageBar.setForeground(Color.blue);
                   popupMenu.show(DBList, me.getX(), me.getY());
             }else
             {
-                  Text_MessageBar.setText(DBList.getSelectedValue().toString() + " LEFT");
                   Text_MessageBar.setForeground(Color.MAGENTA);  
             }
          }
@@ -2125,7 +2127,11 @@ DBList.addMouseListener(new MouseAdapter() {
                     Menu_Collections.setEnabled(true);
                     addCollection.setEnabled(true);
                     dropCollectionMenuItem.setEnabled(true);
-                
+                    DBScrollPane.setVisible(false);
+                    UsersScrollPane.setVisible(false);
+                    jScrollPane2.setVisible(true);
+                    Panel_Connections.revalidate();
+                    
                     //load the data of collection in panel_text on double click
                     jTree1.addMouseListener(new MouseAdapter() 
                     {

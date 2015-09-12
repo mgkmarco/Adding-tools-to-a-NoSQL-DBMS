@@ -19,7 +19,6 @@ public class ServerController
     
     private static enum Arguments
     {
-        CONFIG_OPTION(" --config "),
         DB_PATH_OPTION(" --dbpath "),
         LOG_PATH_OPTION(" --logpath "),
         MONGOD_EXE("\\mongod.exe"),
@@ -43,33 +42,12 @@ public class ServerController
         }      
     }
     
-    private final File ConfigFile;
     private PropertiesController PropsCntrl;
     protected String ExceptionMessage;
     
     public ServerController()
     { 
-        ConfigFile = new File("resources/mongo.config");
         PropsCntrl = new PropertiesController();
-        
-        try(PrintWriter writer = new PrintWriter(this.ConfigFile))
-        {        
-            writer.print("systemLog:\n    ");
-            writer.print("destination: file\n    ");
-            writer.print("path: " + "\"" + PropsCntrl.getProperties(Initializations.LOG_STORAGE_PATH) + "\"" + "\n");
-            writer.print("storage:\n    ");
-            writer.print("dbPath: " + "\"" + PropsCntrl.getProperties(Initializations.DB_STORAGE_PATH) + "\"");
-            writer.close();  
-        }
-        catch(Exception exp)
-        {
-            exp.printStackTrace();
-        }
-    }
-    
-    private String getConfigFilePath()
-    {
-        return this.ConfigFile.getAbsolutePath();
     }
     
     protected int startServer(String bin_path, String db_path, String log_path)

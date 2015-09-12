@@ -129,7 +129,7 @@ public class StartServerDialog extends javax.swing.JDialog {
         saveDefaultDBPath.setText("Save as default");
 
         saveDefaultLogPath.setSelected(true);
-        saveDefaultLogPath.setText("Save as defaiult");
+        saveDefaultLogPath.setText("Save as default");
 
         saveDefaultMongoPath.setSelected(true);
         saveDefaultMongoPath.setText("Save as default");
