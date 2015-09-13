@@ -383,22 +383,22 @@ public class QueryCollectionDialog extends javax.swing.JDialog {
                 
                 case Initializations.UPDATE_DIALOG:
                 {
-//                    this.updatePanel1.executeUpdateQuery(collection);
-//                    this.queryTabbedPane.setSelectedIndex(1);
-//                    String query = Initializations.UPDATE_SYNTAX + collection + "\n" + updatePanel1.QueryString;
-//                    this.queryEditor.textArea.setText(query);
-//                    if(updatePanel1.NoOfDocumentsUpdated == 0)
-//                    {
-//                        this.outputEditor.textArea.setText(Initializations.NO_DOCUMENTS_UPDATED);
-//                    }
-//                    else if(updatePanel1.NoOfDocumentsUpdated == 1)
-//                    {
-////                        this.outputEditor.textArea.setText(Initializations.ONE_DOCUMENT_UPDATED);
-//                    }
-//                    else
-//                    {
-//                        this.outputEditor.textArea.setText(updatePanel1.NoOfDocumentsUpdated + Initializations.MULTIPLE_DOCUMENTS_UPDATED);
-//                    }
+                    this.updatePanel.executeUpdateQuery(collection);
+                    this.queryTabbedPane.setSelectedIndex(1);
+                    String query = Initializations.UPDATE_SYNTAX + collection + "\n" + updatePanel.QueryString;
+                    this.queryEditor.textArea.setText(query);
+                    if(updatePanel.NoOfDocumentsUpdated == 0)
+                    {
+                        this.outputEditor.textArea.setText(Initializations.NO_DOCUMENTS_UPDATED);
+                    }
+                    else if(updatePanel.NoOfDocumentsUpdated == 1)
+                    {
+                        this.outputEditor.textArea.setText(Initializations.ONE_DOCUMENT_UPDATED);
+                    }
+                    else
+                    {
+                        this.outputEditor.textArea.setText(updatePanel.NoOfDocumentsUpdated + Initializations.MULTIPLE_DOCUMENTS_UPDATED);
+                    }
                     break;
                 }
                 
